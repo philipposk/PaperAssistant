@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paper A: Tables Portfolio</title>
+  <!-- Project File Loader -->
+  <script src="PROJECT_FILE_LOADER.js"></script>
+  <!-- Global Resizable Portfolio System -->
+  <script src="RESIZABLE_PORTFOLIO.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
+      background: #f5f7fa; 
+      color: #1a1a1a; 
+      line-height: 1.6;
+      padding: 2rem;
+    }
+    header { 
+      background: linear-gradient(135deg, #0f4c81 0%, #1a6ba3 100%); 
+      color: #fff; 
+      padding: 2rem; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    header p { opacity: 0.9; font-size: 1.1rem; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #0f4c81;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .drive-button { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      padding: 12px 24px; 
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); 
+      color: white; 
+      border-radius: 8px; 
+      text-decoration: none; 
+      font-weight: 600; 
+      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+      transition: all 0.3s;
+      margin: 1rem 0;
+    }
+    .drive-button:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 16px rgba(66, 133, 244, 0.4);
+      text-decoration: none;
+      color: white;
+    }
+    .drive-section {
+      background: white;
+      border-left: 4px solid #4285f4;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+    }
+    .tables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      transition: grid-template-columns 0.3s ease;
+    }
+    /* Responsive grid based on table size - will be updated by JavaScript */
+    .tables-grid.small-tables {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    .tables-grid.medium-tables {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+    .tables-grid.large-tables {
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    }
+    .tables-grid.full-tables {
+      grid-template-columns: 1fr;
+    }
+    .table-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .table-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+    .table-preview {
+      width: 100%;
+      max-width: 100%;
+      max-height: 400px;
+      overflow-x: auto;
+      overflow-y: auto;
+      background: #f8f9fa;
+      padding: 1rem;
+    }
+    .table-preview table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      table-layout: auto;
+    }
+    .table-preview table th,
+    .table-preview table td {
+      padding: 0.5rem;
+      text-align: left;
+      border: 1px solid #e0e0e0;
+      word-wrap: break-word;
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.8rem;
+    }
+    .table-preview table th {
+      background: #0f4c81;
+      color: white;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+    .table-preview table td {
+      background: white;
+    }
+    .table-preview table tr:nth-child(even) td {
+      background: #f8f9fa;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 0.5rem;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background: #0f4c81;
+      color: white;
+      font-weight: 600;
+    }
+    .table-info {
+      padding: 1.5rem;
+    }
+    .table-number {
+      font-weight: 600;
+      color: #0f4c81;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .table-caption {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+    .table-link {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: #0f4c81;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .table-link:hover {
+      background: #1a6ba3;
+    }
+    .search-box {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <a href="paper_progression.html" class="back-link">← Back to Paper Progression</a>
+  
+  <header>
+    <h1>Paper A: Tables Portfolio</h1>
+    <p>All 16 tables from the paper with captions and links to CSV files</p>
+  </header>
+  
+  <input type="text" class="search-box" placeholder="Search tables by number or caption..." id="searchBox" onkeyup="searchTables()">
+  
+  <div class="tables-grid" id="tablesGrid">
+    <!-- Tables will be loaded here -->
+  </div>
+  
+  <script>
+    // Table data - All 16 tables from the paper
+    const tables = [
+      { number: 1, file: "table1_dataset_overview.csv", caption: "Dataset overview showing sample sizes, geographic coverage, and data availability by year for OBFCM 2021-2023 PHEV data." },
+      { number: 2, file: "table2_summary_statistics.csv", caption: "Summary statistics (mean, median, standard deviation, percentiles) for key variables: total energy consumption, EDS, vehicle mass, and all-electric range." },
+      { number: 3, file: "table3_variable_importance_lmg.csv", caption: "Model comparison showing R² and deviance explained for different modeling approaches." },
+      { number: 4, file: "table4_fleet_vs_campaign.csv", caption: "Statistical comparison between fleet-level (OBFCM) and campaign data. Campaign data were not available at the time of analysis." },
+      { number: 5, file: "model_comparison_CLEAN_variables.csv", caption: "Comprehensive model comparison showing train and test R², test RMSE, and key hyperparameters for all methods. Confidence intervals (95% CI) are based on bootstrap resampling (1,000 samples) of test set predictions." },
+      { number: 6, file: "eds_regional_summary.csv", caption: "Country-level EDS summary by region showing mean EDS, median EDS, mean energy consumption, and number of countries per region." },
+      { number: 7, file: "eds_threshold_analysis.csv", caption: "EDS threshold analysis showing vehicle counts and mean characteristics by EDS category and region." },
+      { number: 8, file: "eds_model_specific_analysis.csv", caption: "Top 10 vehicle models by count (same mass/AER) showing EDS variability." },
+      { number: 9, file: "eds_battery_analysis.csv", caption: "Battery capacity analysis showing EDS and energy consumption by battery size category." },
+      { number: 10, file: "eds_segment_analysis.csv", caption: "Vehicle segment analysis showing EDS and energy consumption by segment and region (top segments)." },
+      { number: 11, file: "eds_north_south_summary.csv", caption: "North-South comparison showing mean EDS, energy consumption, and temperature." },
+      { number: 12, file: "eds_country_regression_model1_summary.csv", caption: "Country-level regression model results (Model 1: mean_EDS ~ region + battery + AER + mass)." },
+      { number: 13, file: "eds_prediction_models_summary.csv", caption: "Individual vehicle-level EDS prediction model performance." },
+      { number: 14, file: "cohort_analysis_by_year.csv", caption: "Cohort analysis showing EDS by registration year and region." },
+      { number: 15, file: "infrastructure_regression_results.csv", caption: "Charging infrastructure analysis results." },
+      { number: 16, file: "eds_by_infrastructure_level.csv", caption: "EDS by infrastructure level (Low/Medium/High charge points)." },
+    ];
+    
+    function renderTables() {
+      const grid = document.getElementById('tablesGrid');
+      
+      // Check if we need to scroll to a specific table (from URL hash)
+      const hash = window.location.hash;
+      const targetTable = hash ? hash.replace('#table', '') : null;
+      
+      grid.innerHTML = tables.map(tbl => {
+        const tableId = `table-${tbl.number}`;
+        const isTarget = targetTable && parseInt(targetTable) === tbl.number;
+        return `
+        <div class="table-card" id="${tableId}" ${isTarget ? 'style="border: 3px solid #0f4c81; background: #f0f7ff;"' : ''}>
+          <div class="table-preview" id="preview-${tbl.number}">
+            <p style="text-align: center; color: #999; padding: 2rem;">Loading table preview...</p>
+          </div>
+          <div class="table-info">
+            <div class="table-number">Table ${tbl.number}</div>
+            <div class="table-caption">${tbl.caption}</div>
+            <a href="../paper_a_analysis/tables/${tbl.file}" class="table-link" target="_blank">Open CSV File</a>
+          </div>
+        </div>
+      `;
+      }).join('');
+      
+      // Load table previews
+      tables.forEach(tbl => {
+        loadTablePreview(tbl.file, `preview-${tbl.number}`);
+      });
+      
+      // Initialize resizable functionality after rendering
+      setTimeout(() => {
+        if (window.globalResizablePortfolio) {
+          // Re-wrap items after new tables are loaded
+          window.globalResizablePortfolio.wrapAllItems();
+          // Update slider to current width
+          window.globalResizablePortfolio.applyWidth('table', window.globalResizablePortfolio.tableWidth);
+        }
+      }, 500);
+      
+      // Scroll to target table if specified
+      if (targetTable) {
+        setTimeout(() => {
+          const targetElement = document.getElementById(`table-${targetTable}`);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 500);
+      }
+    }
+    
+    function loadTablePreview(file, containerId) {
+      // Try multiple paths
+      const paths = [
+        `../paper_a_analysis/tables/${file}`,
+        `paper_a_analysis/tables/${file}`,
+        `tables/${file}`
+      ];
+      
+      let pathIndex = 0;
+      const tryNextPath = () => {
+        if (pathIndex >= paths.length) {
+          document.getElementById(containerId).innerHTML = 
+            `<p style="text-align: center; color: #999; padding: 2rem;">Table preview unavailable</p>`;
+          return;
+        }
+        
+        fetch(paths[pathIndex])
+        .then(response => {
+          if (!response.ok) throw new Error('Not found');
+          return response.text();
+        })
+        .then(csv => {
+          const rows = csv.split('\n').filter(r => r.trim());
+          if (rows.length === 0) return;
+          
+          const headers = rows[0].split(',');
+          const previewRows = rows.slice(1, Math.min(6, rows.length));
+          
+          let html = '<table><thead><tr>';
+          headers.forEach(h => {
+            html += `<th>${h.trim()}</th>`;
+          });
+          html += '</tr></thead><tbody>';
+          
+          previewRows.forEach(row => {
+            const cells = row.split(',');
+            html += '<tr>';
+            cells.forEach((cell, cellIndex) => {
+              const trimmed = cell.trim();
+              // Try to format numbers intelligently
+              let formatted = trimmed;
+              const num = parseFloat(trimmed);
+              if (!isNaN(num) && trimmed !== '' && isFinite(num)) {
+                // Determine appropriate decimal places based on value and column context
+                const absNum = Math.abs(num);
+                
+                // Smart rounding based on magnitude
+                if (absNum >= 1000) {
+                  formatted = Math.round(num).toString();
+                } else if (absNum >= 100) {
+                  formatted = num.toFixed(1);
+                } else if (absNum >= 10) {
+                  formatted = num.toFixed(2);
+                } else if (absNum >= 1) {
+                  formatted = num.toFixed(3);
+                } else if (absNum >= 0.01) {
+                  formatted = num.toFixed(4);
+                } else {
+                  // For very small numbers, use scientific notation or more decimals
+                  formatted = num.toExponential(3);
+                }
+                
+                // Remove trailing zeros for cleaner display (but keep at least one decimal for small numbers)
+                if (absNum < 1 && absNum >= 0.01) {
+                  formatted = parseFloat(formatted).toFixed(Math.min(4, formatted.split('.')[1]?.length || 4));
+                } else if (absNum >= 1) {
+                  formatted = parseFloat(formatted).toString();
+                }
+              }
+              html += `<td>${formatted}</td>`;
+            });
+            html += '</tr>';
+          });
+          html += '</tbody></table>';
+          
+          if (rows.length > 6) {
+            html += `<p style="text-align: center; color: #999; margin-top: 1rem;">... and ${rows.length - 6} more rows</p>`;
+          }
+          
+          document.getElementById(containerId).innerHTML = html;
+        })
+        .catch(err => {
+          pathIndex++;
+          tryNextPath();
+        });
+      };
+      
+      tryNextPath();
+    }
+    
+    function searchTables() {
+      const query = document.getElementById('searchBox').value.toLowerCase();
+      const cards = document.querySelectorAll('.table-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    }
+    
+    renderTables();
+    
+    // Google Drive link configuration
+    const DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1PSRm7LG9QyBRnVgHREzQITe5Bthrniro?usp=sharing';
+    
+    if (DRIVE_FOLDER_URL !== 'YOUR_GOOGLE_DRIVE_FOLDER_URL_HERE') {
+      const driveSection = document.createElement('div');
+      driveSection.className = 'drive-section';
+      driveSection.innerHTML = `
+        <h3 style="margin-bottom: 1rem; color: #0f4c81;">📚 Literature Reviews & Database Files</h3>
+        <p style="color: #666; margin-bottom: 1rem;">
+          Supplementary research materials, including literature reviews and database files, are available through cloud storage integration. Connect your preferred cloud service to access these resources.
+        </p>
+        <a href="${DRIVE_FOLDER_URL}" class="drive-button" target="_blank" rel="noopener noreferrer">
+          <span>📁</span>
+          <span>Open Google Drive Folder</span>
+          <span>→</span>
+        </a>
+        <p style="font-size: 0.85rem; color: #666; margin-top: 1rem;">
+          Contains: 54+ literature review .txt files, large database files, paper drafts, and supplementary materials
+        </p>
+      `;
+      document.body.appendChild(driveSection);
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

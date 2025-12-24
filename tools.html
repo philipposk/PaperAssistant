@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBFCM Data Quality Checker - Tools</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        .download-section {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .download-button {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        .download-button:hover {
+            background: #2980b9;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 OBFCM Data Quality Checker</h1>
+        
+        <p><strong>Version 2.0.0</strong> - A comprehensive tool for validating OBFCM datasets</p>
+        
+        <div class="download-section">
+            <h2>📥 Download</h2>
+            <a href="../paper_a_analysis/OBFCM_Data_Quality_Checker.R" class="download-button" download>Download R Script</a>
+            <a href="../paper_a_analysis/tools/OBFCM_Data_Quality_Checker_DOCUMENTATION.md" class="download-button" download>Download Documentation</a>
+        </div>
+        
+        <h2>Features</h2>
+        <ul class="feature-list">
+            <li>All 8 validation steps from Paper A cleaning process</li>
+            <li>Advanced pattern detection (round numbers, Benford's Law, etc.)</li>
+            <li>Overrepresentation analysis by manufacturer/model</li>
+            <li>Vehicle characteristics comparison (flagged vs. clean)</li>
+            <li>Generates Markdown and HTML reports</li>
+            <li>Handles large datasets efficiently (10M+ rows)</li>
+            <li>Supports ZIP/7Z file input (auto-extracts)</li>
+            <li>Flexible schema adaptation for different dataset versions</li>
+        </ul>
+        
+        <h2>Quick Start</h2>
+        <p>Run the tool from command line:</p>
+        <code>Rscript OBFCM_Data_Quality_Checker.R</code>
+        
+        <p>The tool will guide you through:</p>
+        <ol>
+            <li>Selecting your dataset file (CSV, ZIP, or 7Z)</li>
+            <li>Choosing which columns to check</li>
+            <li>Selecting pattern detection methods</li>
+        </ol>
+        
+        <h2>Validation Steps</h2>
+        <p>The tool implements 8 validation steps:</p>
+        <ol>
+            <li><strong>CS Invalid</strong> - Negative or missing charge-sustaining data</li>
+            <li><strong>Missing RW_EC</strong> - Missing real-world electric consumption</li>
+            <li><strong>Missing OEM/Model</strong> - Incomplete vehicle identification</li>
+            <li><strong>RW_EC Zero Reporting</strong> - Systematic or partial zero reporting</li>
+            <li><strong>VFN Issue</strong> - Vehicle Family Name validation (optional)</li>
+            <li><strong>Physics CO2/FC</strong> - Physically implausible values</li>
+            <li><strong>Mileage/FC Inconsistency</strong> - Logical impossibilities</li>
+            <li><strong>EDS/Energy Violation</strong> - Bounds and accounting checks</li>
+        </ol>
+        
+        <h2>Output</h2>
+        <p>The tool generates two comprehensive reports:</p>
+        <ul>
+            <li><strong>Markdown Report</strong> - Human-readable format with all results</li>
+            <li><strong>HTML Report</strong> - Interactive tables and professional formatting</li>
+        </ul>
+        
+        <div class="note">
+            <strong>Note:</strong> The tool automatically adapts to schema changes. If your dataset uses different column names (e.g., 2024 vs 2021-2023), the tool will detect this and adjust accordingly.
+        </div>
+        
+        <h2>Documentation</h2>
+        <p>For complete documentation, see <code>OBFCM_Data_Quality_Checker_DOCUMENTATION.md</code></p>
+        
+        <h2>Requirements</h2>
+        <ul>
+            <li>R (version 4.0 or higher)</li>
+            <li>Required R packages (automatically installed if missing)</li>
+            <li>Optional: 7-Zip for .7z file extraction</li>
+        </ul>
+        
+        <h2>Citation</h2>
+        <p>If you use this tool in your research, please cite:</p>
+        <p><em>Ktistakis, M.A. (2025). OBFCM Data Quality Checker v2.0.0. European Commission, Joint Research Centre.</em></p>
+    </div>
+</body>
+</html>

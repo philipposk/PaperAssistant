@@ -1,0 +1,178 @@
+# 🔍 Flagged Vehicles Pattern Analysis
+
+**📅 Date:** December 24, 2024  
+**📊 Dataset:** OBFCM 2021-2023 PHEV data (995,511 records)  
+**🎯 Analysis Focus:** Identifying patterns, correlations, and interesting connections in flagged vehicles
+
+---
+
+## 📋 Executive Summary
+
+Analysis of flagged vehicles reveals several significant patterns:
+
+1. **Step 1 (CS Invalid)** - Dominated by Stellantis group vehicles (Fiat, Jeep, Opel) and Mitsubishi Eclipse Cross
+2. **Step 4 (RW_EC Zero)** - Heavily dominated by Porsche Panamera and Cayenne E-Hybrid models
+3. **Step 5 (VFN Issue)** - Volvo/Polestar models and Geely vehicles overrepresented
+4. **Manufacturer Patterns** - Stellantis group shows consistent data quality issues across multiple steps
+5. **Vehicle Characteristics** - Flagged vehicles show systematic differences in mass, engine power, and electric range
+
+---
+
+## 📊 Detailed Findings by Filter Step
+
+### 🔴 Step 1: CS Invalid (33,348 vehicles flagged)
+
+**🏭 Top Manufacturers:**
+- **Jaguar Land Rover Limited:** 5,654 vehicles (16.95% of flagged)
+- **Fiat Group:** 5,561 vehicles (16.68%)
+- **Volkswagen:** 4,091 vehicles (12.27%)
+- **Ford Werke GmbH:** 3,903 vehicles (11.70%)
+- **Skoda:** 2,991 vehicles (8.97%)
+
+**🚗 Top Models:**
+- **Mitsubishi Eclipse Cross:** Highly overrepresented (19,345% overrepresentation vs. clean dataset)
+- **Volkswagen Passat:** 10,020% overrepresentation
+- **Jaguar E-PACE P300E R-Dynamic:** 9,502% overrepresentation
+- **Opel Grandland X:** 8,542% overrepresentation
+
+**📈 Vehicle Characteristics (Flagged vs. Clean):**
+- **Mass:** 2.89% lighter (2,060 kg vs. 2,121 kg) ⬇️
+- **TA_CO2:** 6.10% higher (37.4 g/km vs. 35.2 g/km) ⬆️
+- **Electric Range:** 22.32% higher (77.5 km vs. 63.3 km) ⬆️
+- **Engine Displacement:** 11.84% smaller (1,642 cc vs. 1,863 cc) ⬇️
+- **Engine Power:** 12.92% lower (123 kW vs. 141 kW) ⬇️
+- **Total Mileage:** 25.10% lower (19,807 km vs. 26,443 km) ⬇️
+
+**💡 Key Insight:** Vehicles flagged in Step 1 tend to be lighter, have smaller engines, but paradoxically higher CO₂ emissions and longer electric range. This suggests potential issues with charge-sustaining mode operation or data reporting in these specific models.
+
+**🌐 Online Research Context:**
+- **Jeep/Chrysler:** Research shows these brands have high complaint rates (1,488 complaints per car for Jeep) and recall rates (1.06 for Jeep/Chrysler), suggesting broader quality control issues that may extend to data reporting. [Source: Carscoops - Safety Ratings Study](https://www.carscoops.com/2025/01/volvo-subaru-tesla-lead-study-with-most-5-star-safety-ratings/)
+- **Mitsubishi Eclipse Cross PHEV:** Limited specific information found, but the extreme overrepresentation suggests model-specific issues with CS mode data collection or reporting.
+
+---
+
+### 🟠 Step 2: Missing RW_EC (12,554 vehicles flagged)
+
+**🏭 Top Manufacturers:**
+- **Ford Werke GmbH:** 3,720 vehicles (29.63% of flagged)
+- **Stellantis Auto:** 3,352 vehicles (26.70%)
+- **Skoda:** 2,603 vehicles (20.73%)
+- **BMW AG:** 597 vehicles (4.76%)
+- **Hyundai Czech:** 590 vehicles (4.70%)
+
+**🚗 Top Models:**
+- **Hyundai Tucson/Tucson IX35:** Extremely overrepresented (216,430% overrepresentation)
+- **Hyundai Santa Fe:** 110,157% overrepresentation
+
+**📈 Vehicle Characteristics:**
+- **Mass:** 9.21% lighter (1,926 kg vs. 2,122 kg) ⬇️
+- **TA_CO2:** 18.20% lower (28.9 g/km vs. 35.4 g/km) ⬇️
+- **Engine Power:** 14.85% lower (120 kW vs. 141 kW) ⬇️
+- **Total Mileage:** 28.15% lower (18,907 km vs. 26,314 km) ⬇️
+- **FC_Tot:** 37.18% lower (1,011 L vs. 1,610 L) ⬇️
+
+**💡 Key Insight:** Missing RW_EC is strongly associated with Hyundai models (Tucson, Santa Fe) and Ford vehicles. These vehicles tend to be lighter, have lower emissions, and lower total fuel consumption, suggesting they may be newer models or have different monitoring systems.
+
+**🌐 Online Research Context:**
+- **Hyundai/Kia:** Recent recalls affecting millions of vehicles, though not specifically related to PHEV data reporting. The extreme overrepresentation of Hyundai models suggests potential issues with their OBFCM implementation or data transmission. [Source: AP News - Hyundai/Kia Recalls](https://apnews.com/article/ae2e71914fc229d70a4cceb089e465ce)
+
+---
+
+### 🔵 Step 4: RW_EC Zero (18,779 vehicles flagged)
+
+**🏭 Top Manufacturers:**
+- **Porsche:** Extremely overrepresented (225,325% overrepresentation)
+- **Ferrari:** 420% overrepresentation
+- **Suzuki:** 378% overrepresentation
+
+**🚗 Top Models:**
+- **Porsche Panamera 4S E-Hybrid:** 4,426,839% overrepresentation
+- **Porsche Panamera 4 E-Hybrid:** 2,691,396% overrepresentation
+- **Porsche Panamera 4:** 1,187,172% overrepresentation
+- **Porsche Cayenne E-Hybrid:** 164,224% overrepresentation
+
+**📈 Vehicle Characteristics:**
+- **Mass:** 11.11% heavier (2,350 kg vs. 2,115 kg) ⬆️
+- **TA_CO2:** 64.36% higher (57.3 g/km vs. 34.9 g/km) ⬆️
+- **Electric Range:** 16.75% lower (53.3 km vs. 64.0 km) ⬇️
+- **Engine Displacement:** 36.39% larger (2,513 cc vs. 1,842 cc) ⬆️
+- **Engine Power:** 52.74% higher (213 kW vs. 139 kW) ⬆️
+- **FC_Tot:** 38.20% higher (2,198 L vs. 1,591 L) ⬆️
+
+**💡 Key Insight:** This is the most striking pattern - Porsche luxury PHEVs (Panamera, Cayenne) are reporting zero electric consumption. These are high-performance, heavy vehicles with large engines. The zero RW_EC could indicate:
+1. Battery issues preventing electric mode operation
+2. Driver behavior (not charging vehicles)
+3. Data reporting problems specific to Porsche's OBFCM implementation
+4. Design issues where electric mode is rarely engaged
+
+---
+
+### 🟣 Step 5: VFN Issue (32,363 vehicles flagged)
+
+**🏭 Top Manufacturers:**
+- **Geely:** Extremely overrepresented (529,641% overrepresentation)
+- **Ferrari:** 3,379% overrepresentation
+- **Opel Automobile:** 1,619% overrepresentation
+
+**🚗 Top Models:**
+- **Volvo V60 T6 Twin Engine:** 133,677% overrepresentation
+- **Polestar 1:** 111,381% overrepresentation
+- **Volvo XC90 T8 Twin Engine:** 92,057% overrepresentation
+
+**💡 Key Insight:** VFN issues are primarily with Volvo/Polestar models (owned by Geely) and other Geely-owned brands. This suggests VFN whitelist may need updating or there are naming inconsistencies in Geely's reporting.
+
+**🌐 Online Research Context:**
+- **Geely-Volvo Relationship:** Geely acquired Volvo Cars in 2010, explaining VFN naming inconsistencies between different reporting systems.
+
+---
+
+## 🔗 Cross-Step Patterns
+
+### 🏢 Stellantis Group (Fiat, Opel, Peugeot, Chrysler, Jeep)
+
+**Consistent Issues Across Multiple Steps:**
+- Step 1 (CS Invalid): Fiat, Opel, Jeep heavily represented
+- Step 2 (Missing RW_EC): Stellantis Auto
+- Step 3 (Missing OEM/Model): Stellantis Auto, Peugeot
+- Step 8 (EDS/Energy Violation): Stellantis Europe, Fiat, Opel, PSA
+
+**🌐 Online Research Context:**
+- Stellantis was formed in 2021 from the merger of FCA (Fiat Chrysler) and PSA (Peugeot Citroën)
+- The consistent data quality issues across Stellantis brands suggest:
+  1. Common OBFCM implementation across brands
+  2. Shared data reporting infrastructure
+  3. Potential systemic issues in their PHEV monitoring systems
+
+---
+
+## 📚 References
+
+### Online Research Sources
+
+1. **Jeep/Chrysler Quality Issues:**
+   - [Carscoops: Volvo, Subaru, Tesla Lead Study with Most 5-Star Safety Ratings](https://www.carscoops.com/2025/01/volvo-subaru-tesla-lead-study-with-most-5-star-safety-ratings/)
+   - Jeep: 1,488 complaints per car, recall rate of 1.06
+
+2. **Hyundai/Kia Recalls:**
+   - [AP News: Millions of recalled Hyundai and Kia vehicles with dangerous defect remain on road](https://apnews.com/article/ae2e71914fc229d70a4cceb089e465ce)
+
+3. **Automotive Recall Statistics:**
+   - [AutoInsurance.com: Car Recall Facts & Statistics](https://www.autoinsurance.com/research/car-recall-facts-statistics/)
+   - Ford: 94 recalls affecting 5.6M vehicles (2024-2025)
+   - Tesla: 20 recalls affecting 5.8M vehicles
+
+4. **Stellantis Formation:**
+   - Stellantis formed in 2021 from merger of FCA (Fiat Chrysler Automobiles) and PSA (Peugeot Société Anonyme)
+
+5. **Geely-Volvo Relationship:**
+   - Geely acquired Volvo Cars in 2010, explaining VFN naming inconsistencies
+
+### Data Sources
+
+- OBFCM dataset analysis (2021-2023)
+- Pattern analysis using statistical tests (t-tests, overrepresentation analysis)
+- Internal flagging statistics from cleaning pipeline
+
+---
+
+**📌 Note:** This analysis is based on OBFCM data from 2021-2023. Patterns may reflect both genuine vehicle characteristics and data quality issues. Further investigation with manufacturers is recommended for flagged models.

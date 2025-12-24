@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBFCM Data Quality Checker - Professional Data Validation Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .nav {
+            background: rgba(0,0,0,0.05);
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .content {
+            padding: 3rem 2rem;
+        }
+        .section {
+            margin-bottom: 3rem;
+        }
+        .section h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        .section p {
+            color: #333;
+            line-height: 1.6;
+        }
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .two-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 968px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+        .option-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 2rem;
+            background: #f9f9f9;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            overflow: hidden;
+        }
+        .option-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        .option-card h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .code-block code {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .process-steps {
+            color: #333 !important;
+            color: #333;
+            color: #333;
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        .process-steps ol {
+            color: #333 !important;
+            color: #333;
+            margin-left: 2rem;
+            line-height: 2;
+        }
+        .process-steps li {
+            color: #333 !important;
+            color: #333;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .github-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 3rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            color: white;
+        }
+        .github-section h2 {
+            color: white;
+            border: none;
+        }
+        .github-section code {
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            display: block;
+            margin: 1rem 0;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .feature-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .feature-card h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    
+        .burger-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .burger-btn {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+        }
+        
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: #667eea;
+            margin: 3px 0;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+        
+        .burger-menu.active .burger-line:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+        
+        .burger-menu.active .burger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .burger-menu.active .burger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+        
+        .menu-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-width: 300px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        
+        .burger-menu.active .menu-dropdown {
+            max-height: 600px;
+            padding: 10px 0;
+            overflow-y: auto;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .menu-item:hover { background: #f8f9fa; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            font-weight: 500;
+        }
+        
+        .menu-item .download-r {
+            font-size: 0.8em;
+            color: #667eea;
+            margin-top: 5px;
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 40px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .analysis-content h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .analysis-content h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .analysis-content h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin: 30px 0 15px;
+        }
+        
+        .analysis-content h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 20px 0 10px;
+        }
+        
+        .analysis-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .analysis-content table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .analysis-content table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .analysis-content table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .figure-container {
+            margin: 30px 0;
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .figure-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .figure-caption {
+            margin-top: 15px;
+            font-style: italic;
+            color: #666;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .content { padding: 20px; }
+        }
+    </style>
+  <script src="UNIFIED_NAVIGATION.js"></script>
+</head>
+<body>
+        <div class="burger-menu" id="burgerMenu">
+        <div class="burger-btn" onclick="toggleMenu()">
+            <div class="burger-line"></div>
+            <div class="burger-line"></div>
+            <div class="burger-line"></div>
+        </div>
+        <div class="menu-dropdown">
+            <div class="menu-item">
+                <a href="data-flagging-results.html">📊 Main Results</a>
+            </div>
+            <div class="menu-item">
+                <a href="data-flagging-downloads.html">📥 Downloads & Resources</a>
+            </div>
+            <div class="menu-item">
+                <a href="obfcm-quality-checker.html">🔍 Quality Checker Tool</a>
+            </div>
+            <div class="menu-item">
+                <a href="index.html">🏠 Home</a>
+            </div>
+        </div>
+    </div>
+        
+    <div class="container">
+        <div class="header">
+            <h1>🔍 OBFCM Data Quality Checker</h1>
+            <p>Professional-grade tool for validating OBFCM datasets</p>
+            <p style="font-size: 1rem; margin-top: 1rem; opacity: 0.8;">Detect anomalies, identify data quality issues, and uncover potential fabrication patterns</p>
+        
+        <div class="nav">
+            <a href="index.html">← Home</a>
+            <a href="data-flagging-results.html">Results</a>
+        </div>
+        
+        <div class="content">
+            <!-- How It Works Section -->
+            <div class="section">
+                <h2>How It Works</h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
+                    The OBFCM Data Quality Checker performs a comprehensive 7-step validation process to ensure data integrity. 
+                    Each step targets specific quality issues, from basic data completeness to sophisticated pattern detection that 
+                    identifies potential data fabrication. The tool generates detailed reports with visualizations and statistical 
+                    summaries to help you understand and address data quality issues.
+                </p>
+                
+                <div class="process-steps">
+                    <h3>The 7-Step Validation Process</h3>
+                    <ol>
+                        <li><strong>Data Loading & Schema Adaptation:</strong> Automatically handles compressed files (ZIP, 7Z), 
+                            maps column names to standard format, and adapts to schema changes with clear notifications.</li>
+                        <li><strong>Basic Quality Checks:</strong> Identifies missing values (NA), zero values, constant columns, 
+                            and low cardinality columns that may indicate data collection issues.</li>
+                        <li><strong>Domain Range Validation:</strong> Validates values against physical and domain constraints 
+                            (e.g., EDS 0-100%, Electric range ≤140 km, TA_CO₂ ≤101 g/km for PHEVs).</li>
+                        <li><strong>Pattern Detection:</strong> Detects suspicious patterns including round numbers, repetitive sequences, 
+                            Benford's Law violations, and manufacturer-specific anomalies that may indicate data fabrication.</li>
+                        <li><strong>Paper A Validation Steps:</strong> Applies all 8 validation steps from the Paper A methodology:
+                            CS Invalid, Missing RW_EC, Missing OEM/Model, RW_EC Zero Reporting, VFN Issues, Physics CO₂/FC, 
+                            Mileage/FC Inconsistency, and EDS/Energy Violations.</li>
+                        <li><strong>Statistical Analysis:</strong> Performs overrepresentation analysis, compares flagged vs clean vehicles, 
+                            and generates summary statistics to identify systematic issues.</li>
+                        <li><strong>Report Generation:</strong> Creates comprehensive Markdown and HTML reports with embedded visualizations, 
+                            tables, and detailed findings for documentation and sharing.</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- Usage Options Section -->
+            <div class="section">
+                <h2>Get Started</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                    Choose how you want to use the tool. You can install it as an R package for easy integration into your workflow, 
+                    or download the standalone script for one-time use or custom modifications.
+                </p>
+                
+                <div class="two-columns">
+                    <div class="option-card">
+                        <h3>📦 Option 1: R Package (Recommended)</h3>
+                        <p>Install as an R package for easy updates, version control, and full documentation.</p>
+                        <div class="code-block">
+                            <code># Install from GitHub<br>
+devtools::install_github("philipposk/obfcmQualityChecker")<br><br>
+# Load the package<br>
+library(obfcmQualityChecker)<br><br>
+# Run the tool<br>
+main()</code>
+                        </div>
+                        <a href="https://github.com/philipposk/obfcmQualityChecker" target="_blank" class="btn">View on GitHub</a>
+                        <a href="../obfcmQualityChecker/README.md" download target="_blank" class="btn btn-secondary">Documentation</a>
+                    </div>
+                    
+                    <div class="option-card">
+                        <h3>📄 Option 2: Standalone Script</h3>
+                        <p>Download the standalone R script for direct execution without package installation.</p>
+                        <div class="code-block">
+                            <code># Click "Download Script" button above to download<br>
+                            # Then run it directly:<br>
+                            Rscript OBFCM_Data_Quality_Checker_STANDALONE.R</code>
+                        </div>
+                        <button onclick="openRScriptSelectionModal()" class="btn" style="border: none; cursor: pointer; font-size: 1rem;">💻 Download Script</button>
+                        <a href="../obfcmQualityChecker/README.md" download target="_blank" class="btn btn-secondary">Documentation</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Features Section -->
+            <div class="section">
+                <h2>Key Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4>🔍 Comprehensive Quality Checks</h4>
+                        <p>NA/zero/constant detection, low cardinality identification, and domain range validation</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎯 Pattern Detection</h4>
+                        <p>Round numbers, repetitive sequences, Benford's Law, and manufacturer-specific patterns</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>✅ Paper A Validation</h4>
+                        <p>All 8 validation steps from the Paper A methodology for systematic data quality assessment</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 Rich Visualizations</h4>
+                        <p>Quality check summaries, validation step charts, pattern detection plots, and comparison visualizations</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📄 Multiple Report Formats</h4>
+                        <p>Generate Markdown and HTML reports with embedded results, tables, and figures</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🚀 High Performance</h4>
+                        <p>Efficiently handles large datasets (10M+ rows) using data.table and supports compressed file formats</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔧 Flexible Configuration</h4>
+                        <p>Choose columns to check (Basic Package, All, Specific, Custom) and select pattern detection methods</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔄 Schema Adaptation</h4>
+                        <p>Automatically adapts to schema changes and provides clear notifications about column mapping</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- GitHub Package Section -->
+            
+
+<script>
+const rScriptContents = {
+    mac: `#!/usr/bin/env Rscript\n# ==============================================================================\n# OBFCM Data Quality Checker - Complete Version\n# ==============================================================================\n# A comprehensive tool for checking OBFCM dataset quality, detecting anomalies,\n# and identifying potential data fabrication patterns.\n#\n# Author: Markos A. Ktistakis\n# Date: 2025-01-XX\n# Version: 2.0.0\n#\n# Features:\n# - All 8 validation steps from Paper A cleaning process\n# - Handles large datasets (10M+ rows) efficiently\n# - Supports zip/7z file input (auto-extracts)\n# - Interactive menu for customization\n# - Advanced pattern detection (percentiles, overrepresentation, etc.)\n# - Generates Markdown and HTML reports\n# - Flexible schema adaptation\n# ==============================================================================\n\n# Load required packages\nrequired_packages <- c(\n  "data.table",      # Fast data processing\n  "dplyr",           # Data manipulation\n  "tidyr",           # Data reshaping (gather/pivot)\n  "readr",           # Fast CSV reading\n  "knitr",           # Report generation\n  "rmarkdown",       # HTML rendering\n  "DT",              # Interactive tables in HTML\n  "ggplot2",         # Visualizations\n  "plotly",          # Interactive plots\n  "stringr",         # String operations\n  "readxl"           # Excel file reading (for VFN whitelist)\n)\n\n# Install missing packages\ninstall_if_missing <- function(packages) {\n  new_packages <- packages[!(packages %in% installed.packages()[,"Package"])]\n  if(length(new_packages)) {\n    cat("Installing missing packages:", paste(new_packages, collapse=", "), "\\n")\n    install.packages(new_packages, repos = "https://cloud.r-project.org")\n  }\n}\n\ninstall_if_missing(required_packages)\n\n# Load libraries\nsuppressPackageStartupMessages({\n  library(data.table)\n  library(dplyr)\n  library(tidyr)\n  library(readr)\n  library(knitr)\n  library(rmarkdown)\n  library(DT)\n  library(ggplot2)\n  library(plotly)\n  library(stringr)\n  if (requireNamespace("readxl", quietly = TRUE)) {\n    library(readxl)\n  }\n})\n\n# ==============================================================================\n# CONFIGURATION\n# ==============================================================================\n\nset.seed(42)\n\n# Basic package columns (from Paper A analysis)\nBASIC_PACKAGE_COLUMNS <- c(\n  # Energy and consumption\n  "RW_EC", "RW_FC", "RW_CO2", "RW_OVC",\n  "TA_EC", "TA_FC", "TA_CO2",\n  # Mileage\n  "Mileage_Tot", "Mileage_CD_Eng_Off", "Mileage_CD_Eng_On", \n  "Mileage_CI", "Mileage_CS",\n  # Fuel consumption\n  "FC_Tot", "FC_CD", "FC_CI", "FC_CS",\n  # Vehicle characteristics\n  "Mass", "AER", "Electric_range", "Battery_capacity", "Engine_power",\n  # Calculated metrics\n  "EDS", "distance_CD", "distance_total", "total_energy_kWh_per_100km",\n  "ice_kWh_per_100km", "electric_kWh_per_100km",\n  # Identifiers\n  "OEM", "Model", "VFN", "Year"\n)\n\n# Domain-specific validation ranges\nDOMAIN_RANGES <- list(\n  EDS = c(0, 100),\n  AER = c(0, 200),\n  Electric_range = c(0, 140),  # Updated: 140 km max for PHEVs\n  Mass = c(500, 5000),\n  RW_EC = c(0, 200),\n  TA_CO2 = c(0, 101),  # Updated: 101 g/km max for PHEVs\n  RW_CO2 = c(0, 800),\n  FC_CS = c(0, 20),\n  Mileage_Tot = c(0, 500000)\n)\n\n# ==============================================================================\n# UTILITY FUNCTIONS\n# ==============================================================================\n\nis_compressed <- function(filepath) {\n  ext <- tolower(tools::file_ext(filepath))\n  return(ext %in% c("zip", "7z", "gz", "bz2"))\n}\n\nextract_file <- function(filepath, output_dir = tempdir()) {\n  ext <- tolower(tools::file_ext(filepath))\n  \n  if (ext == "zip") {\n    unzip(filepath, exdir = output_dir)\n    csv_files <- list.files(output_dir, pattern = "\\\\.csv$", full.names = TRUE, recursive = TRUE)\n    if (length(csv_files) > 0) {\n      return(csv_files[1])\n    }\n  } else if (ext == "7z") {\n    if (system("which 7z", ignore.stdout = TRUE, ignore.stderr = TRUE) == 0) {\n      system(paste("7z x", filepath, "-o", output_dir, "-y"), ignore.stdout = TRUE)\n      csv_files <- list.files(output_dir, pattern = "\\\\.csv$", full.names = TRUE, recursive = TRUE)\n      if (length(csv_files) > 0) {\n        return(csv_files[1])\n      }\n    } else {\n      stop("7z extraction requires 7z command-line tool. Please install 7-Zip or extract manually.")\n    }\n  }\n  \n  return(NULL)\n}\n\nload_data <- function(filepath, nrows = NULL) {\n  cat("Loading data from:", filepath, "\\n")\n  \n  if (is_compressed(filepath)) {\n    cat("Detected compressed file. Extracting...\\n")\n    extracted_file <- extract_file(filepath)\n    if (is.null(extracted_file)) {\n      stop("Could not extract compressed file. Please extract manually.")\n    }\n    filepath <- extracted_file\n    cat("Extracted to:", filepath, "\\n")\n  }\n  \n  cat("Reading data (this may take a few minutes for large files)...\\n")\n  \n  tryCatch({\n    if (!is.null(nrows)) {\n      data <- fread(filepath, nrows = nrows, showProgress = TRUE)\n    } else {\n      data <- fread(filepath, showProgress = TRUE)\n    }\n    cat("Successfully loaded", nrow(data), "rows and", ncol(data), "columns\\n")\n    return(data)\n  }, error = function(e) {\n    cat("data.table failed, trying readr...\\n")\n    if (!is.null(nrows)) {\n      data <- read_csv(filepath, n_max = nrows, show_col_types = FALSE, progress = TRUE)\n    } else {\n      data <- read_csv(filepath, show_col_types = FALSE, progress = TRUE)\n    }\n    cat("Successfully loaded", nrow(data), "rows and", ncol(data), "columns\\n")\n    return(data)\n  })\n}\n\n\n# ==============================================================================\n# COLUMN NAME MAPPING\n# ==============================================================================\n\n# Map raw OBFCM column names to standard names\nmap_column_names <- function(data) {\n  cat("Mapping column names to standard format...\\n")\n  \n  # Column mapping dictionary\n  mappings <- list(\n    # Mileage columns\n    "Mileage_Tot" = c("OBFCM_TotLifetimeDist_km", "Mileage_Tot", "distance_total"),\n    "Mileage_CD_Eng_Off" = c("OBFCM_ChargeDeplOprEngineOff_km", "Mileage_CD_Eng_Off", "distance_CD"),\n    "Mileage_CD_Eng_On" = c("OBFCM_ChargeDeplOprEngineOn_km", "Mileage_CD_Eng_On"),\n    "Mileage_CI" = c("OBFCM_ChargeIncrOpr_km", "Mileage_CI"),\n    "Mileage_CS" = c("OBFCM_ChargeSustOpr_km", "Mileage_CS"),\n    \n    # Fuel consumption\n    "FC_Tot" = c("OBFCM_TotLifetimeFuel_l", "FC_Tot"),\n    "FC_CD" = c("OBFCM_ChargeDeplFuel_l", "FC_CD"),\n    "FC_CI" = c("OBFCM_ChargeIncrFuel_l", "FC_CI"),\n    "FC_CS" = c("OBFCM_ChargeSustFuel_l", "FC_CS"),\n    \n    # Energy and CO2\n    "RW_EC" = c("RW_EC", "OBFCM_RW_EC"),\n    "RW_FC" = c("RW_FC", "OBFCM_RW_FC"),\n    "RW_CO2" = c("RW_CO2", "OBFCM_RW_CO2"),\n    "TA_EC" = c("TA_EC", "OBFCM_TA_EC"),\n    "TA_FC" = c("TA_FC", "OBFCM_TA_FC"),\n    "TA_CO2" = c("TA_CO2", "OBFCM_TA_CO2"),\n    \n    # Identifiers\n    "OEM" = c("OEM", "MS_OEM", "key-oem"),\n    "Model" = c("Model", "Modelup", "Model_name", "key-model"),\n    "VFN" = c("VFN", "MS_VFN", "VFN_corr"),\n    "Year" = c("Year", "OBFCM_ReportingPeriod", "RegistrationYear")\n  )\n  \n  # Find and create mapped columns\n  for (standard_name in names(mappings)) {\n    possible_names <- mappings[[standard_name]]\n    found <- FALSE\n    for (old_name in possible_names) {\n      if (old_name %in% names(data)) {\n        if (!standard_name %in% names(data) || standard_name != old_name) {\n          data[[standard_name]] <- data[[old_name]]\n          if (standard_name != old_name) {\n            cat("Mapped:", old_name, "->", standard_name, "\\n")\n          }\n        }\n        found <- TRUE\n        break\n      }\n    }\n  }\n  \n  return(data)\n}\n\n# ==============================================================================\n# VALIDATION STEP 1: CS Invalid\n# ==============================================================================\n\n\ncheck_step1_cs_invalid <- function(data) {\n  cat("Step 1: Checking CS (Charge-Sustaining) Invalid...\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # Check Mileage_CS (may need calculation if not present)\n  if (!"Mileage_CS" %in% names(data)) {\n    # Try to calculate from other columns\n    if ("Mileage_Tot" %in% names(data) && \n        "Mileage_CD_Eng_Off" %in% names(data) &&\n        "Mileage_CD_Eng_On" %in% names(data) &&\n        "Mileage_CI" %in% names(data)) {\n      data$Mileage_CS <- data$Mileage_Tot - \n                         data$Mileage_CD_Eng_Off - \n                         data$Mileage_CD_Eng_On - \n                         data$Mileage_CI\n      cat("Calculated Mileage_CS from other mileage columns\n")\n    }\n  }\n  \n  if ("Mileage_CS" %in% names(data)) {\n    flags <- flags | (data$Mileage_CS < 0 | is.na(data$Mileage_CS))\n  }\n  \n  # Check FC_CS (may need calculation if not present)\n  if (!"FC_CS" %in% names(data)) {\n    # Try to calculate from other columns\n    if ("FC_Tot" %in% names(data) && \n        "FC_CD" %in% names(data) &&\n        "FC_CI" %in% names(data)) {\n      data$FC_CS <- data$FC_Tot - data$FC_CD - data$FC_CI\n      cat("Calculated FC_CS from other fuel consumption columns\n")\n    }\n  }\n  \n  if ("FC_CS" %in% names(data)) {\n    flags <- flags | (data$FC_CS < 0 | is.na(data$FC_CS))\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 2: Missing RW_EC\n# ==============================================================================\n\ncheck_step2_missing_rw_ec <- function(data) {\n  cat("Step 2: Checking Missing RW_EC...\\n")\n  \n  if ("RW_EC" %in% names(data)) {\n    return(is.na(data$RW_EC))\n  } else {\n    cat("Warning: RW_EC column not found. Skipping Step 2.\\n")\n    return(rep(FALSE, nrow(data)))\n  }\n}\n\n# ==============================================================================\n# VALIDATION STEP 3: Missing OEM/Model\n# ==============================================================================\n\ncheck_step3_missing_oem_model <- function(data) {\n  cat("Step 3: Checking Missing OEM/Model...\\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # Check OEM\n  if ("OEM" %in% names(data)) {\n    flags <- flags | (is.na(data$OEM) | data$OEM == "")\n  }\n  \n  # Check Model (try common model column names)\n  model_cols <- c("Model", "Modelup", "Model_name")\n  for (col in model_cols) {\n    if (col %in% names(data)) {\n      flags <- flags | (is.na(data[[col]]) | data[[col]] == "")\n      break\n    }\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 4: RW_EC Zero Reporting (Percentile-based)\n# ==============================================================================\n\ncheck_step4_rw_ec_zero <- function(data) {\n  cat("Step 4: Checking RW_EC Zero Reporting (percentile-based)...\\n")\n  \n  if (!"RW_EC" %in% names(data)) {\n    cat("Warning: RW_EC column not found. Skipping Step 4.\\n")\n    return(rep(FALSE, nrow(data)))\n  }\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # Get grouping columns\n  group_cols <- c()\n  if ("OEM" %in% names(data)) group_cols <- c(group_cols, "OEM")\n  model_cols <- c("Model", "Modelup", "Model_name")\n  for (col in model_cols) {\n    if (col %in% names(data)) {\n      group_cols <- c(group_cols, col)\n      break\n    }\n  }\n  if ("Year" %in% names(data)) group_cols <- c(group_cols, "Year")\n  \n  if (length(group_cols) > 0) {\n    # Case A: Systematic zero reporting (p95 == 0)\n    data_grouped <- data %>%\n      group_by(across(all_of(group_cols))) %>%\n      summarise(\n        p95_rw_ec = quantile(RW_EC, 0.95, na.rm = TRUE),\n        .groups = "drop"\n      )\n    \n    # Merge back and flag\n    data <- data %>%\n      left_join(data_grouped, by = group_cols)\n    \n    flags <- flags | (!is.na(data$p95_rw_ec) & data$p95_rw_ec == 0)\n    \n    # Case B: Partial zero reporting (>30% zeros)\n    data_grouped2 <- data %>%\n      group_by(across(all_of(group_cols))) %>%\n      summarise(\n        total = n(),\n        zeros = sum(RW_EC == 0, na.rm = TRUE),\n        share_zero = zeros / total,\n        .groups = "drop"\n      )\n    \n    data <- data %>%\n      left_join(data_grouped2, by = group_cols)\n    \n    flags <- flags | (!is.na(data$share_zero) & data$share_zero > 0.30)\n  } else {\n    # Fallback: simple zero check\n    flags <- flags | (data$RW_EC == 0)\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 5: VFN Issue (Optional)\n# ==============================================================================\n\ncheck_step5_vfn_issue <- function(data, vfn_whitelist_path = NULL) {\n  cat("Step 5: Checking VFN Issues...\\n")\n  \n  if (!"VFN" %in% names(data)) {\n    cat("Warning: VFN column not found. Skipping Step 5.\\n")\n    return(rep(FALSE, nrow(data)))\n  }\n  \n  if (is.null(vfn_whitelist_path) || !file.exists(vfn_whitelist_path)) {\n    cat("Note: VFN whitelist file not provided or not found.\\n")\n    cat("VFN validation will be skipped. This is normal if the whitelist file is not available.\\n")\n    return(rep(FALSE, nrow(data)))\n  }\n  \n  # Load whitelist\n  tryCatch({\n    if (tools::file_ext(vfn_whitelist_path) == "xlsx") {\n      if (requireNamespace("readxl", quietly = TRUE)) {\n        vfn_whitelist <- readxl::read_excel(vfn_whitelist_path)\n      } else {\n        cat("Warning: readxl package not available. Cannot read Excel file.\\n")\n        return(rep(FALSE, nrow(data)))\n      }\n    } else {\n      vfn_whitelist <- read_csv(vfn_whitelist_path, show_col_types = FALSE)\n    }\n    \n    # Get VFN column name from whitelist\n    vfn_col <- names(vfn_whitelist)[1]  # Assume first column is VFN\n    \n    valid_vfns <- unique(vfn_whitelist[[vfn_col]])\n    flags <- !(data$VFN %in% valid_vfns) & !is.na(data$VFN)\n    \n    cat("VFN whitelist loaded:", length(valid_vfns), "valid VFNs\\n")\n    return(flags)\n  }, error = function(e) {\n    cat("Error loading VFN whitelist:", e$message, "\\n")\n    return(rep(FALSE, nrow(data)))\n  })\n}\n\n# ==============================================================================\n# VALIDATION STEP 6: Physics-based CO2/FC\n# ==============================================================================\n\ncheck_step6_physics_co2_fc <- function(data) {\n  cat("Step 6: Checking Physics-based CO2/FC...\\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # Calculate FCgap_perc if not present\n  if (!"FCgap_perc" %in% names(data)) {\n    if ("RW_FC" %in% names(data) && "TA_FC" %in% names(data)) {\n      data$FCgap_perc <<- ((data$RW_FC - data$TA_FC) / data$TA_FC) * 100\n    }\n  }\n  \n  # Check FCgap_perc > 1800\n  if ("FCgap_perc" %in% names(data)) {\n    flags <- flags | (!is.na(data$FCgap_perc) & data$FCgap_perc > 1800)\n  }\n  \n  # Check TA_CO2 >= 190\n  if ("TA_CO2" %in% names(data)) {\n    flags <- flags | (!is.na(data$TA_CO2) & data$TA_CO2 >= 190)\n  }\n  \n  # Check RW_CO2 > 800\n  if ("RW_CO2" %in% names(data)) {\n    flags <- flags | (!is.na(data$RW_CO2) & data$RW_CO2 > 800)\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 7: Mileage/FC Inconsistencies\n# ==============================================================================\n\ncheck_step7_mileage_fc_inconsistency <- function(data) {\n  cat("Step 7: Checking Mileage/FC Inconsistencies...\\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # CD engine-on: mileage=0, FC>0.1\n  if ("Mileage_CD_Eng_On" %in% names(data) && "FC_CD" %in% names(data)) {\n    flags <- flags | (!is.na(data$Mileage_CD_Eng_On) & !is.na(data$FC_CD) &\n                      data$Mileage_CD_Eng_On == 0 & data$FC_CD > 0.1)\n  }\n  \n  # CS zero distance: mileage=0, FC>0.1\n  if ("Mileage_CS" %in% names(data) && "FC_CS" %in% names(data)) {\n    flags <- flags | (!is.na(data$Mileage_CS) & !is.na(data$FC_CS) &\n                      data$Mileage_CS == 0 & data$FC_CS > 0.1)\n  }\n  \n  # CI zero distance: mileage=0, FC>3\n  if ("Mileage_CI" %in% names(data) && "FC_CI" %in% names(data)) {\n    flags <- flags | (!is.na(data$Mileage_CI) & !is.na(data$FC_CI) &\n                      data$Mileage_CI == 0 & data$FC_CI > 3)\n  }\n  \n  # CS large distance, zero fuel: mileage>100, FC=0\n  if ("Mileage_CS" %in% names(data) && "FC_CS" %in% names(data)) {\n    flags <- flags | (!is.na(data$Mileage_CS) & !is.na(data$FC_CS) &\n                      data$Mileage_CS > 100 & data$FC_CS == 0)\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 8: EDS/Energy Violations\n# ==============================================================================\n\ncheck_step8_eds_energy_violation <- function(data) {\n  cat("Step 8: Checking EDS/Energy Violations...\\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # EDS outside 0-100%\n  if ("EDS" %in% names(data)) {\n    flags <- flags | (!is.na(data$EDS) & (data$EDS < 0 | data$EDS > 100))\n  }\n  \n  # Negative energy values\n  energy_cols <- c("RW_EC", "TA_EC", "total_energy_kWh_per_100km", \n                   "ice_kWh_per_100km", "electric_kWh_per_100km")\n  for (col in energy_cols) {\n    if (col %in% names(data)) {\n      flags <- flags | (!is.na(data[[col]]) & data[[col]] < 0)\n    }\n  }\n  \n  # Energy accounting consistency (if both ICE and electric exist)\n  if ("ice_kWh_per_100km" %in% names(data) && \n      "electric_kWh_per_100km" %in% names(data) &&\n      "total_energy_kWh_per_100km" %in% names(data)) {\n    calculated_total <- data$ice_kWh_per_100km + data$electric_kWh_per_100km\n    flags <- flags | (!is.na(calculated_total) & !is.na(data$total_energy_kWh_per_100km) &\n                      abs(calculated_total - data$total_energy_kWh_per_100km) > 0.1)\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# ADDITIONAL DOMAIN CHECKS\n# ==============================================================================\n\ncheck_additional_domain <- function(data) {\n  cat("Checking Additional Domain-Specific Issues...\\n")\n  \n  flags <- list()\n  \n  # Electric_range > 140 km\n  if ("Electric_range" %in% names(data)) {\n    flags$electric_range_high <- !is.na(data$Electric_range) & data$Electric_range > 140\n  }\n  \n  # TA_CO2 > 101 g/km (likely non-PHEV)\n  if ("TA_CO2" %in% names(data)) {\n    flags$ta_co2_high <- !is.na(data$TA_CO2) & data$TA_CO2 > 101\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# BASIC DATA QUALITY CHECKS\n# ==============================================================================\n\ncheck_na_columns <- function(data) {\n  cat("Checking for NA columns...\\n")\n  na_summary <- data %>%\n    summarise_all(~ sum(is.na(.))) %>%\n    pivot_longer(everything(), names_to = "column", values_to = "na_count") %>%\n    mutate(na_percentage = round(na_count / nrow(data) * 100, 2)) %>%\n    arrange(desc(na_count))\n  \n  return(na_summary)\n}\n\ncheck_zero_columns <- function(data) {\n  cat("Checking for zero columns...\\n")\n  numeric_cols <- sapply(data, is.numeric)\n  zero_summary <- data[, numeric_cols, drop = FALSE] %>%\n    summarise_all(~ sum(. == 0, na.rm = TRUE)) %>%\n    pivot_longer(everything(), names_to = "column", values_to = "zero_count") %>%\n    mutate(zero_percentage = round(zero_count / nrow(data) * 100, 2)) %>%\n    arrange(desc(zero_count))\n  \n  return(zero_summary)\n}\n\ncheck_constant_columns <- function(data) {\n  cat("Checking for constant columns...\\n")\n  constant_cols <- sapply(data, function(x) {\n    if (is.numeric(x)) {\n      x_clean <- x[!is.na(x)]\n      if (length(x_clean) > 0) {\n        return(length(unique(x_clean)) == 1)\n      }\n    } else {\n      x_clean <- x[!is.na(x)]\n      if (length(x_clean) > 0) {\n        return(length(unique(x_clean)) == 1)\n      }\n    }\n    return(FALSE)\n  })\n  \n  constant_summary <- data.frame(\n    column = names(constant_cols),\n    is_constant = constant_cols,\n    stringsAsFactors = FALSE\n  ) %>%\n    filter(is_constant == TRUE)\n  \n  return(constant_summary)\n}\n\ncheck_low_cardinality <- function(data, min_expected_values = 5) {\n  cat("Checking for low cardinality columns...\\n")\n  \n  # Known binary columns (should be excluded)\n  known_binary <- c("Powertrain", "Fuel_type", "Is_PHEV")\n  \n  cardinality_summary <- sapply(data, function(x) {\n    x_clean <- x[!is.na(x)]\n    if (length(x_clean) > 0) {\n      return(length(unique(x_clean)))\n    }\n    return(0)\n  })\n  \n  low_cardinality <- data.frame(\n    column = names(cardinality_summary),\n    unique_values = cardinality_summary,\n    stringsAsFactors = FALSE\n  ) %>%\n    filter(\n      unique_values < min_expected_values,\n      unique_values > 1,  # Exclude constants (handled separately)\n      !column %in% known_binary  # Exclude known binary columns\n    ) %>%\n    arrange(unique_values)\n  \n  return(low_cardinality)\n}\n\n# ==============================================================================\n# PATTERN DETECTION FUNCTIONS\n# ==============================================================================\n\ncheck_round_numbers <- function(data, columns = NULL) {\n  cat("Checking for round numbers pattern...\\n")\n  \n  if (is.null(columns)) {\n    columns <- names(data)[sapply(data, is.numeric)]\n  }\n  \n  round_summary <- list()\n  \n  for (col in columns) {\n    if (col %in% names(data) && is.numeric(data[[col]])) {\n      values <- data[[col]][!is.na(data[[col]]) & data[[col]] != 0]\n      \n      if (length(values) > 100) {\n        ends_in_0_or_5 <- sum(values %% 10 %in% c(0, 5), na.rm = TRUE)\n        pct_round <- round(ends_in_0_or_5 / length(values) * 100, 2)\n        \n        multiples_of_10 <- sum(values %% 10 == 0, na.rm = TRUE)\n        pct_mult10 <- round(multiples_of_10 / length(values) * 100, 2)\n        \n        multiples_of_5 <- sum(values %% 5 == 0, na.rm = TRUE)\n        pct_mult5 <- round(multiples_of_5 / length(values) * 100, 2)\n        \n        round_summary[[col]] <- data.frame(\n          column = col,\n          total_values = length(values),\n          ends_0_or_5 = ends_in_0_or_5,\n          pct_ends_0_or_5 = pct_round,\n          multiples_of_10 = multiples_of_10,\n          pct_mult10 = pct_mult10,\n          multiples_of_5 = multiples_of_5,\n          pct_mult5 = pct_mult5,\n          stringsAsFactors = FALSE\n        )\n      }\n    }\n  }\n  \n  if (length(round_summary) > 0) {\n    return(bind_rows(round_summary))\n  } else {\n    return(data.frame())\n  }\n}\n\ncheck_repetitive_sequences <- function(data, columns = NULL) {\n  cat("Checking for repetitive sequences...\\n")\n  \n  if (is.null(columns)) {\n    columns <- names(data)[sapply(data, is.numeric)]\n  }\n  \n  sequence_summary <- list()\n  \n  for (col in columns) {\n    if (col %in% names(data) && is.numeric(data[[col]])) {\n      values <- data[[col]][!is.na(data[[col]])]\n      \n      if (length(values) > 1000) {\n        # Sample for large datasets\n        if (length(values) > 10000) {\n          values <- sample(values, 10000)\n        }\n        \n        # Check for exact duplicates in sequence\n        duplicates <- sum(duplicated(values))\n        pct_duplicates <- round(duplicates / length(values) * 100, 2)\n        \n        # Check for patterns (e.g., same value repeated many times)\n        value_counts <- table(values)\n        max_repetition <- max(value_counts)\n        pct_max_repetition <- round(max_repetition / length(values) * 100, 2)\n        \n        sequence_summary[[col]] <- data.frame(\n          column = col,\n          total_values = length(values),\n          duplicate_count = duplicates,\n          pct_duplicates = pct_duplicates,\n          max_repetition = max_repetition,\n          pct_max_repetition = pct_max_repetition,\n          stringsAsFactors = FALSE\n        )\n      }\n    }\n  }\n  \n  if (length(sequence_summary) > 0) {\n    return(bind_rows(sequence_summary))\n  } else {\n    return(data.frame())\n  }\n}\n\ncheck_benford_law <- function(data, columns = NULL) {\n  cat("Checking Benford's Law violations...\\n")\n  \n  if (is.null(columns)) {\n    columns <- names(data)[sapply(data, is.numeric)]\n  }\n  \n  benford_summary <- list()\n  \n  for (col in columns) {\n    if (col %in% names(data) && is.numeric(data[[col]])) {\n      values <- data[[col]][!is.na(data[[col]]) & data[[col]] > 0]\n      \n      if (length(values) > 1000) {\n        # Get first digit\n        first_digits <- as.numeric(substr(abs(values), 1, 1))\n        first_digits <- first_digits[first_digits > 0 & first_digits < 10]\n        \n        if (length(first_digits) > 100) {\n          # Expected Benford distribution\n          benford_expected <- log10(1 + 1/1:9)\n          \n          # Observed distribution\n          observed <- table(factor(first_digits, levels = 1:9))\n          observed_pct <- as.numeric(observed) / sum(observed)\n          \n          # Chi-square test\n          chi_sq <- sum((observed - sum(observed) * benford_expected)^2 / (sum(observed) * benford_expected))\n          p_value <- 1 - pchisq(chi_sq, df = 8)\n          \n          # Maximum deviation\n          max_deviation <- max(abs(observed_pct - benford_expected))\n          \n          benford_summary[[col]] <- data.frame(\n            column = col,\n            total_values = length(first_digits),\n            chi_square = round(chi_sq, 2),\n            p_value = round(p_value, 4),\n            max_deviation = round(max_deviation, 4),\n            violates_benford = p_value < 0.05,\n            stringsAsFactors = FALSE\n          )\n        }\n      }\n    }\n  }\n  \n  if (length(benford_summary) > 0) {\n    return(bind_rows(benford_summary))\n  } else {\n    return(data.frame())\n  }\n}\n\ncheck_manufacturer_patterns <- function(data, manufacturer_col = "OEM") {\n  cat("Checking manufacturer-specific patterns...\\n")\n  \n  if (!manufacturer_col %in% names(data)) {\n    cat("Warning: Manufacturer column not found. Skipping manufacturer-specific checks.\\n")\n    return(data.frame())\n  }\n  \n  manufacturers <- unique(data[[manufacturer_col]])\n  manufacturers <- manufacturers[!is.na(manufacturers)]\n  \n  pattern_summary <- list()\n  \n  for (mfr in manufacturers[1:min(10, length(manufacturers))]) {  # Limit to first 10 for performance\n    mfr_data <- data[data[[manufacturer_col]] == mfr, ]\n    \n    if (nrow(mfr_data) > 100) {\n      # Check numeric columns for patterns\n      numeric_cols <- names(mfr_data)[sapply(mfr_data, is.numeric)]\n      \n      for (col in numeric_cols[1:min(5, length(numeric_cols))]) {  # Limit columns\n        values <- mfr_data[[col]][!is.na(mfr_data[[col]])]\n        \n        if (length(values) > 50) {\n          # Check for low variance (suspicious uniformity)\n          cv <- sd(values, na.rm = TRUE) / mean(values, na.rm = TRUE)\n          \n          # Check for round numbers\n          round_pct <- sum(values %% 10 == 0, na.rm = TRUE) / length(values) * 100\n          \n          pattern_summary[[paste(mfr, col, sep = "_")]] <- data.frame(\n            manufacturer = mfr,\n            column = col,\n            n_vehicles = nrow(mfr_data),\n            coefficient_of_variation = round(cv, 4),\n            pct_round_numbers = round(round_pct, 2),\n            suspicious = cv < 0.01 | round_pct > 80,\n            stringsAsFactors = FALSE\n          )\n        }\n      }\n    }\n  }\n  \n  if (length(pattern_summary) > 0) {\n    return(bind_rows(pattern_summary))\n  } else {\n    return(data.frame())\n  }\n}\n\n# ==============================================================================\n# OVERREPRESENTATION ANALYSIS\n# ==============================================================================\n\ncalculate_overrepresentation <- function(data, flags, group_col) {\n  cat("Calculating overrepresentation by", group_col, "...\\n")\n  \n  if (!group_col %in% names(data)) {\n    return(data.frame())\n  }\n  \n  # Calculate flagged vs clean by group\n  data$is_flagged <- flags\n  \n  group_stats <- data %>%\n    group_by(across(all_of(group_col))) %>%\n    summarise(\n      total = n(),\n      flagged = sum(is_flagged, na.rm = TRUE),\n      clean = total - flagged,\n      .groups = "drop"\n    ) %>%\n    filter(total > 0) %>%\n    mutate(\n      flagged_pct = round(flagged / total * 100, 2),\n      clean_pct = round(clean / total * 100, 2)\n    )\n  \n  # Calculate overall rates\n  overall_flagged_pct <- sum(flags, na.rm = TRUE) / length(flags) * 100\n  \n  # Calculate overrepresentation\n  group_stats <- group_stats %>%\n    mutate(\n      expected_flagged = total * overall_flagged_pct / 100,\n      overrepresentation_pct = round((flagged / expected_flagged - 1) * 100, 2)\n    ) %>%\n    arrange(desc(overrepresentation_pct))\n  \n  return(group_stats)\n}\n\n# ==============================================================================\n# VEHICLE CHARACTERISTICS COMPARISON\n# ==============================================================================\n\ncompare_flagged_vs_clean <- function(data, flags) {\n  cat("Comparing flagged vs clean vehicle characteristics...\\n")\n  \n  data$is_flagged <- flags\n  \n  comparison_cols <- c("Mass", "TA_CO2", "Electric_range", "Engine_power", \n                       "AER", "Mileage_Tot", "FC_Tot")\n  \n  comparison <- list()\n  \n  for (col in comparison_cols) {\n    if (col %in% names(data) && is.numeric(data[[col]])) {\n      flagged_mean <- mean(data[[col]][flags], na.rm = TRUE)\n      clean_mean <- mean(data[[col]][!flags], na.rm = TRUE)\n      \n      if (!is.na(flagged_mean) && !is.na(clean_mean) && clean_mean != 0) {\n        diff_pct <- round((flagged_mean - clean_mean) / clean_mean * 100, 2)\n        direction <- ifelse(diff_pct > 0, "⬆️ Higher", "⬇️ Lower")\n        \n        comparison[[col]] <- data.frame(\n          characteristic = col,\n          flagged_mean = round(flagged_mean, 2),\n          clean_mean = round(clean_mean, 2),\n          difference_pct = diff_pct,\n          direction = direction,\n          stringsAsFactors = FALSE\n        )\n      }\n    }\n  }\n  \n  if (length(comparison) > 0) {\n    return(bind_rows(comparison))\n  } else {\n    return(data.frame())\n  }\n}\n\n# ==============================================================================\n# REPORT GENERATION\n# ==============================================================================\n\ngenerate_markdown_report <- function(results, output_file) {\n  cat("Generating Markdown report...\\n")\n  \n  md_content <- paste0(\n    "# OBFCM Data Quality Check Report\\n\\n",\n    "**Generated:** ", Sys.time(), "\\n\\n",\n    "## Executive Summary\\n\\n",\n    "- **Total rows:** ", results$summary$total_rows, "\\n",\n    "- **Total columns:** ", results$summary$total_columns, "\\n",\n    "- **Columns checked:** ", results$summary$columns_checked, "\\n",\n    "- **Total vehicles flagged:** ", sum(results$flags$any_flag), "\\n",\n    "- **Clean vehicles:** ", sum(!results$flags$any_flag), "\\n",\n    "- **Vehicles with multiple flags:** ", sum(results$flags$flag_count > 1), "\\n\\n",\n    \n    "## Flagging Summary (8-Step System)\\n\\n",\n    "| Step | Description | Vehicles Flagged | Percentage |\\n",\n    "|------|-------------|------------------|------------|\\n",\n    "| Step 1 | CS Invalid | ", sum(results$flags$step1_cs_invalid), " | ", \n    round(sum(results$flags$step1_cs_invalid) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 2 | Missing RW_EC | ", sum(results$flags$step2_missing_rw_ec), " | ", \n    round(sum(results$flags$step2_missing_rw_ec) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 3 | Missing OEM/Model | ", sum(results$flags$step3_missing_oem_model), " | ", \n    round(sum(results$flags$step3_missing_oem_model) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 4 | RW_EC Zero | ", sum(results$flags$step4_rw_ec_zero), " | ", \n    round(sum(results$flags$step4_rw_ec_zero) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 5 | VFN Issue | ", sum(results$flags$step5_vfn_issue), " | ", \n    round(sum(results$flags$step5_vfn_issue) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 6 | Physics CO2/FC | ", sum(results$flags$step6_physics_co2_fc), " | ", \n    round(sum(results$flags$step6_physics_co2_fc) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 7 | Mileage/FC Inconsistency | ", sum(results$flags$step7_mileage_fc_inconsistency), " | ", \n    round(sum(results$flags$step7_mileage_fc_inconsistency) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 8 | EDS/Energy Violation | ", sum(results$flags$step8_eds_energy_violation), " | ", \n    round(sum(results$flags$step8_eds_energy_violation) / results$summary$total_rows * 100, 2), "% |\\n\\n"\n  )\n  \n  # Add basic quality checks\n  if (!is.null(results$na_check) && nrow(results$na_check) > 0) {\n    md_content <- paste0(md_content,\n      "## 1. Missing Values (NA)\\n\\n",\n      "Top 20 columns with most missing values:\\n\\n",\n      paste(knitr::kable(results$na_check %>% head(20), format = "markdown"), collapse = "\\n"), "\\n\\n"\n    )\n  }\n  \n  if (!is.null(results$zero_check) && nrow(results$zero_check) > 0) {\n    md_content <- paste0(md_content,\n      "## 2. Zero Values\\n\\n",\n      "Top 20 columns with most zeros:\\n\\n",\n      paste(knitr::kable(results$zero_check %>% head(20), format = "markdown"), collapse = "\\n"), "\\n\\n"\n    )\n  }\n  \n  # Add pattern detection results\n  if (!is.null(results$round_numbers_check) && nrow(results$round_numbers_check) > 0) {\n    suspicious_round <- results$round_numbers_check %>% filter(pct_ends_0_or_5 > 50)\n    if (nrow(suspicious_round) > 0) {\n      md_content <- paste0(md_content,\n        "## 3. Round Numbers Pattern Detection\\n\\n",\n        "Columns with >50% round numbers:\\n\\n",\n        paste(knitr::kable(suspicious_round %>% head(20), format = "markdown"), collapse = "\\n"), "\\n\\n"\n      )\n    }\n  }\n  \n  # Add overrepresentation analysis\n  if (!is.null(results$oem_overrepresentation) && nrow(results$oem_overrepresentation) > 0) {\n    md_content <- paste0(md_content,\n      "## 4. Manufacturer Overrepresentation\\n\\n",\n      "Top manufacturers by overrepresentation:\\n\\n",\n      paste(knitr::kable(results$oem_overrepresentation %>% head(20), format = "markdown"), collapse = "\\n"), "\\n\\n"\n    )\n  }\n  \n  # Add vehicle characteristics comparison\n  if (!is.null(results$characteristics_comparison) && nrow(results$characteristics_comparison) > 0) {\n    md_content <- paste0(md_content,\n      "## 5. Flagged vs Clean Vehicle Characteristics\\n\\n",\n      paste(knitr::kable(results$characteristics_comparison, format = "markdown"), collapse = "\\n"), "\\n\\n"\n    )\n  }\n  \n  md_content <- paste0(md_content,\n    "## Notes\\n\\n",\n    "- This report was generated using the OBFCM Data Quality Checker v2.0.0\\n",\n    "- For questions or issues, refer to the documentation\\n",\n    "- Schema changes are automatically detected and reported\\n\\n"\n  )\n  \n  writeLines(md_content, output_file)\n  cat("Markdown report saved to:", output_file, "\\n")\n}\n\ngenerate_html_report <- function(results, output_file) {\n  cat("Generating HTML report...\\n")\n  \n  # Save results to temp file for Rmd to access\n  temp_results <- tempfile(pattern = "results_", fileext = ".rds")\n  saveRDS(results, temp_results)\n  \n  # Create R Markdown content\n  rmd_content <- paste0(\n    "---\\n",\n    "title: 'OBFCM Data Quality Check Report'\\n",\n    "output:\\n",\n    "  html_document:\\n",\n    "    toc: true\\n",\n    "    toc_depth: 3\\n",\n    "    code_folding: hide\\n",\n    "    theme: flatly\\n",\n    "    highlight: tango\\n",\n    "---\\n\\n",\n    "\`\`\`{r setup, include=FALSE}\\n",\n    "knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)\\n",\n    "library(DT)\\n",\n    "library(ggplot2)\\n",\n    "library(dplyr)\\n",\n    "results <- readRDS('", temp_results, "')\\n",\n    "\`\`\`\\n\\n",\n    "# Executive Summary\\n\\n",\n    "**Report Generated:** \`r Sys.time()\`\\n\\n",\n    "- **Total rows:** ", results$summary$total_rows, "\\n",\n    "- **Total columns:** ", results$summary$total_columns, "\\n",\n    "- **Total vehicles flagged:** ", sum(results$flags$any_flag), "\\n",\n    "- **Clean vehicles:** ", sum(!results$flags$any_flag), "\\n",\n    "- **Vehicles with multiple flags:** ", sum(results$flags$flag_count > 1), "\\n\\n",\n    \n    "## Flagging Summary\\n\\n",\n    "\`\`\`{r flag-summary}\\n",\n    "flag_summary <- data.frame(\\n",\n    "  Step = 1:8,\\n",\n    "  Description = c('CS Invalid', 'Missing RW_EC', 'Missing OEM/Model', 'RW_EC Zero',\\n",\n    "                  'VFN Issue', 'Physics CO2/FC', 'Mileage/FC Inconsistency', 'EDS/Energy Violation'),\\n",\n    "  Flagged = c(", paste(sum(results$flags$step1_cs_invalid), sum(results$flags$step2_missing_rw_ec),\n                           sum(results$flags$step3_missing_oem_model), sum(results$flags$step4_rw_ec_zero),\n                           sum(results$flags$step5_vfn_issue), sum(results$flags$step6_physics_co2_fc),\n                           sum(results$flags$step7_mileage_fc_inconsistency), sum(results$flags$step8_eds_energy_violation),\n                           collapse = ", "), "),\\n",\n    "  Percentage = round(c(", paste(sum(results$flags$step1_cs_invalid), sum(results$flags$step2_missing_rw_ec),\n                                    sum(results$flags$step3_missing_oem_model), sum(results$flags$step4_rw_ec_zero),\n                                    sum(results$flags$step5_vfn_issue), sum(results$flags$step6_physics_co2_fc),\n                                    sum(results$flags$step7_mileage_fc_inconsistency), sum(results$flags$step8_eds_energy_violation),\n                                    collapse = ", "), ") / ", results$summary$total_rows, " * 100, 2)\\n",\n    ")\\n",\n    "DT::datatable(flag_summary, options = list(pageLength = 10))\\n",\n    "\`\`\`\\n\\n"\n  )\n  \n  # Add sections for each check\n  if (!is.null(results$na_check) && nrow(results$na_check) > 0) {\n    rmd_content <- paste0(rmd_content,\n      "## Missing Values (NA)\\n\\n",\n      "\`\`\`{r na-table}\\n",\n      "DT::datatable(results$na_check %>% head(50), \\n",\n      "              options = list(pageLength = 25, scrollX = TRUE))\\n",\n      "\`\`\`\\n\\n"\n    )\n  }\n  \n  if (!is.null(results$oem_overrepresentation) && nrow(results$oem_overrepresentation) > 0) {\n    rmd_content <- paste0(rmd_content,\n      "## Manufacturer Overrepresentation\\n\\n",\n      "\`\`\`{r oem-overrep}\\n",\n      "DT::datatable(results$oem_overrepresentation %>% head(30), \\n",\n      "              options = list(pageLength = 25, scrollX = TRUE))\\n",\n      "\`\`\`\\n\\n"\n    )\n  }\n  \n  # Write temporary RMD file\n  temp_rmd <- tempfile(fileext = ".Rmd")\n  writeLines(rmd_content, temp_rmd)\n  \n  # Render to HTML\n  tryCatch({\n    render(temp_rmd, output_file = output_file, quiet = TRUE)\n    cat("HTML report saved to:", output_file, "\\n")\n  }, error = function(e) {\n    cat("Error generating HTML report:", e$message, "\\n")\n    cat("Markdown report is still available.\\n")\n  })\n}\n\n# ==============================================================================\n# INTERACTIVE MENU SYSTEM\n# ==============================================================================\n\nget_column_selection <- function(data) {\n  cat("\\n=== COLUMN SELECTION ===\\n")\n  cat("1. Basic Package (columns used in Paper A analysis)\\n")\n  cat("2. All columns in dataset\\n")\n  cat("3. Specific columns (energy consumption, EDS, CO2)\\n")\n  cat("4. Custom columns (enter column names)\\n")\n  cat("5. Both general quality checks AND domain-specific validation\\n")\n  \n  choice <- readline("Enter your choice (1-5): ")\n  \n  columns <- NULL\n  \n  switch(choice,\n    "1" = {\n      available <- intersect(BASIC_PACKAGE_COLUMNS, names(data))\n      missing <- setdiff(BASIC_PACKAGE_COLUMNS, names(data))\n      \n      if (length(missing) > 0) {\n        cat("\\nNote: Some basic package columns not found in dataset:\\n")\n        cat(paste(missing, collapse = ", "), "\\n")\n        cat("This is normal if the dataset schema has changed.\\n")\n      }\n      \n      columns <- available\n      cat("\\nSelected", length(columns), "columns from Basic Package\\n")\n    },\n    "2" = {\n      columns <- names(data)\n      cat("\\nSelected all", length(columns), "columns\\n")\n    },\n    "3" = {\n      energy_cols <- grep("energy|Energy|ENERGY|EC|RW_EC|TA_EC", names(data), value = TRUE)\n      eds_cols <- grep("EDS|eds|electric.*share|Electric.*Share", names(data), value = TRUE)\n      co2_cols <- grep("CO2|co2|CO_2|co_2", names(data), value = TRUE)\n      columns <- unique(c(energy_cols, eds_cols, co2_cols))\n      cat("\\nSelected", length(columns), "energy/EDS/CO2 related columns\\n")\n    },\n    "4" = {\n      cat("\\nEnter column names (comma-separated):\\n")\n      col_input <- readline("Columns: ")\n      col_names <- strsplit(col_input, ",")[[1]]\n      col_names <- trimws(col_names)\n      columns <- intersect(col_names, names(data))\n      \n      if (length(columns) < length(col_names)) {\n        missing <- setdiff(col_names, names(data))\n        cat("\\nWarning: Some columns not found:", paste(missing, collapse = ", "), "\\n")\n      }\n      \n      cat("\\nSelected", length(columns), "custom columns\\n")\n    },\n    "5" = {\n      columns <- names(data)\n      cat("\\nSelected all columns for comprehensive check\\n")\n    }\n  )\n  \n  return(columns)\n}\n\nget_pattern_selection <- function() {\n  cat("\\n=== PATTERN DETECTION OPTIONS ===\\n")\n  cat("Select which pattern detection methods to use:\\n")\n  cat("1. Round numbers (values ending in 0 or 5)\\n")\n  cat("2. Repetitive sequences\\n")\n  cat("3. Benford's Law violations\\n")\n  cat("4. Manufacturer-specific patterns\\n")\n  cat("5. All of the above\\n")\n  cat("6. None (skip pattern detection)\\n")\n  \n  choice <- readline("Enter your choice (1-6): ")\n  \n  patterns <- list()\n  \n  switch(choice,\n    "1" = { patterns$round_numbers = TRUE },\n    "2" = { patterns$repetitive = TRUE },\n    "3" = { patterns$benford = TRUE },\n    "4" = { patterns$manufacturer = TRUE },\n    "5" = {\n      patterns$round_numbers = TRUE\n      patterns$repetitive = TRUE\n      patterns$benford = TRUE\n      patterns$manufacturer = TRUE\n    },\n    "6" = { patterns$none = TRUE }\n  )\n  \n  return(patterns)\n}\n\n# ==============================================================================\n# MAIN EXECUTION\n# ==============================================================================\n\nmain <- function() {\n  cat(paste0(rep("=", 70), collapse = ""), "\\n")\n  cat("OBFCM Data Quality Checker v2.0.0\\n")\n  cat(paste0(rep("=", 70), collapse = ""), "\\n\\n")\n  \n  # Get input file\n  cat("Enter the path to your OBFCM dataset file:\\n")\n  cat("(Supports CSV, ZIP, 7Z formats)\\n")\n  filepath <- readline("File path: ")\n  \n  if (!file.exists(filepath)) {\n    stop("File not found: ", filepath)\n  }\n  \n  # Load data\n  data <- load_data(filepath)\n  \n  \n  data <- map_column_names(data)\n  \n  \n  # Check for schema changes\n  cat("\\n=== SCHEMA CHECK ===\\n")\n  basic_cols_found <- sum(BASIC_PACKAGE_COLUMNS %in% names(data))\n  basic_cols_total <- length(BASIC_PACKAGE_COLUMNS)\n  \n  if (basic_cols_found < basic_cols_total) {\n    cat("Note: Dataset schema may have changed.\\n")\n    cat("Found", basic_cols_found, "of", basic_cols_total, "expected Basic Package columns.\\n")\n    cat("This is normal for different dataset versions (e.g., 2024 vs 2021-2023).\\n")\n    cat("The tool will adapt automatically to available columns.\\n\\n")\n  }\n  \n  # Ask for VFN whitelist\n  cat("\\nVFN Whitelist (optional):\\n")\n  cat("Enter path to VFN whitelist file (Excel or CSV), or press Enter to skip:\\n")\n  vfn_path <- readline("VFN whitelist path: ")\n  if (vfn_path == "") vfn_path <- NULL\n  \n  # Get column selection\n  columns_to_check <- get_column_selection(data)\n  \n  if (is.null(columns_to_check) || length(columns_to_check) == 0) {\n    stop("No columns selected for checking.")\n  }\n  \n  # Subset data to selected columns (keep all for validation steps)\n  data_subset <- data[, columns_to_check, drop = FALSE]\n  \n  # Get pattern detection selection\n  patterns <- get_pattern_selection()\n  \n  # Run all validation steps\n  cat("\\n=== RUNNING ALL VALIDATION STEPS ===\\n")\n  \n  flags <- data.frame(\n    step1_cs_invalid = check_step1_cs_invalid(data),\n    step2_missing_rw_ec = check_step2_missing_rw_ec(data),\n    step3_missing_oem_model = check_step3_missing_oem_model(data),\n    step4_rw_ec_zero = check_step4_rw_ec_zero(data),\n    step5_vfn_issue = check_step5_vfn_issue(data, vfn_path),\n    step6_physics_co2_fc = check_step6_physics_co2_fc(data),\n    step7_mileage_fc_inconsistency = check_step7_mileage_fc_inconsistency(data),\n    step8_eds_energy_violation = check_step8_eds_energy_violation(data)\n  )\n  \n  # Calculate summary\n  flags$any_flag <- rowSums(flags[, 1:8]) > 0\n  flags$flag_count <- rowSums(flags[, 1:8])\n  \n  # Basic quality checks\n  cat("\\n=== RUNNING BASIC QUALITY CHECKS ===\\n")\n  results <- list()\n  results$summary <- list(\n    total_rows = nrow(data),\n    total_columns = ncol(data),\n    columns_checked = length(columns_to_check)\n  )\n  \n  results$flags <- flags\n  results$na_check <- check_na_columns(data_subset)\n  results$zero_check <- check_zero_columns(data_subset)\n  results$constant_check <- check_constant_columns(data_subset)\n  results$low_cardinality_check <- check_low_cardinality(data_subset)\n  \n  # Pattern detection\n  numeric_cols <- names(data_subset)[sapply(data_subset, is.numeric)]\n  \n  if (!is.null(patterns$round_numbers)) {\n    results$round_numbers_check <- check_round_numbers(data_subset, numeric_cols)\n  }\n  \n  if (!is.null(patterns$repetitive)) {\n    results$repetitive_check <- check_repetitive_sequences(data_subset, numeric_cols)\n  }\n  \n  if (!is.null(patterns$benford)) {\n    results$benford_check <- check_benford_law(data_subset, numeric_cols)\n  }\n  \n  if (!is.null(patterns$manufacturer)) {\n    results$manufacturer_check <- check_manufacturer_patterns(data)\n  }\n  \n  # Overrepresentation analysis\n  if ("OEM" %in% names(data)) {\n    results$oem_overrepresentation <- calculate_overrepresentation(data, flags$any_flag, "OEM")\n  }\n  \n  # Vehicle characteristics comparison\n  results$characteristics_comparison <- compare_flagged_vs_clean(data, flags$any_flag)\n  \n  # Additional domain checks\n  results$additional_domain <- check_additional_domain(data)\n  \n  # Generate reports\n  cat("\\n=== GENERATING REPORTS ===\\n")\n  \n  timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")\n  md_file <- paste0("OBFCM_Quality_Check_", timestamp, ".md")\n  html_file <- paste0("OBFCM_Quality_Check_", timestamp, ".html")\n  \n  generate_markdown_report(results, md_file)\n  generate_html_report(results, html_file)\n  \n  cat("\\n=== COMPLETE ===\\n")\n  cat("Reports generated:\\n")\n  cat("  - Markdown:", md_file, "\\n")\n  cat("  - HTML:", html_file, "\\n")\n  cat("\\nSummary:\\n")\n  cat("  - Total vehicles:", results$summary$total_rows, "\\n")\n  cat("  - Flagged vehicles:", sum(results$flags$any_flag), "\\n")\n  cat("  - Clean vehicles:", sum(!results$flags$any_flag), "\\n")\n  cat("  - Vehicles with multiple flags:", sum(results$flags$flag_count > 1), "\\n")\n}\n\n# Run main function\nif (!interactive()) {\n  main()\n} else {\n  cat("This script should be run from the command line:\\n")\n  cat("Rscript OBFCM_Data_Quality_Checker.R\\n")\n}\n`,
+    windows: `# Windows version of OBFCM Data Quality Checker\n# This script is identical to the Mac/Linux version as R handles both path separators\n\n#!/usr/bin/env Rscript\n# ==============================================================================\n# OBFCM Data Quality Checker - Complete Version\n# ==============================================================================\n# A comprehensive tool for checking OBFCM dataset quality, detecting anomalies,\n# and identifying potential data fabrication patterns.\n#\n# Author: Markos A. Ktistakis\n# Date: 2025-01-XX\n# Version: 2.0.0\n#\n# Features:\n# - All 8 validation steps from Paper A cleaning process\n# - Handles large datasets (10M+ rows) efficiently\n# - Supports zip/7z file input (auto-extracts)\n# - Interactive menu for customization\n# - Advanced pattern detection (percentiles, overrepresentation, etc.)\n# - Generates Markdown and HTML reports\n# - Flexible schema adaptation\n# ==============================================================================\n\n# Load required packages\nrequired_packages <- c(\n  "data.table",      # Fast data processing\n  "dplyr",           # Data manipulation\n  "tidyr",           # Data reshaping (gather/pivot)\n  "readr",           # Fast CSV reading\n  "knitr",           # Report generation\n  "rmarkdown",       # HTML rendering\n  "DT",              # Interactive tables in HTML\n  "ggplot2",         # Visualizations\n  "plotly",          # Interactive plots\n  "stringr",         # String operations\n  "readxl"           # Excel file reading (for VFN whitelist)\n)\n\n# Install missing packages\ninstall_if_missing <- function(packages) {\n  new_packages <- packages[!(packages %in% installed.packages()[,"Package"])]\n  if(length(new_packages)) {\n    cat("Installing missing packages:", paste(new_packages, collapse=", "), "\\n")\n    install.packages(new_packages, repos = "https://cloud.r-project.org")\n  }\n}\n\ninstall_if_missing(required_packages)\n\n# Load libraries\nsuppressPackageStartupMessages({\n  library(data.table)\n  library(dplyr)\n  library(tidyr)\n  library(readr)\n  library(knitr)\n  library(rmarkdown)\n  library(DT)\n  library(ggplot2)\n  library(plotly)\n  library(stringr)\n  if (requireNamespace("readxl", quietly = TRUE)) {\n    library(readxl)\n  }\n})\n\n# ==============================================================================\n# CONFIGURATION\n# ==============================================================================\n\nset.seed(42)\n\n# Basic package columns (from Paper A analysis)\nBASIC_PACKAGE_COLUMNS <- c(\n  # Energy and consumption\n  "RW_EC", "RW_FC", "RW_CO2", "RW_OVC",\n  "TA_EC", "TA_FC", "TA_CO2",\n  # Mileage\n  "Mileage_Tot", "Mileage_CD_Eng_Off", "Mileage_CD_Eng_On", \n  "Mileage_CI", "Mileage_CS",\n  # Fuel consumption\n  "FC_Tot", "FC_CD", "FC_CI", "FC_CS",\n  # Vehicle characteristics\n  "Mass", "AER", "Electric_range", "Battery_capacity", "Engine_power",\n  # Calculated metrics\n  "EDS", "distance_CD", "distance_total", "total_energy_kWh_per_100km",\n  "ice_kWh_per_100km", "electric_kWh_per_100km",\n  # Identifiers\n  "OEM", "Model", "VFN", "Year"\n)\n\n# Domain-specific validation ranges\nDOMAIN_RANGES <- list(\n  EDS = c(0, 100),\n  AER = c(0, 200),\n  Electric_range = c(0, 140),  # Updated: 140 km max for PHEVs\n  Mass = c(500, 5000),\n  RW_EC = c(0, 200),\n  TA_CO2 = c(0, 101),  # Updated: 101 g/km max for PHEVs\n  RW_CO2 = c(0, 800),\n  FC_CS = c(0, 20),\n  Mileage_Tot = c(0, 500000)\n)\n\n# ==============================================================================\n# UTILITY FUNCTIONS\n# ==============================================================================\n\nis_compressed <- function(filepath) {\n  ext <- tolower(tools::file_ext(filepath))\n  return(ext %in% c("zip", "7z", "gz", "bz2"))\n}\n\nextract_file <- function(filepath, output_dir = tempdir()) {\n  ext <- tolower(tools::file_ext(filepath))\n  \n  if (ext == "zip") {\n    unzip(filepath, exdir = output_dir)\n    csv_files <- list.files(output_dir, pattern = "\\\\.csv$", full.names = TRUE, recursive = TRUE)\n    if (length(csv_files) > 0) {\n      return(csv_files[1])\n    }\n  } else if (ext == "7z") {\n    if (system("which 7z", ignore.stdout = TRUE, ignore.stderr = TRUE) == 0) {\n      system(paste("7z x", filepath, "-o", output_dir, "-y"), ignore.stdout = TRUE)\n      csv_files <- list.files(output_dir, pattern = "\\\\.csv$", full.names = TRUE, recursive = TRUE)\n      if (length(csv_files) > 0) {\n        return(csv_files[1])\n      }\n    } else {\n      stop("7z extraction requires 7z command-line tool. Please install 7-Zip or extract manually.")\n    }\n  }\n  \n  return(NULL)\n}\n\nload_data <- function(filepath, nrows = NULL) {\n  cat("Loading data from:", filepath, "\\n")\n  \n  if (is_compressed(filepath)) {\n    cat("Detected compressed file. Extracting...\\n")\n    extracted_file <- extract_file(filepath)\n    if (is.null(extracted_file)) {\n      stop("Could not extract compressed file. Please extract manually.")\n    }\n    filepath <- extracted_file\n    cat("Extracted to:", filepath, "\\n")\n  }\n  \n  cat("Reading data (this may take a few minutes for large files)...\\n")\n  \n  tryCatch({\n    if (!is.null(nrows)) {\n      data <- fread(filepath, nrows = nrows, showProgress = TRUE)\n    } else {\n      data <- fread(filepath, showProgress = TRUE)\n    }\n    cat("Successfully loaded", nrow(data), "rows and", ncol(data), "columns\\n")\n    return(data)\n  }, error = function(e) {\n    cat("data.table failed, trying readr...\\n")\n    if (!is.null(nrows)) {\n      data <- read_csv(filepath, n_max = nrows, show_col_types = FALSE, progress = TRUE)\n    } else {\n      data <- read_csv(filepath, show_col_types = FALSE, progress = TRUE)\n    }\n    cat("Successfully loaded", nrow(data), "rows and", ncol(data), "columns\\n")\n    return(data)\n  })\n}\n\n\n# ==============================================================================\n# COLUMN NAME MAPPING\n# ==============================================================================\n\n# Map raw OBFCM column names to standard names\nmap_column_names <- function(data) {\n  cat("Mapping column names to standard format...\\n")\n  \n  # Column mapping dictionary\n  mappings <- list(\n    # Mileage columns\n    "Mileage_Tot" = c("OBFCM_TotLifetimeDist_km", "Mileage_Tot", "distance_total"),\n    "Mileage_CD_Eng_Off" = c("OBFCM_ChargeDeplOprEngineOff_km", "Mileage_CD_Eng_Off", "distance_CD"),\n    "Mileage_CD_Eng_On" = c("OBFCM_ChargeDeplOprEngineOn_km", "Mileage_CD_Eng_On"),\n    "Mileage_CI" = c("OBFCM_ChargeIncrOpr_km", "Mileage_CI"),\n    "Mileage_CS" = c("OBFCM_ChargeSustOpr_km", "Mileage_CS"),\n    \n    # Fuel consumption\n    "FC_Tot" = c("OBFCM_TotLifetimeFuel_l", "FC_Tot"),\n    "FC_CD" = c("OBFCM_ChargeDeplFuel_l", "FC_CD"),\n    "FC_CI" = c("OBFCM_ChargeIncrFuel_l", "FC_CI"),\n    "FC_CS" = c("OBFCM_ChargeSustFuel_l", "FC_CS"),\n    \n    # Energy and CO2\n    "RW_EC" = c("RW_EC", "OBFCM_RW_EC"),\n    "RW_FC" = c("RW_FC", "OBFCM_RW_FC"),\n    "RW_CO2" = c("RW_CO2", "OBFCM_RW_CO2"),\n    "TA_EC" = c("TA_EC", "OBFCM_TA_EC"),\n    "TA_FC" = c("TA_FC", "OBFCM_TA_FC"),\n    "TA_CO2" = c("TA_CO2", "OBFCM_TA_CO2"),\n    \n    # Identifiers\n    "OEM" = c("OEM", "MS_OEM", "key-oem"),\n    "Model" = c("Model", "Modelup", "Model_name", "key-model"),\n    "VFN" = c("VFN", "MS_VFN", "VFN_corr"),\n    "Year" = c("Year", "OBFCM_ReportingPeriod", "RegistrationYear")\n  )\n  \n  # Find and create mapped columns\n  for (standard_name in names(mappings)) {\n    possible_names <- mappings[[standard_name]]\n    found <- FALSE\n    for (old_name in possible_names) {\n      if (old_name %in% names(data)) {\n        if (!standard_name %in% names(data) || standard_name != old_name) {\n          data[[standard_name]] <- data[[old_name]]\n          if (standard_name != old_name) {\n            cat("Mapped:", old_name, "->", standard_name, "\\n")\n          }\n        }\n        found <- TRUE\n        break\n      }\n    }\n  }\n  \n  return(data)\n}\n\n# ==============================================================================\n# VALIDATION STEP 1: CS Invalid\n# ==============================================================================\n\n\ncheck_step1_cs_invalid <- function(data) {\n  cat("Step 1: Checking CS (Charge-Sustaining) Invalid...\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # Check Mileage_CS (may need calculation if not present)\n  if (!"Mileage_CS" %in% names(data)) {\n    # Try to calculate from other columns\n    if ("Mileage_Tot" %in% names(data) && \n        "Mileage_CD_Eng_Off" %in% names(data) &&\n        "Mileage_CD_Eng_On" %in% names(data) &&\n        "Mileage_CI" %in% names(data)) {\n      data$Mileage_CS <- data$Mileage_Tot - \n                         data$Mileage_CD_Eng_Off - \n                         data$Mileage_CD_Eng_On - \n                         data$Mileage_CI\n      cat("Calculated Mileage_CS from other mileage columns\n")\n    }\n  }\n  \n  if ("Mileage_CS" %in% names(data)) {\n    flags <- flags | (data$Mileage_CS < 0 | is.na(data$Mileage_CS))\n  }\n  \n  # Check FC_CS (may need calculation if not present)\n  if (!"FC_CS" %in% names(data)) {\n    # Try to calculate from other columns\n    if ("FC_Tot" %in% names(data) && \n        "FC_CD" %in% names(data) &&\n        "FC_CI" %in% names(data)) {\n      data$FC_CS <- data$FC_Tot - data$FC_CD - data$FC_CI\n      cat("Calculated FC_CS from other fuel consumption columns\n")\n    }\n  }\n  \n  if ("FC_CS" %in% names(data)) {\n    flags <- flags | (data$FC_CS < 0 | is.na(data$FC_CS))\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 2: Missing RW_EC\n# ==============================================================================\n\ncheck_step2_missing_rw_ec <- function(data) {\n  cat("Step 2: Checking Missing RW_EC...\\n")\n  \n  if ("RW_EC" %in% names(data)) {\n    return(is.na(data$RW_EC))\n  } else {\n    cat("Warning: RW_EC column not found. Skipping Step 2.\\n")\n    return(rep(FALSE, nrow(data)))\n  }\n}\n\n# ==============================================================================\n# VALIDATION STEP 3: Missing OEM/Model\n# ==============================================================================\n\ncheck_step3_missing_oem_model <- function(data) {\n  cat("Step 3: Checking Missing OEM/Model...\\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # Check OEM\n  if ("OEM" %in% names(data)) {\n    flags <- flags | (is.na(data$OEM) | data$OEM == "")\n  }\n  \n  # Check Model (try common model column names)\n  model_cols <- c("Model", "Modelup", "Model_name")\n  for (col in model_cols) {\n    if (col %in% names(data)) {\n      flags <- flags | (is.na(data[[col]]) | data[[col]] == "")\n      break\n    }\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 4: RW_EC Zero Reporting (Percentile-based)\n# ==============================================================================\n\ncheck_step4_rw_ec_zero <- function(data) {\n  cat("Step 4: Checking RW_EC Zero Reporting (percentile-based)...\\n")\n  \n  if (!"RW_EC" %in% names(data)) {\n    cat("Warning: RW_EC column not found. Skipping Step 4.\\n")\n    return(rep(FALSE, nrow(data)))\n  }\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # Get grouping columns\n  group_cols <- c()\n  if ("OEM" %in% names(data)) group_cols <- c(group_cols, "OEM")\n  model_cols <- c("Model", "Modelup", "Model_name")\n  for (col in model_cols) {\n    if (col %in% names(data)) {\n      group_cols <- c(group_cols, col)\n      break\n    }\n  }\n  if ("Year" %in% names(data)) group_cols <- c(group_cols, "Year")\n  \n  if (length(group_cols) > 0) {\n    # Case A: Systematic zero reporting (p95 == 0)\n    data_grouped <- data %>%\n      group_by(across(all_of(group_cols))) %>%\n      summarise(\n        p95_rw_ec = quantile(RW_EC, 0.95, na.rm = TRUE),\n        .groups = "drop"\n      )\n    \n    # Merge back and flag\n    data <- data %>%\n      left_join(data_grouped, by = group_cols)\n    \n    flags <- flags | (!is.na(data$p95_rw_ec) & data$p95_rw_ec == 0)\n    \n    # Case B: Partial zero reporting (>30% zeros)\n    data_grouped2 <- data %>%\n      group_by(across(all_of(group_cols))) %>%\n      summarise(\n        total = n(),\n        zeros = sum(RW_EC == 0, na.rm = TRUE),\n        share_zero = zeros / total,\n        .groups = "drop"\n      )\n    \n    data <- data %>%\n      left_join(data_grouped2, by = group_cols)\n    \n    flags <- flags | (!is.na(data$share_zero) & data$share_zero > 0.30)\n  } else {\n    # Fallback: simple zero check\n    flags <- flags | (data$RW_EC == 0)\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 5: VFN Issue (Optional)\n# ==============================================================================\n\ncheck_step5_vfn_issue <- function(data, vfn_whitelist_path = NULL) {\n  cat("Step 5: Checking VFN Issues...\\n")\n  \n  if (!"VFN" %in% names(data)) {\n    cat("Warning: VFN column not found. Skipping Step 5.\\n")\n    return(rep(FALSE, nrow(data)))\n  }\n  \n  if (is.null(vfn_whitelist_path) || !file.exists(vfn_whitelist_path)) {\n    cat("Note: VFN whitelist file not provided or not found.\\n")\n    cat("VFN validation will be skipped. This is normal if the whitelist file is not available.\\n")\n    return(rep(FALSE, nrow(data)))\n  }\n  \n  # Load whitelist\n  tryCatch({\n    if (tools::file_ext(vfn_whitelist_path) == "xlsx") {\n      if (requireNamespace("readxl", quietly = TRUE)) {\n        vfn_whitelist <- readxl::read_excel(vfn_whitelist_path)\n      } else {\n        cat("Warning: readxl package not available. Cannot read Excel file.\\n")\n        return(rep(FALSE, nrow(data)))\n      }\n    } else {\n      vfn_whitelist <- read_csv(vfn_whitelist_path, show_col_types = FALSE)\n    }\n    \n    # Get VFN column name from whitelist\n    vfn_col <- names(vfn_whitelist)[1]  # Assume first column is VFN\n    \n    valid_vfns <- unique(vfn_whitelist[[vfn_col]])\n    flags <- !(data$VFN %in% valid_vfns) & !is.na(data$VFN)\n    \n    cat("VFN whitelist loaded:", length(valid_vfns), "valid VFNs\\n")\n    return(flags)\n  }, error = function(e) {\n    cat("Error loading VFN whitelist:", e$message, "\\n")\n    return(rep(FALSE, nrow(data)))\n  })\n}\n\n# ==============================================================================\n# VALIDATION STEP 6: Physics-based CO2/FC\n# ==============================================================================\n\ncheck_step6_physics_co2_fc <- function(data) {\n  cat("Step 6: Checking Physics-based CO2/FC...\\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # Calculate FCgap_perc if not present\n  if (!"FCgap_perc" %in% names(data)) {\n    if ("RW_FC" %in% names(data) && "TA_FC" %in% names(data)) {\n      data$FCgap_perc <<- ((data$RW_FC - data$TA_FC) / data$TA_FC) * 100\n    }\n  }\n  \n  # Check FCgap_perc > 1800\n  if ("FCgap_perc" %in% names(data)) {\n    flags <- flags | (!is.na(data$FCgap_perc) & data$FCgap_perc > 1800)\n  }\n  \n  # Check TA_CO2 >= 190\n  if ("TA_CO2" %in% names(data)) {\n    flags <- flags | (!is.na(data$TA_CO2) & data$TA_CO2 >= 190)\n  }\n  \n  # Check RW_CO2 > 800\n  if ("RW_CO2" %in% names(data)) {\n    flags <- flags | (!is.na(data$RW_CO2) & data$RW_CO2 > 800)\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 7: Mileage/FC Inconsistencies\n# ==============================================================================\n\ncheck_step7_mileage_fc_inconsistency <- function(data) {\n  cat("Step 7: Checking Mileage/FC Inconsistencies...\\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # CD engine-on: mileage=0, FC>0.1\n  if ("Mileage_CD_Eng_On" %in% names(data) && "FC_CD" %in% names(data)) {\n    flags <- flags | (!is.na(data$Mileage_CD_Eng_On) & !is.na(data$FC_CD) &\n                      data$Mileage_CD_Eng_On == 0 & data$FC_CD > 0.1)\n  }\n  \n  # CS zero distance: mileage=0, FC>0.1\n  if ("Mileage_CS" %in% names(data) && "FC_CS" %in% names(data)) {\n    flags <- flags | (!is.na(data$Mileage_CS) & !is.na(data$FC_CS) &\n                      data$Mileage_CS == 0 & data$FC_CS > 0.1)\n  }\n  \n  # CI zero distance: mileage=0, FC>3\n  if ("Mileage_CI" %in% names(data) && "FC_CI" %in% names(data)) {\n    flags <- flags | (!is.na(data$Mileage_CI) & !is.na(data$FC_CI) &\n                      data$Mileage_CI == 0 & data$FC_CI > 3)\n  }\n  \n  # CS large distance, zero fuel: mileage>100, FC=0\n  if ("Mileage_CS" %in% names(data) && "FC_CS" %in% names(data)) {\n    flags <- flags | (!is.na(data$Mileage_CS) & !is.na(data$FC_CS) &\n                      data$Mileage_CS > 100 & data$FC_CS == 0)\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# VALIDATION STEP 8: EDS/Energy Violations\n# ==============================================================================\n\ncheck_step8_eds_energy_violation <- function(data) {\n  cat("Step 8: Checking EDS/Energy Violations...\\n")\n  \n  flags <- rep(FALSE, nrow(data))\n  \n  # EDS outside 0-100%\n  if ("EDS" %in% names(data)) {\n    flags <- flags | (!is.na(data$EDS) & (data$EDS < 0 | data$EDS > 100))\n  }\n  \n  # Negative energy values\n  energy_cols <- c("RW_EC", "TA_EC", "total_energy_kWh_per_100km", \n                   "ice_kWh_per_100km", "electric_kWh_per_100km")\n  for (col in energy_cols) {\n    if (col %in% names(data)) {\n      flags <- flags | (!is.na(data[[col]]) & data[[col]] < 0)\n    }\n  }\n  \n  # Energy accounting consistency (if both ICE and electric exist)\n  if ("ice_kWh_per_100km" %in% names(data) && \n      "electric_kWh_per_100km" %in% names(data) &&\n      "total_energy_kWh_per_100km" %in% names(data)) {\n    calculated_total <- data$ice_kWh_per_100km + data$electric_kWh_per_100km\n    flags <- flags | (!is.na(calculated_total) & !is.na(data$total_energy_kWh_per_100km) &\n                      abs(calculated_total - data$total_energy_kWh_per_100km) > 0.1)\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# ADDITIONAL DOMAIN CHECKS\n# ==============================================================================\n\ncheck_additional_domain <- function(data) {\n  cat("Checking Additional Domain-Specific Issues...\\n")\n  \n  flags <- list()\n  \n  # Electric_range > 140 km\n  if ("Electric_range" %in% names(data)) {\n    flags$electric_range_high <- !is.na(data$Electric_range) & data$Electric_range > 140\n  }\n  \n  # TA_CO2 > 101 g/km (likely non-PHEV)\n  if ("TA_CO2" %in% names(data)) {\n    flags$ta_co2_high <- !is.na(data$TA_CO2) & data$TA_CO2 > 101\n  }\n  \n  return(flags)\n}\n\n# ==============================================================================\n# BASIC DATA QUALITY CHECKS\n# ==============================================================================\n\ncheck_na_columns <- function(data) {\n  cat("Checking for NA columns...\\n")\n  na_summary <- data %>%\n    summarise_all(~ sum(is.na(.))) %>%\n    pivot_longer(everything(), names_to = "column", values_to = "na_count") %>%\n    mutate(na_percentage = round(na_count / nrow(data) * 100, 2)) %>%\n    arrange(desc(na_count))\n  \n  return(na_summary)\n}\n\ncheck_zero_columns <- function(data) {\n  cat("Checking for zero columns...\\n")\n  numeric_cols <- sapply(data, is.numeric)\n  zero_summary <- data[, numeric_cols, drop = FALSE] %>%\n    summarise_all(~ sum(. == 0, na.rm = TRUE)) %>%\n    pivot_longer(everything(), names_to = "column", values_to = "zero_count") %>%\n    mutate(zero_percentage = round(zero_count / nrow(data) * 100, 2)) %>%\n    arrange(desc(zero_count))\n  \n  return(zero_summary)\n}\n\ncheck_constant_columns <- function(data) {\n  cat("Checking for constant columns...\\n")\n  constant_cols <- sapply(data, function(x) {\n    if (is.numeric(x)) {\n      x_clean <- x[!is.na(x)]\n      if (length(x_clean) > 0) {\n        return(length(unique(x_clean)) == 1)\n      }\n    } else {\n      x_clean <- x[!is.na(x)]\n      if (length(x_clean) > 0) {\n        return(length(unique(x_clean)) == 1)\n      }\n    }\n    return(FALSE)\n  })\n  \n  constant_summary <- data.frame(\n    column = names(constant_cols),\n    is_constant = constant_cols,\n    stringsAsFactors = FALSE\n  ) %>%\n    filter(is_constant == TRUE)\n  \n  return(constant_summary)\n}\n\ncheck_low_cardinality <- function(data, min_expected_values = 5) {\n  cat("Checking for low cardinality columns...\\n")\n  \n  # Known binary columns (should be excluded)\n  known_binary <- c("Powertrain", "Fuel_type", "Is_PHEV")\n  \n  cardinality_summary <- sapply(data, function(x) {\n    x_clean <- x[!is.na(x)]\n    if (length(x_clean) > 0) {\n      return(length(unique(x_clean)))\n    }\n    return(0)\n  })\n  \n  low_cardinality <- data.frame(\n    column = names(cardinality_summary),\n    unique_values = cardinality_summary,\n    stringsAsFactors = FALSE\n  ) %>%\n    filter(\n      unique_values < min_expected_values,\n      unique_values > 1,  # Exclude constants (handled separately)\n      !column %in% known_binary  # Exclude known binary columns\n    ) %>%\n    arrange(unique_values)\n  \n  return(low_cardinality)\n}\n\n# ==============================================================================\n# PATTERN DETECTION FUNCTIONS\n# ==============================================================================\n\ncheck_round_numbers <- function(data, columns = NULL) {\n  cat("Checking for round numbers pattern...\\n")\n  \n  if (is.null(columns)) {\n    columns <- names(data)[sapply(data, is.numeric)]\n  }\n  \n  round_summary <- list()\n  \n  for (col in columns) {\n    if (col %in% names(data) && is.numeric(data[[col]])) {\n      values <- data[[col]][!is.na(data[[col]]) & data[[col]] != 0]\n      \n      if (length(values) > 100) {\n        ends_in_0_or_5 <- sum(values %% 10 %in% c(0, 5), na.rm = TRUE)\n        pct_round <- round(ends_in_0_or_5 / length(values) * 100, 2)\n        \n        multiples_of_10 <- sum(values %% 10 == 0, na.rm = TRUE)\n        pct_mult10 <- round(multiples_of_10 / length(values) * 100, 2)\n        \n        multiples_of_5 <- sum(values %% 5 == 0, na.rm = TRUE)\n        pct_mult5 <- round(multiples_of_5 / length(values) * 100, 2)\n        \n        round_summary[[col]] <- data.frame(\n          column = col,\n          total_values = length(values),\n          ends_0_or_5 = ends_in_0_or_5,\n          pct_ends_0_or_5 = pct_round,\n          multiples_of_10 = multiples_of_10,\n          pct_mult10 = pct_mult10,\n          multiples_of_5 = multiples_of_5,\n          pct_mult5 = pct_mult5,\n          stringsAsFactors = FALSE\n        )\n      }\n    }\n  }\n  \n  if (length(round_summary) > 0) {\n    return(bind_rows(round_summary))\n  } else {\n    return(data.frame())\n  }\n}\n\ncheck_repetitive_sequences <- function(data, columns = NULL) {\n  cat("Checking for repetitive sequences...\\n")\n  \n  if (is.null(columns)) {\n    columns <- names(data)[sapply(data, is.numeric)]\n  }\n  \n  sequence_summary <- list()\n  \n  for (col in columns) {\n    if (col %in% names(data) && is.numeric(data[[col]])) {\n      values <- data[[col]][!is.na(data[[col]])]\n      \n      if (length(values) > 1000) {\n        # Sample for large datasets\n        if (length(values) > 10000) {\n          values <- sample(values, 10000)\n        }\n        \n        # Check for exact duplicates in sequence\n        duplicates <- sum(duplicated(values))\n        pct_duplicates <- round(duplicates / length(values) * 100, 2)\n        \n        # Check for patterns (e.g., same value repeated many times)\n        value_counts <- table(values)\n        max_repetition <- max(value_counts)\n        pct_max_repetition <- round(max_repetition / length(values) * 100, 2)\n        \n        sequence_summary[[col]] <- data.frame(\n          column = col,\n          total_values = length(values),\n          duplicate_count = duplicates,\n          pct_duplicates = pct_duplicates,\n          max_repetition = max_repetition,\n          pct_max_repetition = pct_max_repetition,\n          stringsAsFactors = FALSE\n        )\n      }\n    }\n  }\n  \n  if (length(sequence_summary) > 0) {\n    return(bind_rows(sequence_summary))\n  } else {\n    return(data.frame())\n  }\n}\n\ncheck_benford_law <- function(data, columns = NULL) {\n  cat("Checking Benford's Law violations...\\n")\n  \n  if (is.null(columns)) {\n    columns <- names(data)[sapply(data, is.numeric)]\n  }\n  \n  benford_summary <- list()\n  \n  for (col in columns) {\n    if (col %in% names(data) && is.numeric(data[[col]])) {\n      values <- data[[col]][!is.na(data[[col]]) & data[[col]] > 0]\n      \n      if (length(values) > 1000) {\n        # Get first digit\n        first_digits <- as.numeric(substr(abs(values), 1, 1))\n        first_digits <- first_digits[first_digits > 0 & first_digits < 10]\n        \n        if (length(first_digits) > 100) {\n          # Expected Benford distribution\n          benford_expected <- log10(1 + 1/1:9)\n          \n          # Observed distribution\n          observed <- table(factor(first_digits, levels = 1:9))\n          observed_pct <- as.numeric(observed) / sum(observed)\n          \n          # Chi-square test\n          chi_sq <- sum((observed - sum(observed) * benford_expected)^2 / (sum(observed) * benford_expected))\n          p_value <- 1 - pchisq(chi_sq, df = 8)\n          \n          # Maximum deviation\n          max_deviation <- max(abs(observed_pct - benford_expected))\n          \n          benford_summary[[col]] <- data.frame(\n            column = col,\n            total_values = length(first_digits),\n            chi_square = round(chi_sq, 2),\n            p_value = round(p_value, 4),\n            max_deviation = round(max_deviation, 4),\n            violates_benford = p_value < 0.05,\n            stringsAsFactors = FALSE\n          )\n        }\n      }\n    }\n  }\n  \n  if (length(benford_summary) > 0) {\n    return(bind_rows(benford_summary))\n  } else {\n    return(data.frame())\n  }\n}\n\ncheck_manufacturer_patterns <- function(data, manufacturer_col = "OEM") {\n  cat("Checking manufacturer-specific patterns...\\n")\n  \n  if (!manufacturer_col %in% names(data)) {\n    cat("Warning: Manufacturer column not found. Skipping manufacturer-specific checks.\\n")\n    return(data.frame())\n  }\n  \n  manufacturers <- unique(data[[manufacturer_col]])\n  manufacturers <- manufacturers[!is.na(manufacturers)]\n  \n  pattern_summary <- list()\n  \n  for (mfr in manufacturers[1:min(10, length(manufacturers))]) {  # Limit to first 10 for performance\n    mfr_data <- data[data[[manufacturer_col]] == mfr, ]\n    \n    if (nrow(mfr_data) > 100) {\n      # Check numeric columns for patterns\n      numeric_cols <- names(mfr_data)[sapply(mfr_data, is.numeric)]\n      \n      for (col in numeric_cols[1:min(5, length(numeric_cols))]) {  # Limit columns\n        values <- mfr_data[[col]][!is.na(mfr_data[[col]])]\n        \n        if (length(values) > 50) {\n          # Check for low variance (suspicious uniformity)\n          cv <- sd(values, na.rm = TRUE) / mean(values, na.rm = TRUE)\n          \n          # Check for round numbers\n          round_pct <- sum(values %% 10 == 0, na.rm = TRUE) / length(values) * 100\n          \n          pattern_summary[[paste(mfr, col, sep = "_")]] <- data.frame(\n            manufacturer = mfr,\n            column = col,\n            n_vehicles = nrow(mfr_data),\n            coefficient_of_variation = round(cv, 4),\n            pct_round_numbers = round(round_pct, 2),\n            suspicious = cv < 0.01 | round_pct > 80,\n            stringsAsFactors = FALSE\n          )\n        }\n      }\n    }\n  }\n  \n  if (length(pattern_summary) > 0) {\n    return(bind_rows(pattern_summary))\n  } else {\n    return(data.frame())\n  }\n}\n\n# ==============================================================================\n# OVERREPRESENTATION ANALYSIS\n# ==============================================================================\n\ncalculate_overrepresentation <- function(data, flags, group_col) {\n  cat("Calculating overrepresentation by", group_col, "...\\n")\n  \n  if (!group_col %in% names(data)) {\n    return(data.frame())\n  }\n  \n  # Calculate flagged vs clean by group\n  data$is_flagged <- flags\n  \n  group_stats <- data %>%\n    group_by(across(all_of(group_col))) %>%\n    summarise(\n      total = n(),\n      flagged = sum(is_flagged, na.rm = TRUE),\n      clean = total - flagged,\n      .groups = "drop"\n    ) %>%\n    filter(total > 0) %>%\n    mutate(\n      flagged_pct = round(flagged / total * 100, 2),\n      clean_pct = round(clean / total * 100, 2)\n    )\n  \n  # Calculate overall rates\n  overall_flagged_pct <- sum(flags, na.rm = TRUE) / length(flags) * 100\n  \n  # Calculate overrepresentation\n  group_stats <- group_stats %>%\n    mutate(\n      expected_flagged = total * overall_flagged_pct / 100,\n      overrepresentation_pct = round((flagged / expected_flagged - 1) * 100, 2)\n    ) %>%\n    arrange(desc(overrepresentation_pct))\n  \n  return(group_stats)\n}\n\n# ==============================================================================\n# VEHICLE CHARACTERISTICS COMPARISON\n# ==============================================================================\n\ncompare_flagged_vs_clean <- function(data, flags) {\n  cat("Comparing flagged vs clean vehicle characteristics...\\n")\n  \n  data$is_flagged <- flags\n  \n  comparison_cols <- c("Mass", "TA_CO2", "Electric_range", "Engine_power", \n                       "AER", "Mileage_Tot", "FC_Tot")\n  \n  comparison <- list()\n  \n  for (col in comparison_cols) {\n    if (col %in% names(data) && is.numeric(data[[col]])) {\n      flagged_mean <- mean(data[[col]][flags], na.rm = TRUE)\n      clean_mean <- mean(data[[col]][!flags], na.rm = TRUE)\n      \n      if (!is.na(flagged_mean) && !is.na(clean_mean) && clean_mean != 0) {\n        diff_pct <- round((flagged_mean - clean_mean) / clean_mean * 100, 2)\n        direction <- ifelse(diff_pct > 0, "⬆️ Higher", "⬇️ Lower")\n        \n        comparison[[col]] <- data.frame(\n          characteristic = col,\n          flagged_mean = round(flagged_mean, 2),\n          clean_mean = round(clean_mean, 2),\n          difference_pct = diff_pct,\n          direction = direction,\n          stringsAsFactors = FALSE\n        )\n      }\n    }\n  }\n  \n  if (length(comparison) > 0) {\n    return(bind_rows(comparison))\n  } else {\n    return(data.frame())\n  }\n}\n\n# ==============================================================================\n# REPORT GENERATION\n# ==============================================================================\n\ngenerate_markdown_report <- function(results, output_file) {\n  cat("Generating Markdown report...\\n")\n  \n  md_content <- paste0(\n    "# OBFCM Data Quality Check Report\\n\\n",\n    "**Generated:** ", Sys.time(), "\\n\\n",\n    "## Executive Summary\\n\\n",\n    "- **Total rows:** ", results$summary$total_rows, "\\n",\n    "- **Total columns:** ", results$summary$total_columns, "\\n",\n    "- **Columns checked:** ", results$summary$columns_checked, "\\n",\n    "- **Total vehicles flagged:** ", sum(results$flags$any_flag), "\\n",\n    "- **Clean vehicles:** ", sum(!results$flags$any_flag), "\\n",\n    "- **Vehicles with multiple flags:** ", sum(results$flags$flag_count > 1), "\\n\\n",\n    \n    "## Flagging Summary (8-Step System)\\n\\n",\n    "| Step | Description | Vehicles Flagged | Percentage |\\n",\n    "|------|-------------|------------------|------------|\\n",\n    "| Step 1 | CS Invalid | ", sum(results$flags$step1_cs_invalid), " | ", \n    round(sum(results$flags$step1_cs_invalid) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 2 | Missing RW_EC | ", sum(results$flags$step2_missing_rw_ec), " | ", \n    round(sum(results$flags$step2_missing_rw_ec) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 3 | Missing OEM/Model | ", sum(results$flags$step3_missing_oem_model), " | ", \n    round(sum(results$flags$step3_missing_oem_model) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 4 | RW_EC Zero | ", sum(results$flags$step4_rw_ec_zero), " | ", \n    round(sum(results$flags$step4_rw_ec_zero) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 5 | VFN Issue | ", sum(results$flags$step5_vfn_issue), " | ", \n    round(sum(results$flags$step5_vfn_issue) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 6 | Physics CO2/FC | ", sum(results$flags$step6_physics_co2_fc), " | ", \n    round(sum(results$flags$step6_physics_co2_fc) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 7 | Mileage/FC Inconsistency | ", sum(results$flags$step7_mileage_fc_inconsistency), " | ", \n    round(sum(results$flags$step7_mileage_fc_inconsistency) / results$summary$total_rows * 100, 2), "% |\\n",\n    "| Step 8 | EDS/Energy Violation | ", sum(results$flags$step8_eds_energy_violation), " | ", \n    round(sum(results$flags$step8_eds_energy_violation) / results$summary$total_rows * 100, 2), "% |\\n\\n"\n  )\n  \n  # Add basic quality checks\n  if (!is.null(results$na_check) && nrow(results$na_check) > 0) {\n    md_content <- paste0(md_content,\n      "## 1. Missing Values (NA)\\n\\n",\n      "Top 20 columns with most missing values:\\n\\n",\n      paste(knitr::kable(results$na_check %>% head(20), format = "markdown"), collapse = "\\n"), "\\n\\n"\n    )\n  }\n  \n  if (!is.null(results$zero_check) && nrow(results$zero_check) > 0) {\n    md_content <- paste0(md_content,\n      "## 2. Zero Values\\n\\n",\n      "Top 20 columns with most zeros:\\n\\n",\n      paste(knitr::kable(results$zero_check %>% head(20), format = "markdown"), collapse = "\\n"), "\\n\\n"\n    )\n  }\n  \n  # Add pattern detection results\n  if (!is.null(results$round_numbers_check) && nrow(results$round_numbers_check) > 0) {\n    suspicious_round <- results$round_numbers_check %>% filter(pct_ends_0_or_5 > 50)\n    if (nrow(suspicious_round) > 0) {\n      md_content <- paste0(md_content,\n        "## 3. Round Numbers Pattern Detection\\n\\n",\n        "Columns with >50% round numbers:\\n\\n",\n        paste(knitr::kable(suspicious_round %>% head(20), format = "markdown"), collapse = "\\n"), "\\n\\n"\n      )\n    }\n  }\n  \n  # Add overrepresentation analysis\n  if (!is.null(results$oem_overrepresentation) && nrow(results$oem_overrepresentation) > 0) {\n    md_content <- paste0(md_content,\n      "## 4. Manufacturer Overrepresentation\\n\\n",\n      "Top manufacturers by overrepresentation:\\n\\n",\n      paste(knitr::kable(results$oem_overrepresentation %>% head(20), format = "markdown"), collapse = "\\n"), "\\n\\n"\n    )\n  }\n  \n  # Add vehicle characteristics comparison\n  if (!is.null(results$characteristics_comparison) && nrow(results$characteristics_comparison) > 0) {\n    md_content <- paste0(md_content,\n      "## 5. Flagged vs Clean Vehicle Characteristics\\n\\n",\n      paste(knitr::kable(results$characteristics_comparison, format = "markdown"), collapse = "\\n"), "\\n\\n"\n    )\n  }\n  \n  md_content <- paste0(md_content,\n    "## Notes\\n\\n",\n    "- This report was generated using the OBFCM Data Quality Checker v2.0.0\\n",\n    "- For questions or issues, refer to the documentation\\n",\n    "- Schema changes are automatically detected and reported\\n\\n"\n  )\n  \n  writeLines(md_content, output_file)\n  cat("Markdown report saved to:", output_file, "\\n")\n}\n\ngenerate_html_report <- function(results, output_file) {\n  cat("Generating HTML report...\\n")\n  \n  # Save results to temp file for Rmd to access\n  temp_results <- tempfile(pattern = "results_", fileext = ".rds")\n  saveRDS(results, temp_results)\n  \n  # Create R Markdown content\n  rmd_content <- paste0(\n    "---\\n",\n    "title: 'OBFCM Data Quality Check Report'\\n",\n    "output:\\n",\n    "  html_document:\\n",\n    "    toc: true\\n",\n    "    toc_depth: 3\\n",\n    "    code_folding: hide\\n",\n    "    theme: flatly\\n",\n    "    highlight: tango\\n",\n    "---\\n\\n",\n    "\`\`\`{r setup, include=FALSE}\\n",\n    "knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)\\n",\n    "library(DT)\\n",\n    "library(ggplot2)\\n",\n    "library(dplyr)\\n",\n    "results <- readRDS('", temp_results, "')\\n",\n    "\`\`\`\\n\\n",\n    "# Executive Summary\\n\\n",\n    "**Report Generated:** \`r Sys.time()\`\\n\\n",\n    "- **Total rows:** ", results$summary$total_rows, "\\n",\n    "- **Total columns:** ", results$summary$total_columns, "\\n",\n    "- **Total vehicles flagged:** ", sum(results$flags$any_flag), "\\n",\n    "- **Clean vehicles:** ", sum(!results$flags$any_flag), "\\n",\n    "- **Vehicles with multiple flags:** ", sum(results$flags$flag_count > 1), "\\n\\n",\n    \n    "## Flagging Summary\\n\\n",\n    "\`\`\`{r flag-summary}\\n",\n    "flag_summary <- data.frame(\\n",\n    "  Step = 1:8,\\n",\n    "  Description = c('CS Invalid', 'Missing RW_EC', 'Missing OEM/Model', 'RW_EC Zero',\\n",\n    "                  'VFN Issue', 'Physics CO2/FC', 'Mileage/FC Inconsistency', 'EDS/Energy Violation'),\\n",\n    "  Flagged = c(", paste(sum(results$flags$step1_cs_invalid), sum(results$flags$step2_missing_rw_ec),\n                           sum(results$flags$step3_missing_oem_model), sum(results$flags$step4_rw_ec_zero),\n                           sum(results$flags$step5_vfn_issue), sum(results$flags$step6_physics_co2_fc),\n                           sum(results$flags$step7_mileage_fc_inconsistency), sum(results$flags$step8_eds_energy_violation),\n                           collapse = ", "), "),\\n",\n    "  Percentage = round(c(", paste(sum(results$flags$step1_cs_invalid), sum(results$flags$step2_missing_rw_ec),\n                                    sum(results$flags$step3_missing_oem_model), sum(results$flags$step4_rw_ec_zero),\n                                    sum(results$flags$step5_vfn_issue), sum(results$flags$step6_physics_co2_fc),\n                                    sum(results$flags$step7_mileage_fc_inconsistency), sum(results$flags$step8_eds_energy_violation),\n                                    collapse = ", "), ") / ", results$summary$total_rows, " * 100, 2)\\n",\n    ")\\n",\n    "DT::datatable(flag_summary, options = list(pageLength = 10))\\n",\n    "\`\`\`\\n\\n"\n  )\n  \n  # Add sections for each check\n  if (!is.null(results$na_check) && nrow(results$na_check) > 0) {\n    rmd_content <- paste0(rmd_content,\n      "## Missing Values (NA)\\n\\n",\n      "\`\`\`{r na-table}\\n",\n      "DT::datatable(results$na_check %>% head(50), \\n",\n      "              options = list(pageLength = 25, scrollX = TRUE))\\n",\n      "\`\`\`\\n\\n"\n    )\n  }\n  \n  if (!is.null(results$oem_overrepresentation) && nrow(results$oem_overrepresentation) > 0) {\n    rmd_content <- paste0(rmd_content,\n      "## Manufacturer Overrepresentation\\n\\n",\n      "\`\`\`{r oem-overrep}\\n",\n      "DT::datatable(results$oem_overrepresentation %>% head(30), \\n",\n      "              options = list(pageLength = 25, scrollX = TRUE))\\n",\n      "\`\`\`\\n\\n"\n    )\n  }\n  \n  # Write temporary RMD file\n  temp_rmd <- tempfile(fileext = ".Rmd")\n  writeLines(rmd_content, temp_rmd)\n  \n  # Render to HTML\n  tryCatch({\n    render(temp_rmd, output_file = output_file, quiet = TRUE)\n    cat("HTML report saved to:", output_file, "\\n")\n  }, error = function(e) {\n    cat("Error generating HTML report:", e$message, "\\n")\n    cat("Markdown report is still available.\\n")\n  })\n}\n\n# ==============================================================================\n# INTERACTIVE MENU SYSTEM\n# ==============================================================================\n\nget_column_selection <- function(data) {\n  cat("\\n=== COLUMN SELECTION ===\\n")\n  cat("1. Basic Package (columns used in Paper A analysis)\\n")\n  cat("2. All columns in dataset\\n")\n  cat("3. Specific columns (energy consumption, EDS, CO2)\\n")\n  cat("4. Custom columns (enter column names)\\n")\n  cat("5. Both general quality checks AND domain-specific validation\\n")\n  \n  choice <- readline("Enter your choice (1-5): ")\n  \n  columns <- NULL\n  \n  switch(choice,\n    "1" = {\n      available <- intersect(BASIC_PACKAGE_COLUMNS, names(data))\n      missing <- setdiff(BASIC_PACKAGE_COLUMNS, names(data))\n      \n      if (length(missing) > 0) {\n        cat("\\nNote: Some basic package columns not found in dataset:\\n")\n        cat(paste(missing, collapse = ", "), "\\n")\n        cat("This is normal if the dataset schema has changed.\\n")\n      }\n      \n      columns <- available\n      cat("\\nSelected", length(columns), "columns from Basic Package\\n")\n    },\n    "2" = {\n      columns <- names(data)\n      cat("\\nSelected all", length(columns), "columns\\n")\n    },\n    "3" = {\n      energy_cols <- grep("energy|Energy|ENERGY|EC|RW_EC|TA_EC", names(data), value = TRUE)\n      eds_cols <- grep("EDS|eds|electric.*share|Electric.*Share", names(data), value = TRUE)\n      co2_cols <- grep("CO2|co2|CO_2|co_2", names(data), value = TRUE)\n      columns <- unique(c(energy_cols, eds_cols, co2_cols))\n      cat("\\nSelected", length(columns), "energy/EDS/CO2 related columns\\n")\n    },\n    "4" = {\n      cat("\\nEnter column names (comma-separated):\\n")\n      col_input <- readline("Columns: ")\n      col_names <- strsplit(col_input, ",")[[1]]\n      col_names <- trimws(col_names)\n      columns <- intersect(col_names, names(data))\n      \n      if (length(columns) < length(col_names)) {\n        missing <- setdiff(col_names, names(data))\n        cat("\\nWarning: Some columns not found:", paste(missing, collapse = ", "), "\\n")\n      }\n      \n      cat("\\nSelected", length(columns), "custom columns\\n")\n    },\n    "5" = {\n      columns <- names(data)\n      cat("\\nSelected all columns for comprehensive check\\n")\n    }\n  )\n  \n  return(columns)\n}\n\nget_pattern_selection <- function() {\n  cat("\\n=== PATTERN DETECTION OPTIONS ===\\n")\n  cat("Select which pattern detection methods to use:\\n")\n  cat("1. Round numbers (values ending in 0 or 5)\\n")\n  cat("2. Repetitive sequences\\n")\n  cat("3. Benford's Law violations\\n")\n  cat("4. Manufacturer-specific patterns\\n")\n  cat("5. All of the above\\n")\n  cat("6. None (skip pattern detection)\\n")\n  \n  choice <- readline("Enter your choice (1-6): ")\n  \n  patterns <- list()\n  \n  switch(choice,\n    "1" = { patterns$round_numbers = TRUE },\n    "2" = { patterns$repetitive = TRUE },\n    "3" = { patterns$benford = TRUE },\n    "4" = { patterns$manufacturer = TRUE },\n    "5" = {\n      patterns$round_numbers = TRUE\n      patterns$repetitive = TRUE\n      patterns$benford = TRUE\n      patterns$manufacturer = TRUE\n    },\n    "6" = { patterns$none = TRUE }\n  )\n  \n  return(patterns)\n}\n\n# ==============================================================================\n# MAIN EXECUTION\n# ==============================================================================\n\nmain <- function() {\n  cat(paste0(rep("=", 70), collapse = ""), "\\n")\n  cat("OBFCM Data Quality Checker v2.0.0\\n")\n  cat(paste0(rep("=", 70), collapse = ""), "\\n\\n")\n  \n  # Get input file\n  cat("Enter the path to your OBFCM dataset file:\\n")\n  cat("(Supports CSV, ZIP, 7Z formats)\\n")\n  filepath <- readline("File path: ")\n  \n  if (!file.exists(filepath)) {\n    stop("File not found: ", filepath)\n  }\n  \n  # Load data\n  data <- load_data(filepath)\n  \n  \n  data <- map_column_names(data)\n  \n  \n  # Check for schema changes\n  cat("\\n=== SCHEMA CHECK ===\\n")\n  basic_cols_found <- sum(BASIC_PACKAGE_COLUMNS %in% names(data))\n  basic_cols_total <- length(BASIC_PACKAGE_COLUMNS)\n  \n  if (basic_cols_found < basic_cols_total) {\n    cat("Note: Dataset schema may have changed.\\n")\n    cat("Found", basic_cols_found, "of", basic_cols_total, "expected Basic Package columns.\\n")\n    cat("This is normal for different dataset versions (e.g., 2024 vs 2021-2023).\\n")\n    cat("The tool will adapt automatically to available columns.\\n\\n")\n  }\n  \n  # Ask for VFN whitelist\n  cat("\\nVFN Whitelist (optional):\\n")\n  cat("Enter path to VFN whitelist file (Excel or CSV), or press Enter to skip:\\n")\n  vfn_path <- readline("VFN whitelist path: ")\n  if (vfn_path == "") vfn_path <- NULL\n  \n  # Get column selection\n  columns_to_check <- get_column_selection(data)\n  \n  if (is.null(columns_to_check) || length(columns_to_check) == 0) {\n    stop("No columns selected for checking.")\n  }\n  \n  # Subset data to selected columns (keep all for validation steps)\n  data_subset <- data[, columns_to_check, drop = FALSE]\n  \n  # Get pattern detection selection\n  patterns <- get_pattern_selection()\n  \n  # Run all validation steps\n  cat("\\n=== RUNNING ALL VALIDATION STEPS ===\\n")\n  \n  flags <- data.frame(\n    step1_cs_invalid = check_step1_cs_invalid(data),\n    step2_missing_rw_ec = check_step2_missing_rw_ec(data),\n    step3_missing_oem_model = check_step3_missing_oem_model(data),\n    step4_rw_ec_zero = check_step4_rw_ec_zero(data),\n    step5_vfn_issue = check_step5_vfn_issue(data, vfn_path),\n    step6_physics_co2_fc = check_step6_physics_co2_fc(data),\n    step7_mileage_fc_inconsistency = check_step7_mileage_fc_inconsistency(data),\n    step8_eds_energy_violation = check_step8_eds_energy_violation(data)\n  )\n  \n  # Calculate summary\n  flags$any_flag <- rowSums(flags[, 1:8]) > 0\n  flags$flag_count <- rowSums(flags[, 1:8])\n  \n  # Basic quality checks\n  cat("\\n=== RUNNING BASIC QUALITY CHECKS ===\\n")\n  results <- list()\n  results$summary <- list(\n    total_rows = nrow(data),\n    total_columns = ncol(data),\n    columns_checked = length(columns_to_check)\n  )\n  \n  results$flags <- flags\n  results$na_check <- check_na_columns(data_subset)\n  results$zero_check <- check_zero_columns(data_subset)\n  results$constant_check <- check_constant_columns(data_subset)\n  results$low_cardinality_check <- check_low_cardinality(data_subset)\n  \n  # Pattern detection\n  numeric_cols <- names(data_subset)[sapply(data_subset, is.numeric)]\n  \n  if (!is.null(patterns$round_numbers)) {\n    results$round_numbers_check <- check_round_numbers(data_subset, numeric_cols)\n  }\n  \n  if (!is.null(patterns$repetitive)) {\n    results$repetitive_check <- check_repetitive_sequences(data_subset, numeric_cols)\n  }\n  \n  if (!is.null(patterns$benford)) {\n    results$benford_check <- check_benford_law(data_subset, numeric_cols)\n  }\n  \n  if (!is.null(patterns$manufacturer)) {\n    results$manufacturer_check <- check_manufacturer_patterns(data)\n  }\n  \n  # Overrepresentation analysis\n  if ("OEM" %in% names(data)) {\n    results$oem_overrepresentation <- calculate_overrepresentation(data, flags$any_flag, "OEM")\n  }\n  \n  # Vehicle characteristics comparison\n  results$characteristics_comparison <- compare_flagged_vs_clean(data, flags$any_flag)\n  \n  # Additional domain checks\n  results$additional_domain <- check_additional_domain(data)\n  \n  # Generate reports\n  cat("\\n=== GENERATING REPORTS ===\\n")\n  \n  timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")\n  md_file <- paste0("OBFCM_Quality_Check_", timestamp, ".md")\n  html_file <- paste0("OBFCM_Quality_Check_", timestamp, ".html")\n  \n  generate_markdown_report(results, md_file)\n  generate_html_report(results, html_file)\n  \n  cat("\\n=== COMPLETE ===\\n")\n  cat("Reports generated:\\n")\n  cat("  - Markdown:", md_file, "\\n")\n  cat("  - HTML:", html_file, "\\n")\n  cat("\\nSummary:\\n")\n  cat("  - Total vehicles:", results$summary$total_rows, "\\n")\n  cat("  - Flagged vehicles:", sum(results$flags$any_flag), "\\n")\n  cat("  - Clean vehicles:", sum(!results$flags$any_flag), "\\n")\n  cat("  - Vehicles with multiple flags:", sum(results$flags$flag_count > 1), "\\n")\n}\n\n# Run main function\nif (!interactive()) {\n  main()\n} else {\n  cat("This script should be run from the command line:\\n")\n  cat("Rscript OBFCM_Data_Quality_Checker.R\\n")\n}\n`
+};
+
+const rScriptPaths = {
+    mac: 'paper_a_analysis/OBFCM_Data_Quality_Checker.R',
+    windows: 'paper_a_analysis/OBFCM_Data_Quality_Checker.R'
+};
+
+const rScriptNames = {
+    mac: 'OBFCM_Data_Quality_Checker.R',
+    windows: 'OBFCM_Data_Quality_Checker.R'
+};
+
+let currentPlatform = '';
+
+function openRScriptSelectionModal() {
+    document.getElementById('rScriptSelectionModal').style.display = 'block';
+}
+
+function closeRScriptSelectionModal() {
+    document.getElementById('rScriptSelectionModal').style.display = 'none';
+}
+
+function openRScriptPreview(platform) {
+    currentPlatform = platform;
+    document.getElementById('rScriptSelectionModal').style.display = 'none';
+    document.getElementById('rScriptModal').style.display = 'block';
+    document.getElementById('rScriptPreview').textContent = rScriptContents[platform];
+}
+
+function closeRScriptModal() {
+    document.getElementById('rScriptModal').style.display = 'none';
+}
+
+function downloadRScript() {
+    if (!currentPlatform || !rScriptContents[currentPlatform]) {
+        alert('Please select a platform first.');
+        return;
+    }
+    
+    const scriptContent = rScriptContents[currentPlatform];
+    const scriptName = rScriptNames[currentPlatform];
+    
+    // Create blob from embedded content
+    const blob = new Blob([scriptContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = scriptName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    
+    closeRScriptModal();
+}
+
+// Close modals when clicking outside
+document.addEventListener('click', function(event) {
+    const selectionModal = document.getElementById('rScriptSelectionModal');
+    const previewModal = document.getElementById('rScriptModal');
+    if (event.target == selectionModal) {
+        closeRScriptSelectionModal();
+    }
+    if (event.target == previewModal) {
+        closeRScriptModal();
+    }
+});
+</script>
+
+
+<!-- R Script Selection and Preview Modal -->
+<div id="rScriptSelectionModal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow: auto;">
+    <div style="background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #667eea;">Select R Script Version</h2>
+            <span onclick="closeRScriptSelectionModal()" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <button onclick="openRScriptPreview('mac')" class="btn" style="border: none; cursor: pointer; padding: 15px; font-size: 16px;">
+                🍎 Mac / Linux
+            </button>
+            <button onclick="openRScriptPreview('windows')" class="btn" style="border: none; cursor: pointer; padding: 15px; font-size: 16px;">
+                🪟 Windows
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="rScriptModal" style="display: none; position: fixed; z-index: 10001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow: auto;">
+    <div style="background-color: #fefefe; margin: 2% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 900px; border-radius: 10px; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #667eea;">R Script Preview</h2>
+            <span onclick="closeRScriptModal()" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+        </div>
+        <pre id="rScriptPreview" style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 5px; overflow-x: auto; max-height: 70vh; font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; word-wrap: break-word;"></pre>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button onclick="downloadRScript()" class="btn" style="border: none; cursor: pointer;">
+                📥 Download Script
+            </button>
+            <button onclick="closeRScriptModal()" class="btn btn-secondary" style="border: none; cursor: pointer; background: #6c757d;">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById('burgerMenu');
+    if (menu) {
+        menu.classList.toggle('active');
+    }
+}
+</script>
+</body>
+</html>

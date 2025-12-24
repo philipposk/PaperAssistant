@@ -1,0 +1,2799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paper A: Development Progression</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>">
+  <!-- Mammoth.js for DOCX preview -->
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <!-- Fabric.js for figure editing -->
+  <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
+  <!-- Handsontable for table editing -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@14.1.0/dist/handsontable.full.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/handsontable@14.1.0/dist/handsontable.full.min.js"></script>
+  <!-- Transformers.js for client-side embeddings (loaded dynamically when needed) -->
+  <!-- Note: This library is loaded on-demand to avoid blocking page load -->
+  <!-- Shared Features (load early) -->
+  <script src="SHARED_FEATURES.js"></script>
+  <!-- Unified Navigation -->
+  <script src="UNIFIED_NAVIGATION.js"></script>
+  <!-- Modal System (replaces alerts) -->
+  <script src="MODAL_SYSTEM.js"></script>
+  <!-- GitHub Integration -->
+  <script src="GITHUB_INTEGRATION.js"></script>
+  <!-- Storage Manager -->
+  <script src="STORAGE_MANAGER.js"></script>
+  <!-- Knowledge Graph -->
+  <script src="KNOWLEDGE_GRAPH.js"></script>
+  <!-- Timeline System -->
+  <script src="TIMELINE_SYSTEM.js"></script>
+  <!-- Cloud Storage Integration -->
+  <script src="CLOUD_STORAGE_INTEGRATION.js"></script>
+  <!-- Breadcrumbs -->
+  <script src="BREADCRUMBS_SYSTEM.js"></script>
+  <!-- Additional Features -->
+  <script src="ADDITIONAL_FEATURES.js"></script>
+  <!-- AI Training System -->
+  <script src="AI_TRAINING_SYSTEM.js"></script>
+  <!-- Multi-Use Case System -->
+  <script src="MULTI_USE_CASE_SYSTEM.js"></script>
+  <!-- Automatic Logging System -->
+  <script src="AUTOMATIC_LOGGING_SYSTEM.js"></script>
+  <!-- Project Import & Analysis -->
+  <script src="PROJECT_IMPORT_ANALYSIS.js"></script>
+  <!-- Project File Loader - Load early -->
+  <script src="PROJECT_FILE_LOADER.js"></script>
+  <!-- Resizable Figures/Tables -->
+  <script src="RESIZABLE_FIGURES_TABLES.js"></script>
+  <!-- Quick Fix Debug -->
+  <script src="QUICK_FIX_DEBUG.js"></script>
+  <!-- Document Editing System -->
+  <script src="DOCUMENT_EDITING_SYSTEM.js"></script>
+  <!-- Editor Selector -->
+    <script src="EDITOR_SELECTOR.js"></script>
+    <!-- Modern UI System -->
+    <script src="MODERN_UI_SYSTEM.js"></script>
+    <!-- Pyodide for Python execution -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js" defer></script>
+  <!-- Early function definitions to prevent "not defined" errors -->
+        <script src="carousel_file_ops - paper_progression_inline_part1.js"></script>
+  <script src="file_ops_timeline - paper_progression_inline_part2.js"></script>
+  <script src="file_ops_timeline - paper_progression_inline_part3.js"></script>
+  <script src="file_ops_modal - paper_progression_inline_part4.js"></script>
+  <script src="file_ops_timeline - paper_progression_inline_part5.js"></script>
+  <script src="carousel_file_ops - paper_progression_inline_part6.js"></script>
+  <script src="carousel_file_ops - paper_progression_inline_part7.js"></script>
+  <script src="file_ops_search - paper_progression_inline_part8.js"></script>
+  <script src="file_ops_search - paper_progression_inline_part9.js"></script>
+  <script src="file_ops_modal - paper_progression_inline_part10.js"></script>
+  <script src="search_storage - paper_progression_inline_part11.js"></script>
+  <script src="search_storage - paper_progression_inline_part12.js"></script>
+  <script src="timeline_search - paper_progression_inline_part13.js"></script>
+  <script src="file_ops_modal - paper_progression_inline_part14.js"></script>
+  <script src="file_ops_search - paper_progression_inline_part15.js"></script>
+  <script src="file_ops_storage - paper_progression_inline_part16.js"></script>
+  <script src="modal_tabs - paper_progression_inline_part17.js"></script>
+  <script src="MODERN_FILE_EXPLORER.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-tertiary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --accent-dark: #2563eb;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --shadow-hover: 0 12px 20px -4px rgba(0, 0, 0, 0.15), 0 6px 8px -3px rgba(0, 0, 0, 0.1);
+      --error: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --border-color: #e2e8f0;
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --border-radius-lg: 16px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-tertiary: #94a3b8;
+      --accent: #60a5fa;
+      --accent-light: #93c5fd;
+      --accent-dark: #3b82f6;
+      --accent-gradient: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+      --shadow-hover: 0 12px 20px -4px rgba(0, 0, 0, 0.6), 0 6px 8px -3px rgba(0, 0, 0, 0.4);
+      --error: #f87171;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --info: #60a5fa;
+      --border-color: #334155;
+    }
+    
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
+      background: var(--bg-primary); 
+      color: var(--text-primary); 
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+    
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--border-color);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      color: var(--text-primary);
+    }
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+      background: var(--accent-gradient);
+      color: white;
+    }
+    
+    .home-button {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1000;
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      padding: 0.5rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    .home-button:hover {
+      background: var(--accent-gradient);
+      color: white;
+      border-color: transparent;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: var(--shadow-md);
+      text-decoration: none;
+    }
+    
+    /* Top Button Banner - Deprecated, replaced by unified navigation */
+    .top-button-banner {
+      display: none;
+    }
+    
+    .about-button {
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      padding: 0.625rem 1.125rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--accent-gradient);
+      transition: left 0.3s ease;
+      z-index: 0;
+    }
+    .about-button > * {
+      position: relative;
+      z-index: 1;
+    }
+    .about-button:hover {
+      border-color: var(--accent);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    .about-button:hover::before {
+      left: 0;
+    }
+    .about-button:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* Footer */
+    footer {
+      margin-top: 4rem;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    footer a:hover {
+      color: var(--accent-dark);
+      text-decoration: underline;
+    }
+    
+    /* About Modal */
+    .about-modal {
+      display: none;
+      position: fixed;
+      z-index: 10004;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: fadeIn 0.2s ease-out;
+    }
+    .about-modal-content {
+      background: var(--bg-secondary);
+      margin: 5% auto;
+      padding: 0;
+      border-radius: var(--border-radius-lg);
+      width: 90%;
+      max-width: 800px;
+      max-height: 85vh;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+    .about-modal-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--accent-gradient);
+      color: white;
+      border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    }
+    .about-modal-header h3 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+    .about-modal-close {
+      color: white;
+      font-size: 1.75rem;
+      font-weight: 300;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.1);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+    .about-modal-close:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .about-modal-body {
+      padding: 2rem;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    .about-modal-body p {
+      margin-bottom: 1rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+    }
+    .about-modal-body strong {
+      color: var(--accent);
+    }
+    
+    header { 
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); 
+      color: #fff; 
+      padding: 0.75rem 2rem; 
+      box-shadow: 0 4px 20px var(--shadow);
+      border-radius: 12px;
+      margin: 1rem auto;
+      margin-top: 4.5rem;
+      max-width: 1400px;
+      transform: perspective(1000px) rotateX(2deg);
+      transition: transform 0.3s;
+      position: relative;
+      z-index: 100;
+    }
+    header:hover {
+      transform: perspective(1000px) rotateX(0deg);
+    }
+    header h1 { 
+      font-size: 2rem; 
+      margin-bottom: 0.25rem; 
+      line-height: 1.2; 
+      color: #fff !important;
+    }
+    header p { 
+      opacity: 0.9; 
+      font-size: 1.1rem; 
+      line-height: 1.3; 
+      color: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    /* Ensure header text is visible in all themes */
+    [data-theme="light"] header h1,
+    [data-theme="light"] header p,
+    body:not([data-theme="dark"]) header h1,
+    body:not([data-theme="dark"]) header p {
+      color: #fff !important;
+    }
+    
+    /* Ensure header doesn't get covered */
+    body {
+      padding-top: 0;
+    }
+    
+    /* Main content spacing */
+    .container {
+      margin-top: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    /* File Explorer Sidebar */
+    .file-explorer-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      background: var(--bg-secondary);
+      border-right: 2px solid var(--bg-primary);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 900;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      box-shadow: 2px 0 10px var(--shadow);
+    }
+    .file-explorer-sidebar.open {
+      transform: translateX(0);
+    }
+    .file-explorer-toggle {
+      position: fixed;
+      left: 1rem;
+      bottom: 1rem;
+      z-index: 1000;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 15px var(--shadow);
+      transition: all 0.3s;
+    }
+    .file-explorer-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px var(--shadow-hover);
+    }
+    .file-explorer-header {
+      padding: 1rem;
+      background: var(--accent);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .file-explorer-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    .file-explorer-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-tree {
+      list-style: none;
+      padding: 0.5rem;
+      margin: 0;
+    }
+    .file-tree-item {
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+    }
+    .file-tree-item:hover {
+      background: var(--bg-primary);
+    }
+    .file-tree-item.selected {
+      background: var(--accent-light);
+      color: white;
+    }
+    .file-tree-folder {
+      font-weight: 600;
+    }
+    .file-tree-file {
+      padding-left: 1.5rem;
+    }
+    .file-tree-caret {
+      width: 16px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .file-tree-caret.open {
+      transform: rotate(90deg);
+    }
+    .file-tree-icon {
+      font-size: 1rem;
+    }
+    .file-tree-children {
+      margin-left: 1rem;
+      display: none;
+    }
+    .file-tree-children.open {
+      display: block;
+    }
+    .file-explorer-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--accent-gradient);
+      color: white;
+    }
+    .file-explorer-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .file-explorer-close {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: var(--transition);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-explorer-close:hover {
+      background: rgba(255,255,255,0.25);
+      transform: scale(1.1);
+    }
+    
+    /* Adjust container when sidebar is open */
+    body.sidebar-open .container {
+      margin-left: 280px;
+      transition: margin-left 0.3s ease;
+    }
+    body.sidebar-open .home-button {
+      left: 300px;
+    }
+    body.sidebar-open .quick-access-toolbar {
+      /* Keep toolbar accessible even when sidebar is open */
+      right: calc(1rem + 280px);
+    }
+    
+    /* Adjust toolbar position when timer is open */
+    #timerWidget[style*="display: block"] ~ .quick-access-toolbar,
+    #timerWidget[style*="display: flex"] ~ .quick-access-toolbar {
+      bottom: calc(2rem + 400px);
+    }
+    body.sidebar-open .theme-toggle {
+      right: calc(1rem + 280px);
+    }
+    
+    .container { 
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 2rem; 
+      transition: margin-left 0.3s ease;
+      padding-top: calc(2rem + 60px); /* Account for top banner */
+    }
+    .tabs { 
+      display: flex; 
+      gap: 1rem; 
+      margin-bottom: 2rem; 
+      border-bottom: 2px solid #e0e0e0;
+      flex-wrap: wrap;
+    }
+    .tab { 
+      padding: 1rem 1.5rem; 
+      cursor: pointer; 
+      border: none; 
+      background: none; 
+      font-size: 0.9375rem; 
+      color: var(--text-secondary); 
+      border-bottom: 3px solid transparent;
+      transition: var(--transition);
+      font-weight: 500;
+      position: relative;
+    }
+    .tab::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tab:hover { 
+      color: var(--text-primary); 
+      background: var(--bg-tertiary); 
+    }
+    .tab.active { 
+      color: var(--accent); 
+      font-weight: 600; 
+    }
+    .tab.active::after {
+      width: 100%;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes slideOutDown {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+    
+    /* Timeline Styles */
+    .timeline-container { position: relative; padding: 2rem 0; }
+    .timeline-controls { 
+      margin-bottom: 2rem; 
+      display: flex; 
+      gap: 1rem; 
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .timeline-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .timeline-controls-row1 {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .timeline-controls-row2 {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .timeline-controls button, .timeline-controls select {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px var(--shadow);
+      transform: perspective(1000px) translateZ(0);
+    }
+    .timeline-controls button:hover, .timeline-controls select:hover {
+      background: var(--accent);
+      color: white;
+      transform: perspective(1000px) translateZ(5px);
+      box-shadow: 0 4px 12px var(--shadow-hover);
+    }
+    .timeline-controls button.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      transform: perspective(1000px) translateZ(10px);
+      box-shadow: 0 6px 20px var(--shadow-hover);
+      font-weight: 600;
+    }
+    .round-button {
+      border-radius: 50% !important;
+      width: 50px;
+      height: 50px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .timeline { 
+      position: relative; 
+      padding-left: 3rem; 
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 1.5rem;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #e0e0e0;
+    }
+    .timeline-item { 
+      position: relative; 
+      margin-bottom: 2.5rem; 
+      padding-left: 2rem;
+      opacity: 1;
+      transition: var(--transition);
+    }
+    .timeline-item.filtered { display: none !important; }
+    .timeline-item.hidden { display: none !important; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.5rem;
+      top: 0.5rem;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg-secondary);
+      box-shadow: 0 0 0 3px var(--border-color);
+      transition: var(--transition);
+    }
+    .timeline-item.milestone::before {
+      background: var(--warning);
+      width: 20px;
+      height: 20px;
+      left: -2.7rem;
+      top: 0.3rem;
+      box-shadow: 0 0 0 3px var(--border-color), 0 0 0 6px var(--bg-secondary);
+    }
+    .timeline-date { 
+      font-weight: 600; 
+      color: var(--accent); 
+      font-size: 1.125rem; 
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+    .timeline-title { 
+      font-size: 1.375rem; 
+      font-weight: 700; 
+      margin-bottom: 0.75rem; 
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .timeline-content { 
+      background: var(--bg-secondary); 
+      padding: 1.75rem; 
+      border-radius: var(--border-radius); 
+      box-shadow: var(--shadow);
+      margin-left: 1rem;
+      transition: var(--transition);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent);
+    }
+    .timeline-content:hover {
+      transform: translateX(4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+    .timeline-content p { margin-bottom: 0.5rem; }
+    .timeline-tags { 
+      display: flex; 
+      gap: 0.5rem; 
+      flex-wrap: wrap; 
+      margin-top: 1rem;
+    }
+    .tag { 
+      padding: 0.375rem 0.875rem; 
+      border-radius: 9999px; 
+      font-size: 0.8125rem; 
+      font-weight: 500;
+      background: var(--bg-tertiary); 
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+    .tag:hover {
+      background: var(--bg-primary);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+    .tag.milestone { 
+      background: linear-gradient(135deg, var(--warning) 0%, #fbbf24 100%); 
+      color: white;
+      border-color: transparent;
+    }
+    
+    /* Dashboard Styles */
+    .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .dashboard-card { 
+      background: var(--bg-secondary); 
+      padding: 1.5rem; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 15px var(--shadow);
+      transition: all 0.3s;
+      transform: perspective(1000px) translateZ(0);
+    }
+    .dashboard-card:hover {
+      transform: perspective(1000px) translateZ(5px);
+      box-shadow: 0 6px 20px var(--shadow-hover);
+    }
+    .dashboard-card h3 { 
+      color: var(--accent); 
+      margin-bottom: 1rem; 
+      font-size: 1.2rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.5rem;
+    }
+    .file-list { list-style: none; }
+    .file-list li { 
+      padding: 0.75rem; 
+      margin-bottom: 0.5rem; 
+      background: var(--bg-primary); 
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px var(--shadow);
+      transform: perspective(1000px) translateZ(0);
+    }
+    .file-list li:hover { 
+      background: var(--accent); 
+      transform: perspective(1000px) translateZ(5px) translateX(4px);
+      box-shadow: 0 4px 12px var(--shadow-hover);
+    }
+    .file-list li:hover a {
+      color: white;
+    }
+    .file-list a { 
+      color: var(--accent); 
+      text-decoration: none; 
+      font-weight: 500;
+      display: block;
+      transition: color 0.3s;
+    }
+    .file-list a:hover { text-decoration: underline; }
+    .file-meta {
+      font-size: 0.8125rem;
+      color: var(--text-tertiary);
+      margin-top: 0.375rem;
+      line-height: 1.5;
+    }
+    .file-type { 
+      display: inline-block; 
+      padding: 0.2rem 0.5rem; 
+      border-radius: 6px; 
+      font-size: 0.75rem; 
+      background: var(--accent); 
+      color: white;
+      margin-left: 0.5rem;
+    }
+    
+    /* DOCX Dropdown */
+    .docx-dropdown {
+      position: relative;
+      display: inline-block;
+      margin: 2rem 0;
+    }
+    .docx-main-button {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      color: white;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px var(--shadow);
+      transition: all 0.3s;
+      transform: perspective(1000px) translateZ(0);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .docx-main-button:hover {
+      transform: perspective(1000px) translateZ(10px);
+      box-shadow: 0 6px 20px var(--shadow-hover);
+    }
+    .docx-arrow-button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 1rem 0.75rem;
+      border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px var(--shadow);
+    }
+    .docx-arrow-button:hover {
+      background: var(--accent-dark);
+      box-shadow: 0 6px 20px var(--shadow-hover);
+    }
+    .docx-dropdown-content {
+      display: none;
+      position: absolute;
+      background: var(--bg-secondary);
+      min-width: 350px;
+      box-shadow: var(--shadow-lg);
+      border-radius: var(--border-radius);
+      z-index: 10005;
+      margin-top: 0.5rem;
+      max-height: 450px;
+      overflow-y: auto;
+      border: 2px solid var(--border-color);
+      transition: var(--transition);
+      animation: fadeIn 0.2s ease-out;
+      top: 100%;
+      left: 0;
+    }
+    .docx-dropdown-content.show {
+      display: block;
+    }
+    .docx-dropdown-content a {
+      color: var(--text-primary) !important;
+      padding: 1rem 1.5rem;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition);
+      background: var(--bg-secondary);
+    }
+    .docx-dropdown-content a:hover {
+      background: var(--bg-tertiary);
+      border-left: 4px solid var(--accent);
+      transform: translateX(4px);
+      color: var(--text-primary) !important;
+    }
+    .docx-dropdown-content a strong {
+      color: var(--text-primary) !important;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .docx-dropdown-content a small {
+      color: var(--text-secondary) !important;
+    }
+    .docx-dropdown-content a:last-child {
+      border-bottom: none;
+    }
+    
+    /* Settings Modal */
+    .settings-modal {
+      display: none;
+      position: fixed;
+      z-index: 10003;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+    }
+    .settings-modal.show {
+      display: flex;
+    }
+    .settings-content {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 90vh;
+      box-shadow: 0 10px 40px var(--shadow-hover);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.3s;
+    }
+    .settings-header {
+      padding: 1.5rem;
+      border-bottom: 2px solid var(--bg-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      color: white;
+      flex-shrink: 0;
+    }
+    .settings-header h3 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+    .settings-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+    .settings-close:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    .settings-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 2px solid var(--bg-primary);
+      background: var(--bg-primary);
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+    .settings-tab {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .settings-tab:hover {
+      color: var(--accent);
+    }
+    .settings-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+    .settings-tab-content {
+      display: none;
+      padding: 2rem;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    .settings-tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    .settings-section {
+      margin-bottom: 2rem;
+    }
+    .settings-section h4 {
+      margin: 0 0 1rem 0;
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+    .settings-field {
+      margin-bottom: 1.5rem;
+    }
+    .settings-field label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .settings-field input,
+    .settings-field select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--bg-primary);
+      border-radius: 8px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+    .settings-field input:focus,
+    .settings-field select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .settings-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .settings-toggle label {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .toggle-switch {
+      width: 50px;
+      height: 26px;
+      background: var(--bg-primary);
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .toggle-switch.active {
+      background: var(--accent);
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s;
+    }
+    .toggle-switch.active::after {
+      transform: translateX(24px);
+    }
+    
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { 
+      background: var(--bg-secondary); 
+      padding: 1.5rem; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 15px var(--shadow);
+      text-align: center;
+      transition: all 0.3s;
+      transform: perspective(1000px) translateZ(0);
+    }
+    .stat-card:hover {
+      transform: perspective(1000px) translateZ(10px);
+      box-shadow: 0 8px 25px var(--shadow-hover);
+    }
+    .stat-card.clickable {
+      cursor: pointer;
+    }
+    .stat-card.clickable:hover {
+      transform: perspective(1000px) translateZ(15px) scale(1.02);
+    }
+    .stat-value { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
+    .stat-label { color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem; }
+    
+    /* Carousel Styles */
+    .carousel-container {
+      margin-bottom: 2rem;
+    }
+    .carousel {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 4px 15px var(--shadow);
+    }
+    .carousel-track {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      flex: 1;
+      padding: 0.5rem 0;
+    }
+    .carousel-track::-webkit-scrollbar {
+      height: 6px;
+    }
+    .carousel-track::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+      border-radius: 3px;
+    }
+    .carousel-track::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 3px;
+    }
+    .carousel-item {
+      min-width: 200px;
+      max-width: 200px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .carousel-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px var(--shadow-hover);
+      background: var(--accent);
+      color: white;
+    }
+    .carousel-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      background: var(--bg-secondary);
+    }
+    .carousel-item .carousel-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      font-weight: 500;
+    }
+    .carousel-item:hover .carousel-label {
+      color: white;
+    }
+    .carousel-nav {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    .carousel-nav:hover {
+      background: var(--accent-light);
+      transform: scale(1.1);
+    }
+    .carousel-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    .view-all-btn {
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+    .view-all-btn:hover {
+      background: var(--accent-light);
+      transform: translateX(4px);
+    }
+    
+    /* Google Drive Button */
+    .drive-button { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      padding: 12px 24px; 
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); 
+      color: white; 
+      border-radius: 8px; 
+      text-decoration: none; 
+      font-weight: 600; 
+      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+      transition: all 0.3s;
+      margin: 1rem 0;
+    }
+    .drive-button:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 16px rgba(66, 133, 244, 0.4);
+      text-decoration: none;
+      color: white;
+    }
+    .drive-section {
+      background: var(--bg-secondary);
+      border-left: 4px solid #4285f4;
+      margin-top: 2rem;
+    }
+    
+    /* File Preview Modal */
+    .file-preview-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+    }
+    .file-preview-modal.fullscreen {
+      background-color: rgba(0,0,0,0.95);
+    }
+    .file-preview-content {
+      background: var(--bg-secondary);
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 85vh;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+    .file-preview-content.fullscreen {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 0;
+    }
+    .file-preview-header {
+      padding: 1.5rem;
+      border-bottom: 2px solid var(--bg-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+    .file-preview-content.fullscreen .file-preview-header {
+      border-radius: 0;
+    }
+    .file-preview-header-controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .file-preview-resize {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .file-preview-resize:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.5);
+    }
+    .file-preview-header h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-preview-close {
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+    .file-preview-close:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .file-preview-body.fullscreen {
+      max-height: calc(100vh - 100px);
+    }
+    .file-preview-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    .file-preview-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 1rem auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    .file-preview-body figure {
+      max-width: 100%;
+      margin: 1rem auto;
+      text-align: center;
+    }
+    .file-preview-body figure img {
+      max-width: 90%;
+      max-height: 60vh;
+      object-fit: contain;
+    }
+    .file-preview-footer {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--bg-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-primary);
+      border-radius: 0 0 12px 12px;
+    }
+    .file-preview-footer .file-name {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+    .file-preview-footer .file-name strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    /* AI Chatbot Modal */
+    .chatbot-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+    }
+    .chatbot-modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chatbot-content {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 800px;
+      height: 80vh;
+      max-height: 700px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px var(--shadow-hover);
+      transform: scale(0.95);
+      transition: transform 0.3s;
+    }
+    .chatbot-modal.show .chatbot-content {
+      transform: scale(1);
+    }
+    .chatbot-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 2px solid var(--bg-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--accent);
+      color: white;
+      border-radius: 16px 16px 0 0;
+    }
+    .chatbot-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .chatbot-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .chatbot-close:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .chatbot-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .chatbot-message {
+      display: flex;
+      gap: 0.75rem;
+      animation: fadeIn 0.3s;
+    }
+    .chatbot-message.user {
+      flex-direction: row-reverse;
+    }
+    .chatbot-message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .chatbot-message.user .chatbot-message-avatar {
+      background: var(--accent);
+      color: white;
+    }
+    .chatbot-message.assistant .chatbot-message-avatar {
+      background: var(--bg-primary);
+      color: var(--accent);
+    }
+    .chatbot-message-content {
+      max-width: 70%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+    .chatbot-message.user .chatbot-message-content {
+      background: var(--accent);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .chatbot-message.assistant .chatbot-message-content {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px;
+    }
+    .chatbot-message-content pre {
+      background: rgba(0,0,0,0.1);
+      padding: 0.5rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      margin: 0.5rem 0;
+    }
+    .chatbot-message-content code {
+      background: rgba(0,0,0,0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    .chatbot-input-area {
+      border-top: 2px solid var(--bg-primary);
+    }
+    .chatbot-file-upload-area {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+    }
+    .chatbot-input-wrapper {
+      padding: 1rem 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+    }
+    .chatbot-attach-btn {
+      padding: 0.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+    }
+    .chatbot-attach-btn:hover {
+      background: var(--bg-primary);
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+    .chatbot-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--bg-primary);
+      border-radius: 12px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 1rem;
+      resize: none;
+      min-height: 50px;
+      max-height: 150px;
+      font-family: inherit;
+    }
+    .chatbot-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .chatbot-send {
+      padding: 0.75rem 1.5rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+    .chatbot-send:hover:not(:disabled) {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+    }
+    .chatbot-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .chatbot-loading {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+    .chatbot-loading-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: bounce 1.4s infinite;
+    }
+    .chatbot-loading-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .chatbot-loading-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+      40% { transform: translateY(-10px); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInUp {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOutDown {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+    }
+    .chatbot-settings-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .chatbot-settings-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    .file-preview-download {
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .file-preview-download:hover {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    /* Universal Search - Collapsible */
+    .universal-search {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10001;
+    }
+    .universal-search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .universal-search-input {
+      width: 0;
+      padding: 0.75rem 0;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 1rem;
+      box-shadow: 0 4px 15px var(--shadow);
+      transition: all 0.3s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .universal-search.expanded .universal-search-input {
+      width: 600px;
+      max-width: 90vw;
+      padding: 0.75rem 3rem 0.75rem 1rem;
+      border-color: var(--accent);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .universal-search-input:focus {
+      outline: none;
+      border-color: var(--accent-light);
+      box-shadow: 0 6px 20px var(--shadow-hover);
+    }
+    .universal-search-icon {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      box-shadow: 0 4px 15px var(--shadow);
+      transition: all 0.3s;
+      z-index: 1001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 45px;
+      min-height: 45px;
+    }
+    .universal-search-icon:hover {
+      background: var(--accent);
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 6px 20px var(--shadow-hover);
+    }
+    .universal-search.expanded .universal-search-icon {
+      right: 1rem;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      pointer-events: none;
+      min-width: auto;
+      min-height: auto;
+      padding: 0;
+    }
+    .search-shortcut-hint {
+      display: none;
+    }
+    .universal-search.expanded .search-shortcut-hint {
+      display: inline-block;
+      position: absolute;
+      right: 3.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+    .search-results {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      box-shadow: 0 8px 30px var(--shadow-hover);
+      max-height: 500px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1001;
+    }
+    .search-results.show {
+      display: block;
+    }
+    .search-result-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--bg-primary);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-result-item:hover {
+      background: var(--bg-primary);
+    }
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+    .search-result-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .search-result-path {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .search-result-snippet {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    .search-result-highlight {
+      background: yellow;
+      color: var(--text-primary);
+      padding: 0.1rem 0.2rem;
+      border-radius: 3px;
+    }
+    .search-result-score {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    .search-no-results {
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+    .search-shortcut-hint {
+      position: absolute;
+      right: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+    
+    /* Search (legacy - for timeline search) */
+    .search-box { 
+      width: 100%; 
+      padding: 0.75rem; 
+      border: 2px solid #e0e0e0; 
+      border-radius: 6px; 
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    .search-box:focus { outline: none; border-color: #0f4c81; }
+    
+    @media (max-width: 768px) {
+      .timeline { padding-left: 2rem; }
+      .timeline-item::before { left: -1.5rem; }
+      .timeline-content { margin-left: 0.5rem; }
+      .about-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+      .quick-access-toolbar {
+        padding: 0.5rem;
+        gap: 0.25rem;
+      }
+      .about-button {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.7rem;
+      }
+      .universal-search {
+        left: auto;
+        right: 1rem;
+        transform: none;
+      }
+      .universal-search.expanded .universal-search-input {
+        width: calc(100vw - 2rem);
+        max-width: 500px;
+      }
+      .theme-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Button Banner -->
+  <!-- Quick Access Toolbar - Hidden by default, shown via More menu or toggle -->
+  <!-- All tools also available in unified navigation "More" dropdown -->
+  <div class="quick-access-toolbar" id="quickAccessToolbar" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10000; display: none !important; gap: 0.5rem; padding: 0.75rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); backdrop-filter: blur(10px); flex-wrap: wrap; max-width: calc(100vw - 2rem);">
+    <button class="quick-tool-btn" onclick="openAboutModal()" title="About this website">
+      <span style="font-size: 1.25rem;">ℹ️</span>
+    </button>
+    <button class="quick-tool-btn" onclick="showFileUploadModal()" title="Upload Files for AI Training">
+      <span style="font-size: 1.25rem;">📚</span>
+    </button>
+    <button class="quick-tool-btn" onclick="showUseCaseSelector()" title="Change Use Case">
+      <span style="font-size: 1.25rem;">🎯</span>
+    </button>
+    <button class="quick-tool-btn" onclick="showUICustomizationModal()" title="Customize Interface">
+      <span style="font-size: 1.25rem;">🎨</span>
+    </button>
+    <button class="quick-tool-btn" onclick="showVoiceFaceCloningModal()" title="Voice & Face Cloning">
+      <span style="font-size: 1.25rem;">🎭</span>
+    </button>
+    <button class="quick-tool-btn" onclick="toggleTimerWidget()" title="Work Timer">
+      <span style="font-size: 1.25rem;">⏱️</span>
+    </button>
+    <button class="quick-tool-btn" onclick="showProjectImportModal()" title="Import Project">
+      <span style="font-size: 1.25rem;">📥</span>
+    </button>
+    <button class="quick-tool-btn" onclick="showEditorSelector()" title="Open Editor">
+      <span style="font-size: 1.25rem;">✏️</span>
+    </button>
+    <button class="quick-tool-btn" onclick="showMessagingPanel()" title="Messages">
+      <span style="font-size: 1.25rem;">💬</span>
+    </button>
+    <button class="quick-tool-btn commit-btn" onclick="if(typeof window.showCommitModal === 'function') window.showCommitModal(); else if(typeof showCommitModal === 'function') showCommitModal(); else if(typeof window.ModalSystem !== 'undefined') { window.ModalSystem.warning('Authentication Required', 'Please log in with editor or administrator privileges to commit changes.'); } else { alert('Commit feature - ensure you are logged in as editor/admin'); }" title="Commit Changes" style="background: var(--accent); color: white; padding: 0 0.75rem; min-width: auto;">
+      <span style="font-size: 1rem;">📝</span>
+      <span style="font-size: 0.75rem; margin-left: 0.25rem; font-weight: 600;">Commit</span>
+    </button>
+  </div>
+  
+  <style>
+    .quick-access-toolbar {
+      animation: slideInUp 0.3s ease;
+      flex-direction: row;
+    }
+    
+    .quick-access-toolbar.show {
+      display: flex !important;
+    }
+    
+    /* Ensure toolbar is visible when shown */
+    #quickAccessToolbar.show {
+      display: flex !important;
+    }
+    
+    /* Force hide by default */
+    #quickAccessToolbar:not(.show) {
+      display: none !important;
+    }
+    
+    .quick-tool-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+    
+    .quick-tool-btn.commit-btn {
+      width: auto;
+      padding: 0 0.75rem;
+    }
+    
+    .quick-tool-btn:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+    
+    .quick-tool-btn:active {
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 768px) {
+      .quick-access-toolbar {
+        bottom: 0.5rem;
+        right: 0.5rem;
+        left: 0.5rem;
+        max-width: calc(100vw - 1rem);
+        justify-content: center;
+      }
+      
+      .quick-tool-btn {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .quick-tool-btn.commit-btn {
+        width: auto;
+      }
+    }
+    
+  </style>
+  
+  <!-- Toolbar position adjustment is handled in toggleTimerWidget() and closeTimerWidget() functions -->
+  
+  <!-- Work Timer Widget (Floating) -->
+  <div id="timerWidget" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 10002; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: 2rem; box-shadow: var(--shadow-lg); min-width: 300px; max-width: 360px; display: none; border-top: 4px solid var(--accent);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+      <h4 style="margin: 0; color: var(--accent); font-size: 1.25rem; font-weight: 600;">⏱️ Work Timer</h4>
+      <button onclick="closeTimerWidget()" class="btn-modern btn-modern-ghost" style="padding: 0.25rem 0.5rem; font-size: 1.5rem; min-width: auto; width: auto;">×</button>
+    </div>
+    
+    <div style="margin-bottom: 1rem;">
+      <select id="timerMethodSelect" onchange="initTimer(this.value)" class="input-modern" style="width: 100%; font-size: 0.875rem; padding: 0.75rem 1rem;">
+        <option value="pomodoro">Pomodoro (25/5)</option>
+        <option value="flowtime">Flow Time</option>
+        <option value="timeblocking">Time Blocking (60/10)</option>
+        <option value="ultradian">Ultradian (90/20)</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    
+    <div id="timerDisplay" class="timer-display" style="text-align: center; font-size: 3.5rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 2rem 0; font-family: 'Courier New', monospace; letter-spacing: 0.1em;">
+      25:00
+    </div>
+    
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+      <button id="timerStartBtn" onclick="startTimer()" class="btn-modern btn-modern-primary" style="flex: 1; font-weight: 600;">
+        <span>▶️</span>
+        <span>Start</span>
+      </button>
+      <button id="timerPauseBtn" onclick="pauseTimer()" class="btn-modern btn-modern-secondary" style="flex: 1; font-weight: 600; display: none;">
+        <span>⏸️</span>
+        <span>Pause</span>
+      </button>
+      <button onclick="stopTimer()" class="btn-modern" style="flex: 1; background: var(--error); color: white; font-weight: 600;">
+        <span>⏹️</span>
+        <span>Stop</span>
+      </button>
+    </div>
+    
+    <div style="text-align: center; color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+      <div id="timerState" style="margin-bottom: 0.5rem; font-weight: 500;">Ready</div>
+      <div id="timerSessions" style="color: var(--text-tertiary);">Sessions: 0</div>
+    </div>
+    
+    <div style="margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
+      <button onclick="openTimerStats()" class="btn-modern btn-modern-secondary" style="width: 100%; font-size: 0.875rem; padding: 0.75rem 1rem;">
+        <span>📊</span>
+        <span>View Statistics</span>
+      </button>
+    </div>
+  </div>
+  
+  
+  <a href="index.html" class="home-button" title="Go to Home Page">🏠</a>
+  
+  <!-- Universal Search -->
+  <div class="universal-search" id="universalSearch">
+    <div class="universal-search-container">
+      <input 
+        type="text" 
+        id="universalSearchInput" 
+        class="universal-search-input" 
+        placeholder="Search all files... (Ctrl+K or Cmd+K)"
+        autocomplete="off"
+        oninput="if(typeof window.performSearch === 'function') window.performSearch(this.value); else performSearch(this.value);"
+        onfocus="if(typeof window.showSearchResults === 'function') window.showSearchResults(); else showSearchResults();"
+        onblur="setTimeout(() => { if(typeof window.hideSearchResults === 'function') window.hideSearchResults(); else hideSearchResults(); if(typeof window.collapseSearch === 'function') window.collapseSearch(); else collapseSearch(); }, 200)"
+      />
+      <span class="universal-search-icon" onclick="if(typeof window.toggleSearch === 'function') window.toggleSearch(); else toggleSearch();" title="Search (Ctrl+K or Cmd+K)">🔍</span>
+      <span class="search-shortcut-hint">Ctrl+K</span>
+      <div class="search-results" id="searchResults">
+        <div class="search-no-results">Type to search...</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- File Explorer Sidebar -->
+  <div class="file-explorer-sidebar" id="fileExplorerSidebar">
+    <div class="file-explorer-header" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--accent-gradient); color: white;">
+      <h3 style="margin: 0; font-size: 1.25rem; font-weight: 600;">📁 File Explorer</h3>
+      <button class="file-explorer-close" onclick="if(typeof window.toggleFileExplorer === 'function') window.toggleFileExplorer(); else toggleFileExplorer();" title="Close (Esc)" class="btn-modern btn-modern-ghost" style="background: rgba(255,255,255,0.15); color: white; padding: 0.25rem 0.5rem; min-width: auto; width: auto; font-size: 1.5rem;">×</button>
+    </div>
+    <div class="file-explorer-search">
+      <input type="text" id="fileExplorerSearch" placeholder="Search files..." oninput="if(typeof window.filterFileTree === 'function') window.filterFileTree(this.value); else filterFileTree(this.value);">
+    </div>
+    <div class="file-explorer-nav">
+      <button id="fileExplorerPrev" onclick="if(typeof window.navigateFile === 'function') window.navigateFile('prev'); else navigateFile('prev');" title="Previous file" disabled>◀ Prev</button>
+      <button id="fileExplorerNext" onclick="if(typeof window.navigateFile === 'function') window.navigateFile('next'); else navigateFile('next');" title="Next file" disabled>Next ▶</button>
+    </div>
+    <ul class="file-tree" id="fileTree">
+      <!-- Will be populated by JavaScript -->
+    </ul>
+  </div>
+  
+  <!-- File Explorer Toggle Button - Also available in unified navigation header -->
+  <!-- Keeping this for quick access, but header button is primary -->
+  <button class="file-explorer-toggle" onclick="if(typeof window.toggleFileExplorer === 'function') { window.toggleFileExplorer(); } else { console.error('toggleFileExplorer not available'); }" title="Toggle File Explorer (Ctrl+B)" style="position: fixed; left: 1rem; top: 8rem; z-index: 998; background: var(--bg-secondary); border: 1.5px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 0.625rem; color: var(--text-primary); cursor: pointer; font-size: 1.5rem; box-shadow: var(--shadow); transition: var(--transition); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+    📁
+  </button>
+  
+  <div class="container">
+    <!-- Timeline Container (moved from tabs) -->
+    <div id="timelineContainer" style="width: 100%; min-height: 400px; margin-bottom: 2rem; padding: 2rem; background: var(--bg-secondary); border-radius: var(--border-radius); border: 1px solid var(--border-color);">
+      <!-- Enhanced timeline will be rendered here -->
+    </div>
+    
+    <!-- Quick Access Buttons - Horizontal row -->
+    <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; padding: 1rem; background: var(--bg-secondary); border-radius: var(--border-radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+      <div class="docx-dropdown" style="display: flex; gap: 0.5rem; align-items: center; position: relative;">
+        <button class="docx-main-button" onclick="event.stopPropagation(); openLatestPaper();" style="display: flex; align-items: center; gap: 0.5rem; padding-right: 0;">
+          📄 Final Paper (DOCX)
+        </button>
+        <button class="docx-arrow-button" onclick="event.stopPropagation(); toggleDocxDropdown();" style="background: var(--accent); color: white; border: none; padding: 0.625rem 0.5rem; border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0; cursor: pointer; display: flex; align-items: center; transition: var(--transition);" onmouseover="this.style.background='var(--accent-dark)'" onmouseout="this.style.background='var(--accent)'">
+          <span id="docxArrow">▼</span>
+        </button>
+        <div class="docx-dropdown-content" id="docxDropdown">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+      <button class="docx-main-button" onclick="window.location.href='research_hub.html'" title="Research Hub - Cross-referenced documents, papers, and AI/ML ideas">
+        📚 Research Hub
+      </button>
+      <button class="docx-main-button" onclick="toggleDocumentExplorer()" title="Document Explorer - Browse all project files">
+        📁 Documents
+      </button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('timeline', this)">Timeline</button>
+      <button class="tab" onclick="showTab('knowledge-graph', this)">Knowledge Graph</button>
+      <button class="tab" onclick="showTab('status', this)">Script Status</button>
+      <button class="tab" onclick="showTab('dashboard', this)">Dashboard</button>
+      <button class="tab" onclick="showTab('guide', this)">Build Guide</button>
+      <button class="tab" onclick="showTab('logs', this)">Logs</button>
+    </div>
+    
+    <!-- Timeline Tab -->
+    <div id="timeline" class="tab-content active">
+      <div class="stats">
+        <div class="stat-card clickable" onclick="openFile(getLocalPath('tables/final_selected_variables_CLEAN.csv'), event)" style="cursor: pointer; transition: var(--transition);" title="Click to view variable selection table" onmouseover="this.style.transform='translateY(-4px) scale(1.02)'" onmouseout="this.style.transform='translateY(0) scale(1)'">
+          <div class="stat-value">26</div>
+          <div class="stat-label">Clean Variables</div>
+        </div>
+        <div class="stat-card clickable" onclick="openFile(getLocalPath('tables/model_comparison_CLEAN_variables.csv'), event)" style="cursor: pointer; transition: var(--transition);" title="Click to view model comparison table" onmouseover="this.style.transform='translateY(-4px) scale(1.02)'" onmouseout="this.style.transform='translateY(0) scale(1)'">
+          <div class="stat-value">7</div>
+          <div class="stat-label">Models</div>
+        </div>
+        <div class="stat-card clickable" onclick="window.open('tables_portfolio.html#table5', '_blank')" style="cursor: pointer; transition: var(--transition);" title="Click to view model comparison table (Table 5)" onmouseover="this.style.transform='translateY(-4px) scale(1.02)'" onmouseout="this.style.transform='translateY(0) scale(1)'">
+          <div class="stat-value">73.71%</div>
+          <div class="stat-label">Best R² (XGBoost)</div>
+        </div>
+        <div class="stat-card clickable" onclick="window.location.href='figures_portfolio.html'" style="cursor: pointer; transition: var(--transition);" onmouseover="this.style.transform='translateY(-4px) scale(1.02)'" onmouseout="this.style.transform='translateY(0) scale(1)'">
+          <div class="stat-value">34</div>
+          <div class="stat-label">Figures</div>
+        </div>
+        <div class="stat-card clickable" onclick="window.location.href='tables_portfolio.html'" style="cursor: pointer; transition: var(--transition);" onmouseover="this.style.transform='translateY(-4px) scale(1.02)'" onmouseout="this.style.transform='translateY(0) scale(1)'">
+          <div class="stat-value">16</div>
+          <div class="stat-label">Tables</div>
+        </div>
+      </div>
+      
+      <!-- Figures Carousel -->
+      <div class="carousel-container" style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h3 style="margin: 0; color: var(--accent); font-size: 1.375rem; font-weight: 600;">📊 Figures</h3>
+          <button onclick="window.location.href='figures_portfolio.html'" class="view-all-btn" title="View all figures">
+            <span>View All</span>
+            <span>→</span>
+          </button>
+        </div>
+        <div class="carousel" id="figuresCarousel">
+          <button class="carousel-nav carousel-prev" onclick="if(typeof window.scrollCarousel === 'function') { window.scrollCarousel('figuresCarousel', -1); } else { console.error('scrollCarousel not available'); }">◀</button>
+          <div class="carousel-track" id="figuresCarouselTrack">
+            <!-- Figures will be loaded here -->
+          </div>
+          <button class="carousel-nav carousel-next" onclick="if(typeof window.scrollCarousel === 'function') { window.scrollCarousel('figuresCarousel', 1); } else { console.error('scrollCarousel not available'); }">▶</button>
+        </div>
+      </div>
+      
+      <!-- Tables Carousel -->
+      <div class="carousel-container" style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h3 style="margin: 0; color: var(--accent); font-size: 1.375rem; font-weight: 600;">📋 Tables</h3>
+          <button onclick="window.location.href='tables_portfolio.html'" class="view-all-btn" title="View all tables">
+            <span>View All</span>
+            <span>→</span>
+          </button>
+        </div>
+        <div class="carousel" id="tablesCarousel">
+          <button class="carousel-nav carousel-prev" onclick="if(typeof window.scrollCarousel === 'function') { window.scrollCarousel('tablesCarousel', -1); } else { console.error('scrollCarousel not available'); }">◀</button>
+          <div class="carousel-track" id="tablesCarouselTrack">
+            <!-- Tables will be loaded here -->
+          </div>
+          <button class="carousel-nav carousel-next" onclick="if(typeof window.scrollCarousel === 'function') { window.scrollCarousel('tablesCarousel', 1); } else { console.error('scrollCarousel not available'); }">▶</button>
+        </div>
+      </div>
+      
+      <!-- Knowledge Graph Section -->
+      <div id="knowledge-graph" class="tab-content" style="display: none;">
+        <div style="margin-bottom: 2rem;">
+          <h3 style="color: var(--accent); margin-bottom: 1rem;">Research Knowledge Graph</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            Visualize relationships between variables, models, results, figures, and tables. Click on nodes to explore connections.
+          </p>
+          <div id="knowledgeGraphContainer" style="width: 100%; min-height: 600px; background: var(--bg-primary); border-radius: 8px; border: 1px solid var(--border-color); position: relative;">
+            <!-- Knowledge graph will be rendered here -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="timeline-controls" style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--border-radius); border: 1px solid var(--border-color); margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
+        <div class="timeline-controls-row1">
+          <button class="active" onclick="filterTimeline('all')">All Items</button>
+          <button onclick="filterTimeline('important')">Important (100)</button>
+          <button onclick="filterTimeline('most_important')">Most Important (10)</button>
+          <button onclick="filterTimeline('milestone')">Milestones Only</button>
+          <button onclick="filterTimeline('correction')">Corrections</button>
+          <select onchange="filterTimelineByType(this.value)" class="input-modern" style="font-size: 0.875rem; padding: 0.625rem 1rem;">
+            <option value="all">All Types</option>
+            <option value="methodology">Methodology</option>
+            <option value="correction">Corrections</option>
+            <option value="output">Output</option>
+            <option value="documentation">Documentation</option>
+          </select>
+        </div>
+        <div class="timeline-controls-row2" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+          <button class="round-button" onclick="toggleSortOrder()" title="Toggle Sort Order">
+            <span id="sortIcon">⇅</span>
+          </button>
+          <span id="sortLabel" style="color: var(--text-secondary); font-size: 0.875rem; margin-left: 0.75rem; font-weight: 500;">Chronological (Old → New)</span>
+        </div>
+      </div>
+      
+      <div class="timeline-container">
+        <div class="timeline" id="timeline-content">
+          <!-- Timeline items will be inserted here by JavaScript -->
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Knowledge Graph Tab -->
+    <div id="knowledge-graph" class="tab-content" style="display: none;">
+      <div style="margin-bottom: 2rem;">
+        <h3 style="color: var(--accent); margin-bottom: 1rem;">Research Knowledge Graph</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Visualize relationships between variables, models, results, figures, and tables. Click on nodes to explore connections.
+        </p>
+        <div id="knowledgeGraphContainer" style="width: 100%; min-height: 600px; background: var(--bg-primary); border-radius: 8px; border: 1px solid var(--border-color); position: relative;">
+          <!-- Knowledge graph will be rendered here -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- Script Status Tab -->
+    <div id="status" class="tab-content">
+      <div class="dashboard-card">
+        <h3>📊 Script Status</h3>
+        <div id="script-status-content">
+          <p>Loading script status...</p>
+        </div>
+        <div id="script-status-explanation"></div>
+      </div>
+    </div>
+    
+    <!-- Dashboard Tab -->
+    <div id="dashboard" class="tab-content">
+      <input type="text" class="search-box" placeholder="Search files..." onkeyup="searchFiles(this.value)">
+      
+      <div class="dashboard">
+        <div class="dashboard-card">
+          <h3>📄 Paper Files</h3>
+          <ul class="file-list" id="paper-files">
+            <!-- Will be populated by JavaScript -->
+          </ul>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3>📊 Analysis Scripts</h3>
+          <ul class="file-list" id="script-files">
+            <!-- Will be populated by JavaScript -->
+          </ul>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3>📈 Results & Data</h3>
+          <ul class="file-list" id="result-files">
+            <!-- Will be populated by JavaScript -->
+          </ul>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>📋 Documentation</h3>
+          <ul class="file-list" id="doc-files">
+            <!-- Will be populated by JavaScript -->
+          </ul>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>📝 Log Files</h3>
+          <ul class="file-list" id="log-files">
+            <!-- Will be populated by JavaScript -->
+          </ul>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>🔧 All Scripts</h3>
+          <ul class="file-list" id="scripts-all-files">
+            <!-- Will be populated by JavaScript -->
+          </ul>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>🛠️ Utility Scripts</h3>
+          <ul class="file-list" id="utilities-files">
+            <!-- Will be populated by JavaScript -->
+          </ul>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>📚 Documentation</h3>
+          <ul class="file-list" id="doc-files">
+            <!-- Will be populated by JavaScript -->
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Build Guide Tab -->
+    <div id="guide" class="tab-content">
+      <div class="dashboard-card">
+        <h3>Quick Links</h3>
+        <ul class="file-list">
+          <li><a href="#" onclick="openFileFromDrive('PAPER_BUILD_GUIDE.md', event); return false;">Complete Build Guide</a> <span class="file-type">MD</span></li>
+          <li><a href="#" onclick="openFileFromDrive('METHODOLOGY_EVOLUTION_DOCUMENTATION.md', event); return false;">Methodology Evolution</a> <span class="file-type">MD</span></li>
+          <li><a href="#" onclick="openFileFromDrive('VARIABLE_SELECTION_DOCUMENTATION.md', event); return false;">Variable Selection</a> <span class="file-type">MD</span></li>
+          <li><a href="#" onclick="openFileFromDrive('TODO_PAPER_COMPLETION.md', event); return false;">TODO Checklist</a> <span class="file-type">MD</span></li>
+          <li><a href="#" onclick="openFileFromDrive('MARKOS_REVIEW_NEEDED.md', event); return false;">Review Items</a> <span class="file-type">MD</span></li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Logs Tab -->
+    <div id="logs" class="tab-content">
+      <div class="dashboard-card">
+        <h3>Analysis Logs</h3>
+        <ul class="file-list">
+          <li><a href="#" onclick="openFileFromDrive('all_models_CLEAN.log', event); return false;">All Models (Clean Variables)</a> <span class="file-type">LOG</span></li>
+          <li><a href="#" onclick="openFileFromDrive('comprehensive_analysis_ALL.log', event); return false;">Comprehensive Analysis</a> <span class="file-type">LOG</span></li>
+          <li><a href="#" onclick="openFileFromDrive('eds_comprehensive_analysis.log', event); return false;">EDS Analysis</a> <span class="file-type">LOG</span></li>
+          <li><a href="#" onclick="openFileFromDrive('future_work_analyses.log', event); return false;">Future Work Analyses</a> <span class="file-type">LOG</span></li>
+        </ul>
+      </div>
+      
+      <div class="dashboard-card">
+        <h3>Development Logs</h3>
+        <ul class="file-list">
+          <li><a href="#" onclick="openFileFromDrive('DEVELOPMENT_LOG_COMPLETE.md', event); return false;">Complete Log</a> <span class="file-type">MD</span></li>
+          <li><a href="#" onclick="openFileFromDrive('DEVELOPMENT_LOG_SUMMARY.md', event); return false;">Summary Log</a> <span class="file-type">MD</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- About Modal -->
+  <div id="aboutModal" class="about-modal" onclick="if(event.target === this) closeAboutModal()">
+    <div class="about-modal-content" onclick="event.stopPropagation()">
+      <div class="about-modal-header">
+        <h3>About This Website</h3>
+        <span class="about-modal-close" onclick="closeAboutModal()">&times;</span>
+      </div>
+      <div class="about-modal-body">
+        <p><strong>About this research portal:</strong></p>
+        <p>This interactive research portal (also referred to as a platform or web application) tracks the complete development progression of Paper A, a research study analyzing real-world energy consumption and electric driving share (EDS) of plug-in hybrid vehicles (PHEVs) across Europe. The portal provides a comprehensive timeline of all development milestones, methodology changes, and analysis iterations from the initial baseline model through to the final ensemble model with 26 clean variables.</p>
+        
+        <p>Users can explore the evolution of the research through an interactive timeline, monitor script execution status in real-time, access all paper drafts and documentation files, and view detailed dashboards of analysis scripts, results, and figures. The portal serves as both a development log and a navigation hub, connecting researchers to all project resources including R analysis scripts, generated figures and tables, methodology documentation, and paper drafts stored both locally and in Google Drive.</p>
+        
+        <p>The portal features a <strong>figures portfolio (gallery)</strong> showcasing 34+ visualizations including energy distributions, EDS analysis, model comparisons, and regional comparisons, as well as a <strong>tables portfolio</strong> with 16 comprehensive data tables covering dataset overview, model performance, regional summaries, and statistical analyses. These portfolios provide easy access to all research outputs and visualizations.</p>
+        
+        <p>The platform features filtering capabilities to view milestones, corrections, or specific analysis types, and provides real-time monitoring of analysis script execution with status indicators and log previews. It also includes interactive file previews for DOCX documents with fullscreen viewing options, making it easy to review paper drafts and documentation directly in the browser.</p>
+        
+        <p style="margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--bg-primary);"><strong>Technical details:</strong></p>
+        <p>This portal is built as a static website using <strong>HTML</strong> (structure), <strong>CSS</strong> (styling and responsive design), and <strong>JavaScript</strong> (interactivity, timeline rendering, file previews, and real-time updates). It uses modern web technologies including the Mammoth.js library for DOCX file previews and is deployed via GitHub Pages. The portal is designed to be fast, responsive, and accessible without requiring any backend server or database.</p>
+        
+        <p style="margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--bg-primary);"><strong>Short description:</strong></p>
+        <p>This research portal tracks the complete development progression of Paper A, providing an interactive timeline of milestones, real-time script monitoring, and access to all research resources including paper drafts, analysis scripts, figures portfolio (gallery), tables portfolio, and documentation for the PHEV energy consumption and EDS research study. Built with HTML, CSS, and JavaScript as a static web application.</p>
+        
+        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--bg-primary);">
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+          <button onclick="openLegalPage('privacy')" class="btn-modern btn-modern-secondary" style="font-size: 0.875rem; padding: 0.625rem 1rem;">Privacy Policy</button>
+          <button onclick="openLegalPage('terms')" class="btn-modern btn-modern-secondary" style="font-size: 0.875rem; padding: 0.625rem 1rem;">Terms of Service</button>
+          <button onclick="openLegalPage('cookies')" class="btn-modern btn-modern-secondary" style="font-size: 0.875rem; padding: 0.625rem 1rem;">Cookie Policy</button>
+          <button onclick="openLegalPage('faq')" class="btn-modern btn-modern-secondary" style="font-size: 0.875rem; padding: 0.625rem 1rem;">FAQ</button>
+          <button onclick="openLegalPage('contact')" class="btn-modern btn-modern-secondary" style="font-size: 0.875rem; padding: 0.625rem 1rem;">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- File Preview Modal -->
+  <div id="filePreviewModal" class="file-preview-modal" onclick="if(event.target === this) closeFilePreview()">
+    <div class="file-preview-content" onclick="event.stopPropagation()">
+      <div class="file-preview-header">
+        <h3 id="filePreviewTitle">File Preview</h3>
+        <div class="file-preview-header-controls">
+          <button class="file-preview-resize" id="filePreviewResize" onclick="togglePreviewSize()" title="Toggle fullscreen">
+            <span id="resizeIcon">⛶</span>
+            <span id="resizeText">Fullscreen</span>
+          </button>
+          <span class="file-preview-close" onclick="closeFilePreview()">&times;</span>
+        </div>
+      </div>
+      <div class="file-preview-body" id="filePreviewContent">
+        <p>Loading...</p>
+      </div>
+      <div class="file-preview-footer">
+        <span class="file-name">File: <strong id="filePreviewFileName"></strong></span>
+        <a id="filePreviewDownload" href="#" class="file-preview-download" download>
+          <span>⬇️</span>
+          <span>Download</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Google Drive Section -->
+  <div class="container">
+    <div class="dashboard-card drive-section" style="border-left: 4px solid #4285f4;">
+      <h3>📚 Literature Reviews & Database Files</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+        Supplementary research materials, including literature reviews and database files, are available through cloud storage integration. Access all research materials:
+      </p>
+      <a href="#" id="drive-link-progression" class="drive-button" target="_blank" rel="noopener noreferrer">
+        <span>📁</span>
+        <span>Open Google Drive Folder</span>
+        <span>→</span>
+      </a>
+      <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
+        <h4 style="font-size: 0.95rem; color: var(--accent); margin-bottom: 0.75rem;">What's in Google Drive:</h4>
+        <ul style="margin: 0; padding-left: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+          <li><strong>Literature Reviews:</strong> All .txt files from paper reviews (54+ files)</li>
+          <li><strong>Database Files:</strong> Large datasets and data archives</li>
+          <li><strong>Paper Drafts:</strong> DOCX files and working documents</li>
+          <li><strong>Supplementary Materials:</strong> Additional analysis files</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- AI Chatbot Modal -->
+  <div id="chatbotModal" class="chatbot-modal" onclick="if(event.target === this) closeChatbot()">
+    <div class="chatbot-content" onclick="event.stopPropagation()">
+      <div class="chatbot-header">
+        <h3>
+          <span>🤖</span>
+          <span>AI Research Assistant</span>
+        </h3>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button class="chatbot-settings-btn" onclick="openChatbotSettings()" title="AI Settings">⚙️</button>
+          <button class="chatbot-close" onclick="closeChatbot()" title="Close">×</button>
+        </div>
+      </div>
+      <div class="chatbot-messages" id="chatbotMessages">
+        <div class="chatbot-message assistant">
+          <div class="chatbot-message-avatar">🤖</div>
+          <div class="chatbot-message-content">
+            <p>Hello! I'm your AI Research Assistant. I can help you with:</p>
+            <ul>
+              <li>📄 Reading and summarizing files</li>
+              <li>❓ Answering questions about your research</li>
+              <li>✏️ Editing and improving documents</li>
+              <li>📊 Analyzing data and results</li>
+              <li>💡 Suggesting methodologies and improvements</li>
+            </ul>
+            <p>How can I help you today?</p>
+          </div>
+        </div>
+      </div>
+      <div class="chatbot-loading" id="chatbotLoading" style="display: none;">
+        <div class="chatbot-loading-dot"></div>
+        <div class="chatbot-loading-dot"></div>
+        <div class="chatbot-loading-dot"></div>
+        <span>AI is thinking...</span>
+      </div>
+      <div class="chatbot-input-area">
+        <div class="chatbot-file-upload-area" id="chatbotFileUploadArea" style="display: none; padding: 0.5rem; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.85rem; color: var(--text-secondary);">📎 Attached files:</span>
+            <div id="chatbotAttachedFiles" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
+            <button onclick="clearChatbotFiles()" class="btn-modern btn-modern-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; margin-left: auto;">Clear All</button>
+          </div>
+        </div>
+        <div class="chatbot-input-wrapper">
+          <button class="chatbot-attach-btn" id="chatbotAttachBtn" onclick="toggleChatbotFileUpload()" title="Attach files">📎</button>
+          <textarea 
+            id="chatbotInput" 
+            class="chatbot-input" 
+            placeholder="Ask me anything about your research..."
+            rows="1"
+            onkeydown="handleChatbotKeydown(event)"
+            oninput="autoResizeTextarea(this)"
+          ></textarea>
+          <button class="chatbot-send btn-modern btn-modern-primary" id="chatbotSend" onclick="const input = document.getElementById('chatbotInput'); const message = input ? input.value.trim() : ''; if(message && typeof window.sendChatbotMessage === 'function') { window.sendChatbotMessage(); } else if(typeof window.sendChatbotMessage === 'function') { window.sendChatbotMessage(''); } else { console.error('sendChatbotMessage not available'); if(typeof window.ModalSystem !== 'undefined') { window.ModalSystem.info('AI Assistant', 'AI assistant is loading, please wait...'); } else { alert('AI assistant is loading, please wait...'); } }">
+            <span>Send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="settings-modal" onclick="if(event.target === this) closeSettings()" style="display: none;">
+    <div class="settings-content" onclick="event.stopPropagation()">
+      <div class="settings-header">
+        <h3>⚙️ Settings</h3>
+        <button class="settings-close" onclick="closeSettings()" title="Close (Esc)">×</button>
+      </div>
+      <div class="settings-tabs" style="overflow-x: auto; display: flex; flex-wrap: nowrap;">
+        <button class="settings-tab active" data-tab="general" onclick="switchSettingsTab('general')">General</button>
+        <button class="settings-tab" data-tab="appearance" onclick="switchSettingsTab('appearance')">Appearance</button>
+        <button class="settings-tab" data-tab="shortcuts" onclick="switchSettingsTab('shortcuts')">Shortcuts</button>
+        <button class="settings-tab" data-tab="timer" onclick="switchSettingsTab('timer')">Timer</button>
+        <button class="settings-tab" data-tab="integrations" onclick="switchSettingsTab('integrations')">Integrations</button>
+        <button class="settings-tab" data-tab="ai" onclick="switchSettingsTab('ai')">AI</button>
+        <button class="settings-tab" data-tab="profile" onclick="switchSettingsTab('profile')">Profile</button>
+      </div>
+      
+      <!-- General Tab -->
+      <div id="settings-general" class="settings-tab-content active">
+        <div class="settings-section">
+          <h4>General Settings</h4>
+          <div class="settings-field">
+            <label>Language</label>
+            <select id="settings-language">
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div class="settings-field">
+            <label>Timezone</label>
+            <select id="settings-timezone">
+              <option value="UTC">UTC</option>
+              <option value="Europe/Athens" selected>Europe/Athens</option>
+            </select>
+          </div>
+          <div class="settings-field">
+            <label>Date Format</label>
+            <select id="settings-dateFormat">
+              <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+              <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+              <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+            </select>
+          </div>
+          <div class="settings-toggle">
+            <label>Auto-save file explorer state</label>
+            <div class="toggle-switch active" id="settings-autoSave" onclick="toggleSetting(this)"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Appearance Tab -->
+      <div id="settings-appearance" class="settings-tab-content">
+        <div class="settings-section">
+          <h4>Theme</h4>
+          <div class="settings-field">
+            <label>Color Theme</label>
+            <select id="settings-theme" onchange="if(typeof window.toggleTheme === 'function') { const current = window.getCurrentTheme(); if(current !== this.value) window.toggleTheme(); }">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+            <button onclick="if(typeof window.toggleTheme === 'function') window.toggleTheme(); updateSettingsThemeSelect();" class="btn-modern btn-modern-secondary" style="margin-top: 0.5rem;">Toggle Theme</button>
+          </div>
+          <div class="settings-field">
+            <label>Font Size</label>
+            <select id="settings-fontSize">
+              <option value="small">Small</option>
+              <option value="medium" selected>Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </div>
+          <div class="settings-field">
+            <label>Accent Color</label>
+            <input type="color" id="settings-accentColor" value="#0f4c81">
+          </div>
+        </div>
+        <div class="settings-section">
+          <h4>Layout</h4>
+          <div class="settings-toggle">
+            <label>Sidebar open by default</label>
+            <div class="toggle-switch" id="settings-sidebarOpen" onclick="toggleSetting(this)"></div>
+          </div>
+          <div class="settings-toggle">
+            <label>Compact mode</label>
+            <div class="toggle-switch" id="settings-compactMode" onclick="toggleSetting(this)"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- AI Tab -->
+      <div id="settings-ai" class="settings-tab-content">
+        <div class="settings-section">
+          <h4>AI Provider</h4>
+          <div class="settings-field">
+            <label>Provider</label>
+            <select id="settings-aiProvider">
+              <option value="openai">OpenAI</option>
+              <option value="groq">Groq</option>
+            </select>
+          </div>
+          <div class="settings-field">
+            <label>Model</label>
+            <select id="settings-aiModel">
+              <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+              <option value="gpt-4o-mini">GPT-4o Mini</option>
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant</option>
+            </select>
+          </div>
+          <div class="settings-field">
+            <label>API Key</label>
+            <input type="password" id="settings-apiKey" class="input-modern" placeholder="Enter API key..." form="settings-form" autocomplete="new-password">
+            <small style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem; display: block;">
+              Your API key is stored locally and never sent to our servers.
+            </small>
+          </div>
+        </div>
+        <div class="settings-section" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+          <h4>AI Assistant Location</h4>
+          <div class="settings-field">
+            <label>Where to access AI Assistant</label>
+            <select id="settings-aiAssistantLocation" class="input-modern">
+              <option value="chat">In Chat (Modal)</option>
+              <option value="settings">In Settings Tab</option>
+            </select>
+            <small style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem; display: block;">
+              Choose whether to access the AI assistant from the chat button or in the settings tab.
+            </small>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Integrations Tab -->
+      <div id="settings-integrations" class="settings-tab-content">
+        <div class="settings-section">
+          <h4>Health & Life Tracking Apps</h4>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+            Connect to apps in the 6x7 ecosystem to track your work, life, and health. Sync sleep, exercise, heart rate, and more.
+          </p>
+          
+          <div id="integrationsList" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Integration cards will be generated here -->
+          </div>
+          
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--bg-primary);">
+            <h4>Auto-Sync Settings</h4>
+            <div class="settings-toggle">
+              <label>Enable automatic data sync</label>
+              <div class="toggle-switch active" id="settings-autoSync" onclick="toggleSetting(this)"></div>
+            </div>
+            <div class="settings-field" style="margin-top: 1rem;">
+              <label>Sync Interval (minutes)</label>
+              <input type="number" id="settings-syncInterval" value="5" min="1" max="60">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Timer Tab -->
+      <div id="settings-timer" class="settings-tab-content">
+        <div class="settings-section">
+          <h4>Work Timer Methods</h4>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+            Choose your preferred work timer method. You can switch between methods at any time.
+          </p>
+          
+          <div id="timerMethodsList" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Timer method cards will be generated here -->
+          </div>
+          
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--bg-primary);">
+            <h4>Custom Timer Settings</h4>
+            <div class="settings-field">
+              <label>Work Duration (minutes)</label>
+              <input type="number" id="settings-customWorkDuration" value="30" min="5" max="180">
+            </div>
+            <div class="settings-field">
+              <label>Short Break (minutes)</label>
+              <input type="number" id="settings-customShortBreak" value="5" min="1" max="30">
+            </div>
+            <div class="settings-field">
+              <label>Long Break (minutes)</label>
+              <input type="number" id="settings-customLongBreak" value="15" min="5" max="60">
+            </div>
+            <div class="settings-field">
+              <label>Sessions Until Long Break</label>
+              <input type="number" id="settings-customSessionsUntilLongBreak" value="4" min="2" max="10">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Profile Tab -->
+      <div id="settings-profile" class="settings-tab-content">
+        <div class="settings-section">
+          <h4>Profile Information</h4>
+          <div class="settings-field">
+            <label>Name</label>
+            <input type="text" id="settings-name" placeholder="Your name">
+          </div>
+          <div class="settings-field">
+            <label>Email</label>
+            <input type="email" id="settings-email" placeholder="your.email@example.com">
+          </div>
+          <div class="settings-field">
+            <label>Bio</label>
+            <textarea id="settings-bio" placeholder="Tell us about yourself..."></textarea>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Keyboard Shortcuts Tab -->
+      <div id="settings-shortcuts" class="settings-tab-content">
+        <div class="settings-section">
+          <h4>Customize Keyboard Shortcuts</h4>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+            Customize keyboard shortcuts for quick access to features.
+          </p>
+          
+          <div id="shortcutsList" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Shortcuts will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+      
+      <form id="settings-form" style="padding: 1.5rem; border-top: 2px solid var(--bg-primary); background: var(--bg-primary); flex-shrink: 0;" onsubmit="event.preventDefault(); saveSettings();">
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="submit" class="settings-save" style="flex: 1;">Save Settings</button>
+          <button type="button" onclick="closeSettings()" class="btn-modern btn-modern-secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- User Display (Top Right) - Hidden, login button is in banner now -->
+  <div id="userDisplay" style="display: none;">
+    <!-- Will be populated by JavaScript for backward compatibility -->
+  </div>
+  
+  
+  <!-- Global Escape Key Handler for All Modals -->
+  
+  <!-- Footer -->
+  <footer>
+    <p>Made by <a href="https://6x7.gr" target="_blank">6x7.gr</a></p>
+  </footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

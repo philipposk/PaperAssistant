@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Flagging Results - Interactive Analysis</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+        
+        .burger-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .burger-btn {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+        }
+        
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: #667eea;
+            margin: 3px 0;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+        
+        .burger-menu.active .burger-line:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+        
+        .burger-menu.active .burger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .burger-menu.active .burger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+        
+        .menu-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-width: 300px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        
+        .burger-menu.active .menu-dropdown {
+            max-height: 600px;
+            padding: 10px 0;
+            overflow-y: auto;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .menu-item:hover { background: #f8f9fa; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            font-weight: 500;
+        }
+        
+        .menu-item .download-r {
+            font-size: 0.8em;
+            color: #667eea;
+            margin-top: 5px;
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 40px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .analysis-content h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .analysis-content h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .analysis-content h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin: 30px 0 15px;
+        }
+        
+        .analysis-content h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 20px 0 10px;
+        }
+        
+        .analysis-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .analysis-content table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .analysis-content table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .analysis-content table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .figure-container {
+            margin: 30px 0;
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .figure-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .figure-caption {
+            margin-top: 15px;
+            font-style: italic;
+            color: #666;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .content { padding: 20px; }
+        }
+    </style>
+  <script src="UNIFIED_NAVIGATION.js"></script>
+</head>
+<body>
+    <div class="burger-menu" id="burgerMenu">
+        <div class="burger-btn" onclick="toggleMenu()">
+            <div class="burger-line"></div>
+            <div class="burger-line"></div>
+            <div class="burger-line"></div>
+        </div>
+        <div class="menu-dropdown">
+            <div class="menu-item">
+                <a href="data-flagging-results.html">📊 Main Results</a>
+            </div>
+            <div class="menu-item">
+                <a href="data-flagging-downloads.html">📥 Downloads & Resources</a>
+            </div>
+            <div class="menu-item">
+                <a href="obfcm-quality-checker.html">🔍 Quality Checker Tool</a>
+            </div>
+            <div class="menu-item">
+                <a href="index.html">🏠 Home</a>
+            </div>
+        </div>
+    </div>
+        <div class="menu-dropdown">
+            <div class="menu-item">
+                <a href="data-flagging-results.html">📊 Main Results</a>
+            </div>
+            <div class="menu-item">
+                <a href="paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_PATTERN_ANALYSIS.pdf" download>📄 Download PDF Report</a>
+            </div>
+            <div class="menu-item">
+                <a href="paper_a_analysis/data_cleaning_docs/DATA_CLEANING_DETAILED_LOG.txt" download>📋 Download Detailed Log (TXT)</a>
+                <div class="download-r">💻 R: download.file('URL_TO_LOG.txt', 'log.txt')</div>
+            </div>
+            <div class="menu-item">
+                <a href="paper_a_analysis/data_cleaning_docs/README.md" download>📚 Download README</a>
+                <div class="download-r">💻 R: download.file('URL_TO_README.md', 'README.md')</div>
+            </div>
+            <div class="menu-item">
+                <a href="obfcm-quality-checker.html">🔍 Quality Checker Tool</a>
+            </div>
+            <div class="menu-item">
+                <a href="index.html">🏠 Home</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Data Flagging Results</h1>
+            <p style="font-size: 1.3em; margin-top: 10px; text-align: center;">
+                Comprehensive Analysis of Flagged Vehicles in OBFCM<br />
+                <span style="display: block; margin-top: 5px;">2021-2023 Dataset</span>
+            </p>
+            <div style="margin-top: 30px;">
+                <a href="paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_PATTERN_ANALYSIS.pdf" class="download-btn" download>
+                    📄 Download PDF Report
+                </a>
+            </div>
+        </div>
+        
+        <div class="content analysis-content">
+<h1 id="flagged-vehicles-pattern-analysis">🔍 Flagged Vehicles Pattern
+Analysis</h1>
+<p><strong>📅 Date:</strong> December 24, 2024<br />
+<strong>📊 Dataset:</strong> OBFCM 2021-2023 PHEV data<br />
+<em>Original dataset: 7,732,320 records; PHEV subset: 995,511 records</em>
+<div style="margin-top: 15px;">
+    <button onclick="openRScriptSelectionModal()" class="download-btn" style="border: none; cursor: pointer;">
+        💻 R Script
+    </button>
+</div><br />
+<strong>🎯 Analysis Focus:</strong> Identifying patterns, correlations,
+and interesting connections in flagged vehicles</p>
+<hr />
+<h2 id="table-of-contents">📑 Table of Contents</h2>
+<ol type="1">
+<li><a href="#executive-summary">Executive Summary</a></li>
+<li><a href="#detailed-findings-by-filter-step">Detailed Findings by Filter Step</a>
+<ul>
+<li><a href="#step-1-cs-invalid-33348-vehicles-flagged">Step 1: CS Invalid</a></li>
+<li><a href="#step-2-missing-rw_ec-12554-vehicles-flagged">Step 2: Missing RW_EC</a></li>
+<li><a href="#step-3-missing-oem-model-5753-vehicles-flagged">Step 3: Missing OEM/Model</a></li>
+<li><a href="#step-4-rw_ec-zero-18779-vehicles-flagged">Step 4: RW_EC Zero</a></li>
+<li><a href="#step-5-vfn-issue-32363-vehicles-flagged">Step 5: VFN Issue</a></li>
+<li><a href="#step-6-physics-co2-fc-420-vehicles-flagged">Step 6: Physics CO2/FC</a></li>
+<li><a href="#step-7-mileage-fc-inconsistency-565-vehicles-flagged">Step 7: Mileage/FC Inconsistency</a></li>
+<li><a href="#step-8-eds-energy-violation-3506-vehicles-flagged">Step 8: EDS/Energy Violation</a></li>
+</ul></li>
+<li><a href="#cross-step-patterns">Cross-Step Patterns</a></li>
+<li><a href="#references">References</a></li>
+</ol>
+<hr />
+<h2 id="executive-summary">📋 Executive Summary</h2>
+<p>Analysis of flagged vehicles reveals several significant
+patterns:</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 41%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th>Filter Step</th>
+<th>Vehicles Flagged</th>
+<th>Key Finding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Step 1</strong> (CS Invalid)</td>
+<td>33,348</td>
+<td>Dominated by Stellantis group vehicles (Fiat, Jeep, Opel) and
+Mitsubishi Eclipse Cross</td>
+</tr>
+<tr>
+<td><strong>Step 2</strong> (Missing RW_EC)</td>
+<td>12,554</td>
+<td>Strongly associated with Hyundai models (Tucson, Santa Fe) and Ford
+vehicles</td>
+</tr>
+<tr>
+<td><strong>Step 4</strong> (RW_EC Zero)</td>
+<td>18,779</td>
+<td>Heavily dominated by Porsche Panamera and Cayenne E-Hybrid
+models</td>
+</tr>
+<tr>
+<td><strong>Step 3</strong> (Missing OEM/Model)</td>
+<td>5,753</td>
+<td>Vehicles with missing manufacturer or model information</td>
+</tr>
+<tr>
+<td><strong>Step 5</strong> (VFN Issue)</td>
+<td>32,363</td>
+<td>Volvo/Polestar models and Geely vehicles overrepresented</td>
+</tr>
+<tr>
+<td><strong>Step 6</strong> (Physics CO2/FC)</td>
+<td>420</td>
+<td>Physically implausible CO₂ or fuel consumption values</td>
+</tr>
+<tr>
+<td><strong>Step 7</strong> (Mileage/FC Inconsistency)</td>
+<td>565</td>
+<td>Logical impossibilities in mileage and fuel consumption</td>
+</tr>
+<tr>
+<td><strong>Step 8</strong> (EDS/Energy Violation)</td>
+<td>3,506</td>
+<td>EDS or energy values outside acceptable ranges</td>
+</tr>
+</tbody>
+</table>
+<h3 id="key-insights">Key Insights</h3>
+<ol type="1">
+<li><strong>Manufacturer Patterns</strong> - Stellantis group shows
+consistent data quality issues across multiple steps</li>
+<li><strong>Vehicle Characteristics</strong> - Flagged vehicles show
+systematic differences in mass, engine power, and electric range</li>
+<li><strong>Model-Specific Issues</strong> - Certain models (Porsche
+Panamera, Hyundai Tucson, Mitsubishi Eclipse Cross) show extreme
+overrepresentation</li>
+<li><strong>Data Quality Concerns</strong> - Patterns suggest both
+genuine vehicle characteristics and potential data reporting issues</li>
+</ol>
+
+<div class="figure-container">
+    <img src="paper_a_analysis/figures/filtering_step_totals.png" alt="Figure 1: Flag Totals by Step">
+    <div class="figure-caption">Figure 1: Flag Totals by Step</div>
+</div>
+
+<div class="figure-container">
+    <img src="paper_a_analysis/figures/filtering_oem_by_step.png" alt="Figure 2: OEM Distribution by Step">
+    <div class="figure-caption">Figure 2: OEM Distribution by Step</div>
+</div>
+<hr />
+<h2 id="detailed-findings-by-filter-step">📊 Detailed Findings by Filter
+Step</h2>
+<h3 id="step-1-cs-invalid-33348-vehicles-flagged">🔴 Step 1: CS Invalid
+(33,348 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with invalid
+Charge-Sustaining (CS) mode data</p>
+<h4 id="top-manufacturers">Top Manufacturers</h4>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 24%" />
+<col style="width: 30%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jaguar Land Rover Limited</td>
+<td>5,654</td>
+<td>16.95%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Fiat Group</td>
+<td>5,561</td>
+<td>16.68%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Volkswagen</td>
+<td>4,091</td>
+<td>12.27%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Ford Werke GmbH</td>
+<td>3,903</td>
+<td>11.70%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Skoda</td>
+<td>2,991</td>
+<td>8.97%</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-models-by-overrepresentation">Top Models (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mitsubishi Eclipse Cross</td>
+<td><strong>19,345%</strong> ⚠️</td>
+</tr>
+<tr>
+<td>Volkswagen Passat</td>
+<td><strong>10,020%</strong> ⚠️</td>
+</tr>
+<tr>
+<td>Jaguar E-PACE P300E R-Dynamic</td>
+<td><strong>9,502%</strong> ⚠️</td>
+</tr>
+<tr>
+<td>Opel Grandland X</td>
+<td><strong>8,542%</strong> ⚠️</td>
+</tr>
+</tbody>
+</table>
+<h4 id="vehicle-characteristics-comparison">Vehicle Characteristics
+Comparison</h4>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 24%" />
+<col style="width: 21%" />
+<col style="width: 16%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>Flagged Vehicles</th>
+<th>Clean Vehicles</th>
+<th>Difference</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mass</strong></td>
+<td>2,060 kg</td>
+<td>2,121 kg</td>
+<td>-2.89%</td>
+<td>⬇️ Lighter</td>
+</tr>
+<tr>
+<td><strong>TA_CO₂</strong></td>
+<td>37.4 g/km</td>
+<td>35.2 g/km</td>
+<td>+6.10%</td>
+<td>⬆️ Higher</td>
+</tr>
+<tr>
+<td><strong>Electric Range</strong></td>
+<td>77.5 km</td>
+<td>63.3 km</td>
+<td>+22.32%</td>
+<td>⬆️ Longer</td>
+</tr>
+<tr>
+<td><strong>Engine Displacement</strong></td>
+<td>1,642 cc</td>
+<td>1,863 cc</td>
+<td>-11.84%</td>
+<td>⬇️ Smaller</td>
+</tr>
+<tr>
+<td><strong>Engine Power</strong></td>
+<td>123 kW</td>
+<td>141 kW</td>
+<td>-12.92%</td>
+<td>⬇️ Lower</td>
+</tr>
+<tr>
+<td><strong>Total Mileage</strong></td>
+<td>19,807 km</td>
+<td>26,443 km</td>
+<td>-25.10%</td>
+<td>⬇️ Lower</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight">💡 Key Insight</h4>
+<p>Vehicles flagged in Step 1 tend to be <strong>lighter</strong> and
+have <strong>smaller engines</strong>, but paradoxically show
+<strong>higher CO₂ emissions</strong> and <strong>longer electric
+range</strong>. This suggests potential issues with: - Charge-sustaining
+mode operation - Data reporting in these specific models - Possible
+calibration or sensor issues</p>
+<h4 id="online-research-context">🌐 Online Research Context</h4>
+<ul>
+<li><strong>Jeep/Chrysler:</strong> Research shows these brands have
+high complaint rates (1,488 complaints per car for Jeep) and recall
+rates (1.06 for Jeep/Chrysler), suggesting broader quality control
+issues that may extend to data reporting.
+<ul>
+<li><a
+href="https://www.carscoops.com/2025/01/volvo-subaru-tesla-lead-study-with-most-5-star-safety-ratings/">Source:
+Carscoops - Safety Ratings Study</a></li>
+</ul></li>
+<li><strong>Mitsubishi Eclipse Cross PHEV:</strong> Limited specific
+information found, but the extreme overrepresentation suggests
+model-specific issues with CS mode data collection or reporting.</li>
+</ul>
+<hr />
+<h3 id="step-2-missing-rw_ec-12554-vehicles-flagged">🟠 Step 2: Missing
+RW_EC (12,554 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles missing Real-World Electric
+Consumption (RW_EC) data</p>
+<h4 id="top-manufacturers-1">Top Manufacturers</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ford Werke GmbH</td>
+<td>3,720</td>
+<td>29.63%</td>
+</tr>
+<tr>
+<td>Stellantis Auto</td>
+<td>3,352</td>
+<td>26.70%</td>
+</tr>
+<tr>
+<td>Skoda</td>
+<td>2,603</td>
+<td>20.73%</td>
+</tr>
+<tr>
+<td>BMW AG</td>
+<td>597</td>
+<td>4.76%</td>
+</tr>
+<tr>
+<td>Hyundai Czech</td>
+<td>590</td>
+<td>4.70%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-models-by-overrepresentation-1">Top Models (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hyundai Tucson/Tucson IX35</td>
+<td><strong>216,430%</strong> ⚠️⚠️</td>
+</tr>
+<tr>
+<td>Hyundai Santa Fe</td>
+<td><strong>110,157%</strong> ⚠️⚠️</td>
+</tr>
+</tbody>
+</table>
+<h4 id="vehicle-characteristics-comparison-1">Vehicle Characteristics
+Comparison</h4>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 24%" />
+<col style="width: 21%" />
+<col style="width: 16%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>Flagged Vehicles</th>
+<th>Clean Vehicles</th>
+<th>Difference</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mass</strong></td>
+<td>1,926 kg</td>
+<td>2,122 kg</td>
+<td>-9.21%</td>
+<td>⬇️ Lighter</td>
+</tr>
+<tr>
+<td><strong>TA_CO₂</strong></td>
+<td>28.9 g/km</td>
+<td>35.4 g/km</td>
+<td>-18.20%</td>
+<td>⬇️ Lower</td>
+</tr>
+<tr>
+<td><strong>Engine Power</strong></td>
+<td>120 kW</td>
+<td>141 kW</td>
+<td>-14.85%</td>
+<td>⬇️ Lower</td>
+</tr>
+<tr>
+<td><strong>Total Mileage</strong></td>
+<td>18,907 km</td>
+<td>26,314 km</td>
+<td>-28.15%</td>
+<td>⬇️ Lower</td>
+</tr>
+<tr>
+<td><strong>FC_Tot</strong> (Total Fuel Consumption)</td>
+<td>1,011 L</td>
+<td>1,610 L</td>
+<td>-37.18%</td>
+<td>⬇️ Lower</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-1">💡 Key Insight</h4>
+<p>Missing RW_EC is <strong>strongly associated</strong> with Hyundai
+models (Tucson, Santa Fe) and Ford vehicles. These vehicles tend to be:
+- <strong>Lighter</strong> than average - Have <strong>lower
+emissions</strong> - Have <strong>lower total fuel consumption</strong>
+- May be <strong>newer models</strong> or have <strong>different
+monitoring systems</strong></p>
+<h4 id="online-research-context-1">🌐 Online Research Context</h4>
+<ul>
+<li><strong>Hyundai/Kia:</strong> Recent recalls affecting millions of
+vehicles, though not specifically related to PHEV data reporting. The
+extreme overrepresentation of Hyundai models suggests potential issues
+with their OBFCM implementation or data transmission.
+<ul>
+<li><a
+href="https://apnews.com/article/ae2e71914fc229d70a4cceb089e465ce">Source:
+AP News - Hyundai/Kia Recalls</a></li>
+</ul></li>
+</ul>
+<hr />
+
+<h3 id="step-3-missing-oem-model-5753-vehicles-flagged">🟡 Step 3: Missing OEM/Model (5,753 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with missing manufacturer or model information</p>
+<h4 id="top-manufacturers-2">Top Manufacturers</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Volvo</td>
+<td>1,270</td>
+<td>22.06%</td>
+</tr>
+<tr>
+<td>Peugeot</td>
+<td>461</td>
+<td>8.00%</td>
+</tr>
+<tr>
+<td>Missing (NA)</td>
+<td>449</td>
+<td>7.80%</td>
+</tr>
+<tr>
+<td>Audi</td>
+<td>224</td>
+<td>3.89%</td>
+</tr>
+<tr>
+<td>SEAT</td>
+<td>117</td>
+<td>2.03%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-1">💡 Key Insight</h4>
+<p>Step 3 flags vehicles with missing OEM or Model information. This is a data quality issue that affects vehicle identification and analysis. Volvo vehicles show the highest number of missing information cases, followed by Peugeot.</p>
+<hr />
+<h3 id="step-4-rw_ec-zero-18779-vehicles-flagged">🔵 Step 4: RW_EC Zero
+(18,779 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles reporting zero Real-World
+Electric Consumption (indicating no electric mode usage)</p>
+<h4 id="top-manufacturers-by-overrepresentation">Top Manufacturers (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Porsche</td>
+<td><strong>225,325%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Ferrari</td>
+<td>420%</td>
+</tr>
+<tr>
+<td>Suzuki</td>
+<td>378%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-models-by-overrepresentation-2">Top Models (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Porsche Panamera 4S E-Hybrid</td>
+<td><strong>4,426,839%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Porsche Panamera 4 E-Hybrid</td>
+<td><strong>2,691,396%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Porsche Panamera 4</td>
+<td><strong>1,187,172%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Porsche Cayenne E-Hybrid</td>
+<td><strong>164,224%</strong> ⚠️⚠️</td>
+</tr>
+</tbody>
+</table>
+<h4 id="vehicle-characteristics-comparison-2">Vehicle Characteristics
+Comparison</h4>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 24%" />
+<col style="width: 21%" />
+<col style="width: 16%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>Flagged Vehicles</th>
+<th>Clean Vehicles</th>
+<th>Difference</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mass</strong></td>
+<td>2,350 kg</td>
+<td>2,115 kg</td>
+<td>+11.11%</td>
+<td>⬆️ Heavier</td>
+</tr>
+<tr>
+<td><strong>TA_CO₂</strong></td>
+<td>57.3 g/km</td>
+<td>34.9 g/km</td>
+<td>+64.36%</td>
+<td>⬆️ Much Higher</td>
+</tr>
+<tr>
+<td><strong>Electric Range</strong></td>
+<td>53.3 km</td>
+<td>64.0 km</td>
+<td>-16.75%</td>
+<td>⬇️ Shorter</td>
+</tr>
+<tr>
+<td><strong>Engine Displacement</strong></td>
+<td>2,513 cc</td>
+<td>1,842 cc</td>
+<td>+36.39%</td>
+<td>⬆️ Much Larger</td>
+</tr>
+<tr>
+<td><strong>Engine Power</strong></td>
+<td>213 kW</td>
+<td>139 kW</td>
+<td>+52.74%</td>
+<td>⬆️ Much Higher</td>
+</tr>
+<tr>
+<td><strong>FC_Tot</strong> (Total Fuel Consumption)</td>
+<td>2,198 L</td>
+<td>1,591 L</td>
+<td>+38.20%</td>
+<td>⬆️ Higher</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-2">💡 Key Insight</h4>
+<p>This is the <strong>most striking pattern</strong> - Porsche luxury
+PHEVs (Panamera, Cayenne) are reporting <strong>zero electric
+consumption</strong>. These are: - <strong>High-performance</strong>
+vehicles - <strong>Heavy</strong> vehicles (2,350 kg average) -
+<strong>Large engines</strong> (2,513 cc average) - <strong>High
+power</strong> (213 kW average)</p>
+<p><strong>Possible explanations for zero RW_EC:</strong> 1. 🔋
+<strong>Battery issues</strong> preventing electric mode operation 2. 🚗
+<strong>Driver behavior</strong> (not charging vehicles) 3. 📊
+<strong>Data reporting problems</strong> specific to Porsche’s OBFCM
+implementation 4. ⚙️ <strong>Design issues</strong> where electric mode
+is rarely engaged</p>
+<hr />
+<h3 id="step-5-vfn-issue-32363-vehicles-flagged">🟣 Step 5: VFN Issue
+(32,363 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicle Family Name (VFN) validation
+failures</p>
+<h4 id="top-manufacturers-by-overrepresentation-1">Top Manufacturers (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Geely</td>
+<td><strong>529,641%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Ferrari</td>
+<td>3,379%</td>
+</tr>
+<tr>
+<td>Opel Automobile</td>
+<td>1,619%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-models-by-overrepresentation-3">Top Models (by
+Overrepres
+<h3 id="step-6-physics-co2-fc-420-vehicles-flagged">🟢 Step 6: Physics CO2/FC (420 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with physically implausible CO₂ or fuel consumption values</p>
+<p><strong>Criteria:</strong> FCgap_perc > 1800 OR TA_CO2 >= 190 OR RW_CO2 > 800</p>
+<h4 id="top-manufacturers-3">Top Manufacturers</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mercedes-Benz</td>
+<td>280</td>
+<td>66.67%</td>
+</tr>
+<tr>
+<td>Land Rover</td>
+<td>99</td>
+<td>23.57%</td>
+</tr>
+<tr>
+<td>Ferrari</td>
+<td>14</td>
+<td>3.33%</td>
+</tr>
+<tr>
+<td>BMW</td>
+<td>8</td>
+<td>1.90%</td>
+</tr>
+<tr>
+<td>Volvo</td>
+<td>6</td>
+<td>1.43%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-4">💡 Key Insight</h4>
+<p>Step 6 flags vehicles with physically impossible values, suggesting data reporting errors or sensor malfunctions. Mercedes-Benz vehicles, particularly GLC models, show the highest incidence of physics violations.</p>
+<hr />
+
+<h3 id="step-7-mileage-fc-inconsistency-565-vehicles-flagged">🟠 Step 7: Mileage/FC Inconsistency (565 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with inconsistent mileage and fuel consumption relationships</p>
+<p><strong>Criteria:</strong> Logical impossibilities such as fuel consumption without distance, or large distance with zero fuel</p>
+<h4 id="breakdown-by-inconsistency-type">Breakdown by Inconsistency Type</h4>
+<table>
+<thead>
+<tr>
+<th>Inconsistency Type</th>
+<th>Vehicles Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CD engine-on (mileage=0, FC>0.1)</td>
+<td>196</td>
+</tr>
+<tr>
+<td>CS zero distance (mileage=0, FC>0.1)</td>
+<td>27</td>
+</tr>
+<tr>
+<td>CI zero distance (mileage=0, FC>3)</td>
+<td>359</td>
+</tr>
+<tr>
+<td>CS large distance, zero fuel (mileage>100, FC=0)</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-5">💡 Key Insight</h4>
+<p>Step 7 identifies logical impossibilities in the data, such as reporting fuel consumption without corresponding distance traveled. These inconsistencies suggest data collection or reporting errors.</p>
+<hr />
+
+<h3 id="step-8-eds-energy-violation-3506-vehicles-flagged">🔵 Step 8: EDS/Energy Violation (3,506 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with EDS or energy values outside acceptable ranges</p>
+<p><strong>Criteria:</strong> EDS outside 0-100%, negative energy values, or energy accounting inconsistencies</p>
+<h4 id="breakdown-by-violation-type">Breakdown by Violation Type</h4>
+<table>
+<thead>
+<tr>
+<th>Violation Type</th>
+<th>Vehicles Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EDS bounds violations (outside 0-100%)</td>
+<td>4,396</td>
+</tr>
+<tr>
+<td>Negative energy values</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Energy identity violations</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-manufacturers-4">Top Manufacturers</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Missing (NA)</td>
+<td>21,395</td>
+<td>85.12%</td>
+</tr>
+<tr>
+<td>Jeep</td>
+<td>3,210</td>
+<td>12.77%</td>
+</tr>
+<tr>
+<td>Opel</td>
+<td>322</td>
+<td>1.28%</td>
+</tr>
+<tr>
+<td>Peugeot</td>
+<td>300</td>
+<td>1.19%</td>
+</tr>
+<tr>
+<td>Volvo</td>
+<td>245</td>
+<td>0.97%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-6">💡 Key Insight</h4>
+<p>Step 8 flags vehicles with EDS values outside the physically possible range of 0-100%. Most violations occur in vehicles with missing OEM information, suggesting data quality issues in identification and reporting.</p>
+<hr />
+entation)</h4>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Volvo V60 T6 Twin Engine</td>
+<td><strong>133,677%</strong> ⚠️⚠️</td>
+</tr>
+<tr>
+<td>Polestar 1</td>
+<td><strong>111,381%</strong> ⚠️⚠️</td>
+</tr>
+<tr>
+<td>Volvo XC90 T8 Twin Engine</td>
+<td><strong>92,057%</strong> ⚠️⚠️</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-3">💡 Key Insight</h4>
+<p>VFN issues are <strong>primarily</strong> with: -
+<strong>Volvo/Polestar models</strong> (owned by Geely) - <strong>Other
+Geely-owned brands</strong></p>
+<p>This suggests: - VFN whitelist may need updating - Naming
+inconsistencies in Geely’s reporting - Corporate structure changes
+affecting data standardization</p>
+<h4 id="online-research-context-2">🌐 Online Research Context</h4>
+<ul>
+<li><strong>Geely-Volvo Relationship:</strong> Geely acquired Volvo Cars
+in 2010, explaining VFN naming inconsistencies between different
+reporting systems.</li>
+</ul>
+<hr />
+<h2 id="cross-step-patterns">🔗 
+
+<h2 id="flag-combination-visualizations">📊 Flag Combination Visualizations</h2>
+<p>The following figures show the distribution of flag combinations across all vehicles. Flag codes represent which filtering steps were triggered:</p>
+<ul>
+<li><strong>1</strong> = CS Invalid, <strong>2</strong> = Missing RW_EC, <strong>3</strong> = Missing OEM/Model, <strong>4</strong> = RW_EC Zero</li>
+<li><strong>5</strong> = VFN Issue, <strong>6</strong> = Physics CO2/FC, <strong>7</strong> = Mileage/FC Inconsistency, <strong>8</strong> = EDS/Energy Violation</li>
+<li><strong>0</strong> = Clean vehicles with no flags</li>
+</ul>
+<p><strong>How combinations work:</strong> Multi-digit codes combine steps. Examples: '5' = Step 5 only (VFN Issue), '12' = Steps 1+2 (CS Invalid + Missing RW_EC), '45' = Steps 4+5 (RW_EC Zero + VFN Issue), '58' = Steps 5+8 (VFN Issue + EDS/Energy Violation)</p>
+
+<div class="figure-container">
+    <img src="paper_a_analysis/figures/filtering_flag_combinations.png" alt="Figure 3: Flag Combinations">
+    <div class="figure-caption">Figure 3: Flag Combinations</div>
+</div>
+
+<div class="figure-container">
+    <img src="paper_a_analysis/figures/filtering_flag_combinations_detailed.png" alt="Figure 4: Detailed Flag Combinations">
+    <div class="figure-caption">Figure 4: Detailed Flag Combinations</div>
+</div>
+
+<div class="figure-container">
+    <img src="paper_a_analysis/figures/filtering_clean_vs_flagged.png" alt="Figure 5: Clean vs Flagged Vehicle Characteristics">
+    <div class="figure-caption">Figure 5: Clean vs Flagged Vehicle Characteristics</div>
+</div>
+
+<hr />
+Cross-Step Patterns</h2>
+<h3 id="stellantis-group-fiat-opel-peugeot-chrysler-jeep">🏢 Stellantis
+Group (Fiat, Opel, Peugeot, Chrysler, Jeep)</h3>
+<p><strong>Consistent Issues Across Multiple Steps:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Filter Step</th>
+<th>Issue Type</th>
+<th>Affected Brands</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Step 1</td>
+<td>CS Invalid</td>
+<td>Fiat, Opel, Jeep</td>
+</tr>
+<tr>
+<td>Step 2</td>
+<td>Missing RW_EC</td>
+<td>Stellantis Auto</td>
+</tr>
+<tr>
+<td>Step 3</td>
+<td>Missing OEM/Model</td>
+<td>Stellantis Auto, Peugeot</td>
+</tr>
+<tr>
+<td>Step 8</td>
+<td>EDS/Energy Violation</td>
+<td>Stellantis Europe, Fiat, Opel, PSA</td>
+</tr>
+</tbody>
+</table>
+<h4 id="analysis">Analysis</h4>
+<p>The consistent data quality issues across Stellantis brands
+suggest:</p>
+<ol type="1">
+<li><strong>Common OBFCM implementation</strong> across brands</li>
+<li><strong>Shared data reporting infrastructure</strong></li>
+<li><strong>Potential systemic issues</strong> in their PHEV monitoring
+systems</li>
+</ol>
+<h4 id="online-research-context-3">🌐 Online Research Context</h4>
+<ul>
+<li><strong>Stellantis Formation:</strong> Stellantis was formed in 2021
+from the merger of FCA (Fiat Chrysler Automobiles) and PSA (Peugeot
+Société Anonyme)</li>
+<li>The merger may have created integration challenges in data reporting
+systems</li>
+</ul>
+<hr />
+<h2 id="references">📚 References</h2>
+<h3 id="online-research-sources">Online Research Sources</h3>
+<ol type="1">
+<li><strong>Jeep/Chrysler Quality Issues:</strong>
+<ul>
+<li><a
+href="https://www.carscoops.com/2025/01/volvo-subaru-tesla-lead-study-with-most-5-star-safety-ratings/">Carscoops:
+Volvo, Subaru, Tesla Lead Study with Most 5-Star Safety Ratings</a></li>
+<li>Jeep: 1,488 complaints per car, recall rate of 1.06</li>
+</ul></li>
+<li><strong>Hyundai/Kia Recalls:</strong>
+<ul>
+<li><a
+href="https://apnews.com/article/ae2e71914fc229d70a4cceb089e465ce">AP
+News: Millions of recalled Hyundai and Kia vehicles with dangerous
+defect remain on road</a></li>
+</ul></li>
+<li><strong>Automotive Recall Statistics:</strong>
+<ul>
+<li><a
+href="https://www.autoinsurance.com/research/car-recall-facts-statistics/">AutoInsurance.com:
+Car Recall Facts &amp; Statistics</a></li>
+<li>Ford: 94 recalls affecting 5.6M vehicles (2024-2025)</li>
+<li>Tesla: 20 recalls affecting 5.8M vehicles</li>
+</ul></li>
+<li><strong>Stellantis Formation:</strong>
+<ul>
+<li>Stellantis formed in 2021 from merger of FCA (Fiat Chrysler
+Automobiles) and PSA (Peugeot Société Anonyme)</li>
+</ul></li>
+<li><strong>Geely-Volvo Relationship:</strong>
+<ul>
+<li>Geely acquired Volvo Cars in 2010, explaining VFN naming
+inconsistencies</li>
+</ul></li>
+</ol>
+<h3 id="data-sources">Data Sources</h3>
+<ul>
+<li><strong>OBFCM dataset analysis</strong> (2021-2023)</li>
+<li><strong>Pattern analysis</strong> using statistical tests (t-tests,
+overrepresentation analysis)</li>
+<li><strong>Internal flagging statistics</strong> from cleaning
+pipeline</li>
+</ul>
+<hr />
+<h2 id="important-notes">📌 Important Notes</h2>
+<blockquote>
+<p><strong>⚠️ Disclaimer:</strong> This analysis is based on OBFCM data
+from 2021-2023. Patterns may reflect both genuine vehicle
+characteristics and data quality issues. Further investigation with
+manufacturers is recommended for flagged models.</p>
+</blockquote>
+<h3 id="recommendations">Recommendations</h3>
+<ol type="1">
+<li><strong>Contact manufacturers</strong> for flagged models to verify
+data reporting accuracy</li>
+<li><strong>Update VFN whitelist</strong> to include Geely/Volvo naming
+variations</li>
+<li><strong>Investigate Porsche OBFCM implementation</strong> for zero
+RW_EC reporting</li>
+<li><strong>Review Stellantis data pipeline</strong> for systemic
+issues</li>
+<li><strong>Monitor Hyundai models</strong> for missing RW_EC data in
+future datasets</li>
+</ol>
+<hr />
+<p><strong>Document Version:</strong> 1.0<br />
+<strong>Last Updated:</strong> December 24, 2024<br />
+<strong>Author:</strong> Data Analysis Team</p>
+<!-- R Script Selection and Preview Modal -->
+<div id="rScriptSelectionModal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow: auto;">
+    <div style="background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 60%; max-width: 500px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); text-align: center;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #667eea;">Select R Script Version</h2>
+            <span onclick="closeRScriptSelectionModal()" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <button onclick="openRScriptPreview('mac')" class="download-btn" style="border: none; cursor: pointer; padding: 15px; font-size: 16px;">
+                💻 Mac/Linux Version
+            </button>
+            <button onclick="openRScriptPreview('windows')" class="download-btn" style="border: none; cursor: pointer; padding: 15px; font-size: 16px;">
+                💻 Windows Version
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="rScriptModal" style="display: none; position: fixed; z-index: 10001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow: auto;">
+    <div style="background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 900px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #667eea;">R Script Preview</h2>
+            <span onclick="closeRScriptModal()" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+        </div>
+        <div id="rScriptContent" style="background: #f8f9fa; padding: 15px; border-radius: 5px; max-height: 60vh; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; border: 1px solid #ddd;"></div>
+        <div style="margin-top: 20px; text-align: right;">
+            <button onclick="downloadRScript()" class="download-btn" style="border: none; cursor: pointer; margin-right: 10px;">
+                💾 Download File
+            </button>
+            <button onclick="closeRScriptModal()" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById('burgerMenu');
+    if (menu) {
+        menu.classList.toggle('active');
+    }
+}
+</script>
+
+<script>
+const rScriptContents = {
+    mac: "#!/usr/bin/env Rscript\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(here)\n})\n\nset.seed(42)\n\ndf <- read_rds(here(\"paper_a_analysis/data/processed/obfcm_phevs_flagged_full.rds\"))\nflag_cols <- grep(\"^flag_\", names(df), value = TRUE)\n\nmessage(\"Analyzing patterns...\")\n\nanalyze_flagged <- function(df, flag_col, step_name) {\n  flagged <- df[df[[flag_col]], ]\n  clean <- df[!df[[flag_col]], ]\n  if (nrow(flagged) == 0) return(NULL)\n  \n  comparisons <- list()\n  numeric_vars <- c(\"Mass\", \"TA_CO2\", \"Electric_range\", \"Engine_displacement\", \n                    \"Engine_power\", \"drive_battery_capacity_kwh\", \"Mileage_Tot\",\n                    \"FC_Tot\", \"RW_EC\", \"Mileage_CS\", \"FC_CS\")\n  \n  for (var in numeric_vars) {\n    if (var %in% names(df)) {\n      flagged_vals <- flagged[[var]][!is.na(flagged[[var]])]\n      clean_vals <- clean[[var]][!is.na(clean[[var]])]\n      if (length(flagged_vals) > 10 && length(clean_vals) > 10) {\n        test_result <- tryCatch(t.test(flagged_vals, clean_vals), error = function(e) NULL)\n        if (!is.null(test_result) && test_result$p.value < 0.05) {\n          comparisons[[var]] <- list(\n            flagged_mean = mean(flagged_vals),\n            clean_mean = mean(clean_vals),\n            diff_pct = (mean(flagged_vals) - mean(clean_vals)) / mean(clean_vals) * 100,\n            p_value = test_result$p.value\n          )\n        }\n      }\n    }\n  }\n  \n  cat_comparisons <- list()\n  cat_vars <- c(\"OEM\", \"Model\", \"Fuel_type\", \"Gearbox\", \"segment\", \"Country\", \"Region\")\n  \n  for (var in cat_vars) {\n    if (var %in% names(df)) {\n      flagged_tab <- table(flagged[[var]], useNA = \"no\")\n      clean_tab <- table(clean[[var]], useNA = \"no\")\n      if (length(flagged_tab) == 0 || length(clean_tab) == 0) next\n      \n      all_cats <- unique(c(names(flagged_tab), names(clean_tab)))\n      flagged_aligned <- setNames(rep(0, length(all_cats)), all_cats)\n      clean_aligned <- setNames(rep(0, length(all_cats)), all_cats)\n      flagged_aligned[names(flagged_tab)] <- as.numeric(flagged_tab)\n      clean_aligned[names(clean_tab)] <- as.numeric(clean_tab)\n      \n      flagged_pct <- flagged_aligned / sum(flagged_aligned) * 100\n      clean_pct <- clean_aligned / sum(clean_aligned) * 100\n      \n      overrep <- numeric(length(all_cats))\n      names(overrep) <- all_cats\n      for (cat in all_cats) {\n        clean_val <- clean_pct[cat]\n        flagged_val <- flagged_pct[cat]\n        if (!is.na(clean_val) && clean_val > 0) {\n          overrep[cat] <- (flagged_val - clean_val) / clean_val * 100\n        } else if (!is.na(flagged_val) && flagged_val > 0) {\n          overrep[cat] <- 999\n        }\n      }\n      overrep <- overrep[!is.na(overrep) & overrep > 20]\n      if (length(overrep) > 0) {\n        cat_comparisons[[var]] <- head(sort(overrep, decreasing = TRUE), 10)\n      }\n    }\n  }\n  \n  list(\n    step = step_name,\n    n_flagged = nrow(flagged),\n    numeric_differences = comparisons,\n    categorical_overrepresentation = cat_comparisons,\n    top_oems = head(sort(table(flagged$OEM), decreasing = TRUE), 10),\n    top_models = head(sort(table(flagged$Model), decreasing = TRUE), 10)\n  )\n}\n\nstep_names <- c(\n  \"flag_cs_invalid\" = \"Step 1: CS Invalid\",\n  \"flag_missing_rw_ec\" = \"Step 2: Missing RW_EC\",\n  \"flag_missing_oem_model\" = \"Step 3: Missing OEM/Model\",\n  \"flag_rw_ec_zero\" = \"Step 4: RW_EC Zero\",\n  \"flag_vfn_issue\" = \"Step 5: VFN Issue\",\n  \"flag_physics_co2_fc\" = \"Step 6: Physics CO2/FC\",\n  \"flag_mileage_fc_incons\" = \"Step 7: Mileage/FC Inconsistency\",\n  \"flag_eds_energy_violation\" = \"Step 8: EDS/Energy Violation\"\n)\n\nall_analyses <- list()\nfor (flag in flag_cols) {\n  if (flag %in% names(step_names)) {\n    message(glue::glue(\"Analyzing {step_names[flag]}...\"))\n    all_analyses[[flag]] <- analyze_flagged(df, flag, step_names[flag])\n  }\n}\n\nsaveRDS(all_analyses, here(\"paper_a_analysis/data/processed/flagged_patterns_analysis.rds\"))\n\nsummary_list <- list()\nfor (flag in names(all_analyses)) {\n  analysis <- all_analyses[[flag]]\n  if (!is.null(analysis)) {\n    if (length(analysis$numeric_differences) > 0) {\n      num_summary <- map_dfr(names(analysis$numeric_differences), function(var) {\n        x <- analysis$numeric_differences[[var]]\n        tibble(step = analysis$step, variable = var, flagged_mean = x$flagged_mean,\n               clean_mean = x$clean_mean, diff_pct = x$diff_pct, p_value = x$p_value)\n      })\n      summary_list[[paste0(flag, \"_numeric\")]] <- num_summary\n    }\n    if (length(analysis$top_oems) > 0) {\n      oem_summary <- tibble(step = analysis$step, OEM = names(analysis$top_oems),\n                            n_flagged = as.numeric(analysis$top_oems),\n                            pct_of_flagged = round(n_flagged / analysis$n_flagged * 100, 2))\n      summary_list[[paste0(flag, \"_oems\")]] <- oem_summary\n    }\n  }\n}\n\nif (length(summary_list) > 0) {\n  numeric_summary <- bind_rows(summary_list[grepl(\"_numeric$\", names(summary_list))])\n  oem_summary <- bind_rows(summary_list[grepl(\"_oems$\", names(summary_list))])\n  write_csv(numeric_summary, here(\"paper_a_analysis/tables/flagged_numeric_patterns.csv\"))\n  write_csv(oem_summary, here(\"paper_a_analysis/tables/flagged_oem_patterns.csv\"))\n}\n\nmessage(\"\\n=== COMPLETE ===\")\n",
+    windows: "# Windows version of Flagged Vehicles Pattern Analysis Script\n# This script is identical to the Mac/Linux version as R handles both path separators\n# File paths use forward slashes which work on both Windows and Unix systems\n\n#!/usr/bin/env Rscript\nsuppressPackageStartupMessages({\n  library(tidyverse)\n  library(here)\n})\n\nset.seed(42)\n\ndf <- read_rds(here(\"paper_a_analysis/data/processed/obfcm_phevs_flagged_full.rds\"))\nflag_cols <- grep(\"^flag_\", names(df), value = TRUE)\n\nmessage(\"Analyzing patterns...\")\n\nanalyze_flagged <- function(df, flag_col, step_name) {\n  flagged <- df[df[[flag_col]], ]\n  clean <- df[!df[[flag_col]], ]\n  if (nrow(flagged) == 0) return(NULL)\n  \n  comparisons <- list()\n  numeric_vars <- c(\"Mass\", \"TA_CO2\", \"Electric_range\", \"Engine_displacement\", \n                    \"Engine_power\", \"drive_battery_capacity_kwh\", \"Mileage_Tot\",\n                    \"FC_Tot\", \"RW_EC\", \"Mileage_CS\", \"FC_CS\")\n  \n  for (var in numeric_vars) {\n    if (var %in% names(df)) {\n      flagged_vals <- flagged[[var]][!is.na(flagged[[var]])]\n      clean_vals <- clean[[var]][!is.na(clean[[var]])]\n      if (length(flagged_vals) > 10 && length(clean_vals) > 10) {\n        test_result <- tryCatch(t.test(flagged_vals, clean_vals), error = function(e) NULL)\n        if (!is.null(test_result) && test_result$p.value < 0.05) {\n          comparisons[[var]] <- list(\n            flagged_mean = mean(flagged_vals),\n            clean_mean = mean(clean_vals),\n            diff_pct = (mean(flagged_vals) - mean(clean_vals)) / mean(clean_vals) * 100,\n            p_value = test_result$p.value\n          )\n        }\n      }\n    }\n  }\n  \n  cat_comparisons <- list()\n  cat_vars <- c(\"OEM\", \"Model\", \"Fuel_type\", \"Gearbox\", \"segment\", \"Country\", \"Region\")\n  \n  for (var in cat_vars) {\n    if (var %in% names(df)) {\n      flagged_tab <- table(flagged[[var]], useNA = \"no\")\n      clean_tab <- table(clean[[var]], useNA = \"no\")\n      if (length(flagged_tab) == 0 || length(clean_tab) == 0) next\n      \n      all_cats <- unique(c(names(flagged_tab), names(clean_tab)))\n      flagged_aligned <- setNames(rep(0, length(all_cats)), all_cats)\n      clean_aligned <- setNames(rep(0, length(all_cats)), all_cats)\n      flagged_aligned[names(flagged_tab)] <- as.numeric(flagged_tab)\n      clean_aligned[names(clean_tab)] <- as.numeric(clean_tab)\n      \n      flagged_pct <- flagged_aligned / sum(flagged_aligned) * 100\n      clean_pct <- clean_aligned / sum(clean_aligned) * 100\n      \n      overrep <- numeric(length(all_cats))\n      names(overrep) <- all_cats\n      for (cat in all_cats) {\n        clean_val <- clean_pct[cat]\n        flagged_val <- flagged_pct[cat]\n        if (!is.na(clean_val) && clean_val > 0) {\n          overrep[cat] <- (flagged_val - clean_val) / clean_val * 100\n        } else if (!is.na(flagged_val) && flagged_val > 0) {\n          overrep[cat] <- 999\n        }\n      }\n      overrep <- overrep[!is.na(overrep) & overrep > 20]\n      if (length(overrep) > 0) {\n        cat_comparisons[[var]] <- head(sort(overrep, decreasing = TRUE), 10)\n      }\n    }\n  }\n  \n  list(\n    step = step_name,\n    n_flagged = nrow(flagged),\n    numeric_differences = comparisons,\n    categorical_overrepresentation = cat_comparisons,\n    top_oems = head(sort(table(flagged$OEM), decreasing = TRUE), 10),\n    top_models = head(sort(table(flagged$Model), decreasing = TRUE), 10)\n  )\n}\n\nstep_names <- c(\n  \"flag_cs_invalid\" = \"Step 1: CS Invalid\",\n  \"flag_missing_rw_ec\" = \"Step 2: Missing RW_EC\",\n  \"flag_missing_oem_model\" = \"Step 3: Missing OEM/Model\",\n  \"flag_rw_ec_zero\" = \"Step 4: RW_EC Zero\",\n  \"flag_vfn_issue\" = \"Step 5: VFN Issue\",\n  \"flag_physics_co2_fc\" = \"Step 6: Physics CO2/FC\",\n  \"flag_mileage_fc_incons\" = \"Step 7: Mileage/FC Inconsistency\",\n  \"flag_eds_energy_violation\" = \"Step 8: EDS/Energy Violation\"\n)\n\nall_analyses <- list()\nfor (flag in flag_cols) {\n  if (flag %in% names(step_names)) {\n    message(glue::glue(\"Analyzing {step_names[flag]}...\"))\n    all_analyses[[flag]] <- analyze_flagged(df, flag, step_names[flag])\n  }\n}\n\nsaveRDS(all_analyses, here(\"paper_a_analysis/data/processed/flagged_patterns_analysis.rds\"))\n\nsummary_list <- list()\nfor (flag in names(all_analyses)) {\n  analysis <- all_analyses[[flag]]\n  if (!is.null(analysis)) {\n    if (length(analysis$numeric_differences) > 0) {\n      num_summary <- map_dfr(names(analysis$numeric_differences), function(var) {\n        x <- analysis$numeric_differences[[var]]\n        tibble(step = analysis$step, variable = var, flagged_mean = x$flagged_mean,\n               clean_mean = x$clean_mean, diff_pct = x$diff_pct, p_value = x$p_value)\n      })\n      summary_list[[paste0(flag, \"_numeric\")]] <- num_summary\n    }\n    if (length(analysis$top_oems) > 0) {\n      oem_summary <- tibble(step = analysis$step, OEM = names(analysis$top_oems),\n                            n_flagged = as.numeric(analysis$top_oems),\n                            pct_of_flagged = round(n_flagged / analysis$n_flagged * 100, 2))\n      summary_list[[paste0(flag, \"_oems\")]] <- oem_summary\n    }\n  }\n}\n\nif (length(summary_list) > 0) {\n  numeric_summary <- bind_rows(summary_list[grepl(\"_numeric$\", names(summary_list))])\n  oem_summary <- bind_rows(summary_list[grepl(\"_oems$\", names(summary_list))])\n  write_csv(numeric_summary, here(\"paper_a_analysis/tables/flagged_numeric_patterns.csv\"))\n  write_csv(oem_summary, here(\"paper_a_analysis/tables/flagged_oem_patterns.csv\"))\n}\n\nmessage(\"\\n=== COMPLETE ===\")\n"
+};
+
+const rScriptPaths = {
+    mac: 'paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_ANALYSIS.R',
+    windows: 'paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_ANALYSIS_Windows.R'
+};
+
+const rScriptNames = {
+    mac: 'FLAGGED_VEHICLES_ANALYSIS.R',
+    windows: 'FLAGGED_VEHICLES_ANALYSIS_Windows.R'
+};
+
+let currentPlatform = '';
+
+function openRScriptSelectionModal() {
+    document.getElementById('rScriptSelectionModal').style.display = 'block';
+}
+
+function closeRScriptSelectionModal() {
+    document.getElementById('rScriptSelectionModal').style.display = 'none';
+}
+
+function openRScriptPreview(platform) {
+    currentPlatform = platform;
+    const modal = document.getElementById('rScriptModal');
+    const content = document.getElementById('rScriptContent');
+    
+    // Use embedded content
+    content.textContent = rScriptContents[platform];
+    modal.style.display = 'block';
+    closeRScriptSelectionModal();
+}
+
+function closeRScriptModal() {
+    document.getElementById('rScriptModal').style.display = 'none';
+}
+
+function downloadRScript() {
+    const link = document.createElement('a');
+    link.href = rScriptPaths[currentPlatform];
+    link.download = rScriptNames[currentPlatform];
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Close modals when clicking outside
+document.addEventListener('click', function(event) {
+    const selectionModal = document.getElementById('rScriptSelectionModal');
+    const previewModal = document.getElementById('rScriptModal');
+    if (event.target == selectionModal) {
+        closeRScriptSelectionModal();
+    }
+    if (event.target == previewModal) {
+        closeRScriptModal();
+    }
+
+
+});
+</script>
+
+</body>
+</html>

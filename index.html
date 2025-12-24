@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Organizer - PHEV Research Portal</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📁</text></svg>">
+  <!-- Shared Features (load early) -->
+  <script src="SHARED_FEATURES.js"></script>
+  <script src="MODERN_UI_SYSTEM.js"></script>
+  <script src="UNIFIED_NAVIGATION.js"></script>
+  <script src="MODERN_FILE_EXPLORER.js"></script>
+  <script src="UNIVERSAL_FILE_EXPLORER.js"></script>
+  <script src="file_listing_api.js"></script>
+  <script src="MODAL_SYSTEM.js"></script>
+  <script src="BREADCRUMBS_SYSTEM.js"></script>
+  <script src="PROJECT_ORGANIZER.js"></script>
+  <script src="ADDITIONAL_FEATURES.js"></script>
+  <!-- AI Training System -->
+  <script src="AI_TRAINING_SYSTEM.js"></script>
+  <!-- Multi-Use Case System -->
+  <script src="MULTI_USE_CASE_SYSTEM.js"></script>
+  <!-- Project Import & Analysis -->
+  <script src="PROJECT_IMPORT_ANALYSIS.js"></script>
+  <!-- Editor Selector -->
+  <script src="EDITOR_SELECTOR.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-tertiary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --accent-dark: #2563eb;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --border-color: #e2e8f0;
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --border-radius-lg: 16px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-tertiary: #94a3b8;
+      --border-color: #334155;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    
+    /* Main Content */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    /* Paper Progression Button */
+    .paper-progression-banner {
+      background: var(--accent-gradient);
+      color: white;
+      padding: 2rem;
+      border-radius: var(--border-radius-lg);
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .paper-progression-banner h2 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .paper-progression-banner p {
+      opacity: 0.95;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .view-modes {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-secondary);
+      padding: 0.25rem;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid var(--border-color);
+    }
+    
+    .view-mode-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.875rem;
+    }
+    
+    .view-mode-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .view-mode-btn:hover:not(.active) {
+      background: var(--bg-tertiary);
+    }
+    
+    /* Projects Container */
+    #projectsContainer {
+      min-height: 400px;
+    }
+    
+    /* List View */
+    .project-item-list {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .project-item-list:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .project-item-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+    }
+    
+    .project-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--border-radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .project-info {
+      flex: 1;
+    }
+    
+    .project-info h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .project-info p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .project-meta {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+    }
+    
+    .project-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .project-folders-preview {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    
+    .folder-preview-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.875rem;
+    }
+    
+    .folder-preview-item:hover {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .folder-count {
+      color: var(--text-tertiary);
+      font-size: 0.8rem;
+    }
+    
+    /* Icons/Grid View */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .projects-grid-large {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    .project-item-icon,
+    .project-item-grid {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+    
+    .project-item-icon:hover,
+    .project-item-grid:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+    
+    .project-icon-large {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--border-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1rem;
+    }
+    
+    .project-item-icon h3,
+    .project-item-grid h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .project-item-icon p,
+    .project-item-grid p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    /* Folders View */
+    .project-folder-view {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+    }
+    
+    .project-folder-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+    
+    .project-folder-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .folder-tree-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .folder-tree-item:hover {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .folder-name {
+      flex: 1;
+    }
+    
+    /* Project View Modal */
+    .project-view-modal .project-folders-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .project-folder-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .project-folder-card:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .project-folder-card.add-folder {
+      border: 2px dashed var(--border-color);
+      background: transparent;
+    }
+    
+    .folder-icon-large {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .folder-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .folder-item:hover {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .item-icon {
+      font-size: 1.5rem;
+    }
+    
+    .item-name {
+      flex: 1;
+    }
+    
+    .item-arrow {
+      color: var(--text-tertiary);
+    }
+    
+    /* Empty State */
+    .no-folders {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Modal Styles */
+    .about-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(4px);
+    }
+    
+    .about-modal.show {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+    
+    .about-modal-content {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-lg);
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: scaleIn 0.2s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    .about-modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--accent-gradient);
+      color: white;
+    }
+    
+    .about-modal-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+    
+    .about-modal-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--border-radius-sm);
+      transition: var(--transition);
+    }
+    
+    .about-modal-close:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    .about-modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    
+    /* File Explorer Styles */
+    .file-explorer-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      background: var(--bg-secondary);
+      border-right: 2px solid var(--border-color);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 900;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      box-shadow: 2px 0 10px var(--shadow);
+    }
+    
+    .file-explorer-sidebar.open {
+      transform: translateX(0);
+    }
+    
+    .file-explorer-header {
+      padding: 1rem;
+      background: var(--accent-gradient);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .file-explorer-search {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .file-explorer-search input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    
+    .file-explorer-nav {
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .file-explorer-nav button {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    
+    .file-explorer-nav button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .file-tree {
+      list-style: none;
+      padding: 0.5rem;
+    }
+    
+    .file-tree-item {
+      padding: 0.5rem;
+      cursor: pointer;
+      border-radius: var(--border-radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .file-tree-item:hover {
+      background: var(--bg-tertiary);
+    }
+    
+    .file-tree-caret {
+      width: 12px;
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+    
+    .file-tree-folder.open .file-tree-caret {
+      transform: rotate(90deg);
+    }
+    
+    /* Project Tab Styles */
+    .project-view-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    
+    .project-tab {
+      padding: 0.75rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: var(--transition);
+    }
+    
+    .project-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    
+    .project-tab:hover {
+      color: var(--text-primary);
+    }
+    
+    .project-tab-content {
+      padding: 1rem 0;
+    }
+    
+    .settings-field {
+      margin-bottom: 1rem;
+    }
+    
+    .settings-field label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .main-container {
+        padding: 1rem;
+      }
+      
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="WELCOME_CARD.js"></script>
+</head>
+<body>
+  <!-- Header will be created by UNIFIED_NAVIGATION.js -->
+  <!-- Local header for page title (below unified header) -->
+  <div style="padding: 1.5rem 2rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color);">
+    <h1 style="font-size: 2rem; font-weight: 700; margin: 0; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">📁 Project Organizer</h1>
+    <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">Organize your research projects, papers, and resources</p>
+  </div>
+  
+  
+  <!-- Tools & Results Navigation -->
+  <div style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem;">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+      <span style="color: var(--text-secondary); font-weight: 600; margin-right: 0.5rem;">🔧 Tools:</span>
+      <a href="obfcm-quality-checker.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--accent-gradient); color: white; text-decoration: none; border-radius: var(--border-radius-sm); font-weight: 500; transition: var(--transition); box-shadow: var(--shadow-sm);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.transform=''; this.style.boxShadow='var(--shadow-sm)'">
+        🔍 OBFCM Quality Checker
+      </a>
+      <span style="color: var(--text-secondary); font-weight: 600; margin-left: 1rem; margin-right: 0.5rem;">📊 Results:</span>
+      <a href="data-flagging-results.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--bg-tertiary); color: var(--text-primary); text-decoration: none; border-radius: var(--border-radius-sm); font-weight: 500; transition: var(--transition); border: 1px solid var(--border-color);" onmouseover="this.style.background='var(--accent-light)'; this.style.color='white'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--bg-tertiary)'; this.style.color='var(--text-primary)'; this.style.transform=''">
+        📊 Flagging Results
+      </a>
+    </div>
+  </div>
+  
+<!-- Main Content -->
+  <div class="main-container">
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="view-modes">
+        <button class="view-mode-btn active" onclick="setViewMode('list')" data-mode="list">📋 List</button>
+        <button class="view-mode-btn" onclick="setViewMode('icons')" data-mode="icons">🎯 Icons</button>
+        <button class="view-mode-btn" onclick="setViewMode('folders')" data-mode="folders">📁 Folders</button>
+        <button class="view-mode-btn" onclick="setViewMode('grid')" data-mode="grid">⊞ Grid</button>
+      </div>
+      <button onclick="createProject()" class="btn-modern btn-modern-primary">
+        ➕ New Project
+      </button>
+    </div>
+    
+    <!-- Projects Container -->
+    <div id="projectsContainer">
+      <!-- Projects will be rendered here by PROJECT_ORGANIZER.js -->
+    </div>
+  </div>
+  
+  <!-- File Explorer Sidebar -->
+  <div class="file-explorer-sidebar" id="fileExplorerSidebar">
+    <div class="file-explorer-header">
+      <h3 style="margin: 0; font-size: 1.25rem; font-weight: 600;">📁 File Explorer</h3>
+      <button onclick="if(typeof window.toggleFileExplorer === 'function') window.toggleFileExplorer();" style="background: rgba(255,255,255,0.15); border: none; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 1.5rem;">×</button>
+    </div>
+    <div class="file-explorer-search">
+      <input type="text" id="fileExplorerSearch" placeholder="Search files..." oninput="if(typeof window.filterFileTree === 'function') window.filterFileTree(this.value)">
+    </div>
+    <div class="file-explorer-nav">
+      <button id="fileExplorerPrev" onclick="if(typeof window.navigateFile === 'function') window.navigateFile('prev')" disabled>◀ Prev</button>
+      <button id="fileExplorerNext" onclick="if(typeof window.navigateFile === 'function') window.navigateFile('next')" disabled>Next ▶</button>
+    </div>
+    <ul class="file-tree" id="fileTree">
+      <!-- Will be populated by JavaScript -->
+    </ul>
+  </div>
+  
+  <script>
+    // Initialize file explorer if functions are available
+    if (typeof window.toggleFileExplorer === 'function' && typeof window.buildFileTree === 'function') {
+      // File explorer will be initialized when opened
+    } else {
+      // Load file explorer functions from paper_progression if needed
+      // For now, show a message
+      const sidebar = document.getElementById('fileExplorerSidebar');
+      if (sidebar) {
+        const tree = document.getElementById('fileTree');
+        if (tree) {
+          tree.innerHTML = '<li style="padding: 1rem; color: var(--text-secondary);">File explorer functions not loaded. Please refresh the page.</li>';
+        }
+      }
+    }
+  </script>
+  
+  <script>
+    // File Explorer for Homepage
+    function initFileExplorerForHomepage() {
+      const sidebar = document.getElementById('fileExplorerSidebar');
+      if (!sidebar) {
+        console.warn('File explorer sidebar not found on homepage');
+        return;
+      }
+      
+      // Toggle sidebar
+      sidebar.classList.toggle('open');
+      document.body.classList.toggle('sidebar-open');
+      
+      // If opening and tree is empty, show message
+      if (sidebar.classList.contains('open')) {
+        const tree = sidebar.querySelector('#fileTree');
+        if (tree && tree.innerHTML.trim() === '') {
+          tree.innerHTML = `
+            <li style="padding: 1rem; color: var(--text-secondary);">
+              <p>📁 File Explorer</p>
+              <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                Full file explorer is available on the <a href="paper_progression.html" style="color: var(--accent); text-decoration: underline;">Paper Progression</a> page.
+              </p>
+              <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                Or use the file explorer button in the unified navigation header.
+              </p>
+            </li>
+          `;
+        }
+      }
+    }
+    
+    // Make available globally
+    window.initFileExplorerForHomepage = initFileExplorerForHomepage;
+    
+    // Modal functions
+    function showProfileModal() {
+      // Remove any existing modals
+      document.querySelectorAll('.about-modal').forEach(m => m.remove());
+      
+      const modal = document.createElement('div');
+      modal.className = 'about-modal';
+      modal.style.display = 'flex';
+      modal.innerHTML = `
+        <div class="about-modal-content" style="max-width: 600px;">
+          <div class="about-modal-header">
+            <h3>👤 Profile & About</h3>
+            <span class="about-modal-close" onclick="this.closest('.about-modal').classList.remove('show'); setTimeout(() => this.closest('.about-modal').remove(), 200)">×</span>
+          </div>
+          <div class="about-modal-body">
+            <p>Profile and About information will be displayed here.</p>
+            ${typeof window.showUserProfile === 'function' 
+              ? '<button onclick="window.showUserProfile(); this.closest(\'.about-modal\').remove();" class="btn-modern btn-modern-primary">Open Full Profile</button>'
+              : typeof window.openAboutModal === 'function'
+              ? '<button onclick="window.openAboutModal(); this.closest(\'.about-modal\').remove();" class="btn-modern btn-modern-primary">Open About</button>'
+              : ''
+            }
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      setTimeout(() => modal.classList.add('show'), 10);
+      
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('show');
+          setTimeout(() => modal.remove(), 200);
+        }
+      };
+      
+      const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+          modal.classList.remove('show');
+          setTimeout(() => modal.remove(), 200);
+          document.removeEventListener('keydown', escapeHandler);
+        }
+      };
+      document.addEventListener('keydown', escapeHandler);
+    }
+    
+    function showSettingsModal() {
+      // Remove any existing modals
+      document.querySelectorAll('.about-modal').forEach(m => m.remove());
+      
+      const modal = document.createElement('div');
+      modal.className = 'about-modal';
+      modal.style.display = 'flex';
+      modal.innerHTML = `
+        <div class="about-modal-content" style="max-width: 600px;">
+          <div class="about-modal-header">
+            <h3>⚙️ Settings</h3>
+            <span class="about-modal-close" onclick="this.closest('.about-modal').classList.remove('show'); setTimeout(() => this.closest('.about-modal').remove(), 200)">×</span>
+          </div>
+          <div class="about-modal-body">
+            <p>Settings will be displayed here.</p>
+            ${typeof window.openSettings === 'function'
+              ? '<button onclick="window.openSettings(); this.closest(\'.about-modal\').remove();" class="btn-modern btn-modern-primary">Open Full Settings</button>'
+              : ''
+            }
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      setTimeout(() => modal.classList.add('show'), 10);
+      
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('show');
+          setTimeout(() => modal.remove(), 200);
+        }
+      };
+      
+      const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+          modal.classList.remove('show');
+          setTimeout(() => modal.remove(), 200);
+          document.removeEventListener('keydown', escapeHandler);
+        }
+      };
+      document.addEventListener('keydown', escapeHandler);
+    }
+    
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load projects
+      if (typeof loadProjects === 'function') {
+        loadProjects();
+      }
+      
+      // Update view mode buttons
+      const viewMode = localStorage.getItem('projectViewMode') || 'list';
+      document.querySelectorAll('.view-mode-btn').forEach(btn => {
+        if (btn.getAttribute('data-mode') === viewMode) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Load user if available
+      if (typeof window.loadUser === 'function') {
+        window.loadUser();
+      }
+    });
+    
+    // Override setViewMode to update UI
+    const originalSetViewMode = window.setViewMode;
+    window.setViewMode = function(mode) {
+      if (originalSetViewMode) originalSetViewMode(mode);
+      
+      // Update button states
+      document.querySelectorAll('.view-mode-btn').forEach(btn => {
+        if (btn.getAttribute('data-mode') === mode) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    };
+    
+    // Add stub functions for features that need HTML elements
+    // These create minimal functionality or redirect gracefully
+    if (typeof window.openSettings === 'undefined') {
+      window.openSettings = function() {
+        // Use the existing showSettingsModal function
+        if (typeof showSettingsModal === 'function') {
+          showSettingsModal();
+        } else {
+          alert('Settings functionality is available on the Paper Progression page.');
+        }
+      };
+    }
+    
+    if (typeof window.toggleSearch === 'undefined') {
+      window.toggleSearch = function() {
+        // Create a simple search prompt
+        const query = prompt('Search (full search available on Paper Progression page):');
+        if (query) {
+          // Simple redirect to paper_progression with search
+          window.location.href = 'paper_progression.html#search=' + encodeURIComponent(query);
+        }
+      };
+    }
+    
+    if (typeof window.toggleTimerWidget === 'undefined') {
+      window.toggleTimerWidget = function() {
+        // Redirect to paper_progression for timer
+        window.location.href = 'paper_progression.html';
+      };
+    }
+  </script>
+</body>
+</html>

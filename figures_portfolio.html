@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paper A: Figures Portfolio</title>
+  <!-- Project File Loader -->
+  <script src="PROJECT_FILE_LOADER.js"></script>
+  <!-- Global Resizable Portfolio System -->
+  <script src="RESIZABLE_PORTFOLIO.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
+      background: #f5f7fa; 
+      color: #1a1a1a; 
+      line-height: 1.6;
+      padding: 2rem;
+    }
+    header { 
+      background: linear-gradient(135deg, #0f4c81 0%, #1a6ba3 100%); 
+      color: #fff; 
+      padding: 2rem; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    header p { opacity: 0.9; font-size: 1.1rem; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #0f4c81;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .drive-button { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      padding: 12px 24px; 
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); 
+      color: white; 
+      border-radius: 8px; 
+      text-decoration: none; 
+      font-weight: 600; 
+      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+      transition: all 0.3s;
+      margin: 1rem 0;
+    }
+    .drive-button:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 16px rgba(66, 133, 244, 0.4);
+      text-decoration: none;
+      color: white;
+    }
+    .drive-section {
+      background: white;
+      border-left: 4px solid #4285f4;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+    }
+    .figures-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      transition: grid-template-columns 0.3s ease;
+    }
+    /* Responsive grid based on figure size - will be updated by JavaScript */
+    .figures-grid.small-figures {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    .figures-grid.medium-figures {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+    .figures-grid.large-figures {
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    }
+    .figures-grid.full-figures {
+      grid-template-columns: 1fr;
+    }
+    .figure-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+    .figure-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+    .figure-wrapper {
+      position: relative;
+      width: 100%;
+      padding: 1rem;
+      background: #f8f9fa;
+    }
+    .figure-image {
+      width: 100%;
+      height: 300px;
+      object-fit: contain;
+      background: #f8f9fa;
+      padding: 1rem;
+      display: block;
+      transition: opacity 0.3s;
+      cursor: pointer;
+    }
+    .figure-image[src=""] {
+      opacity: 0;
+    }
+    .figure-info {
+      padding: 1.5rem;
+    }
+    .figure-number {
+      font-weight: 600;
+      color: #0f4c81;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .figure-caption {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      overflow: auto;
+    }
+    .modal-content {
+      margin: 2% auto;
+      max-width: 90%;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+    }
+    .modal-image {
+      width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+    .modal-caption {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      color: #fff;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      background: rgba(0,0,0,0.5);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .close:hover { background: rgba(0,0,0,0.7); }
+    .search-box {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <a href="paper_progression.html" class="back-link">← Back to Paper Progression</a>
+  
+  <header>
+    <h1>Paper A: Figures Portfolio</h1>
+    <p>All figures with captions from the paper - displaying actual images from local figures folder</p>
+  </header>
+  
+  <input type="text" class="search-box" placeholder="Search figures by number or caption..." id="searchBox" onkeyup="searchFigures()">
+  
+  <div class="figures-grid" id="figuresGrid">
+    <!-- Figures will be loaded here -->
+  </div>
+  
+  <div id="figureModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div class="modal-content">
+      <img id="modalImage" class="modal-image" src="" alt="">
+      <div class="modal-caption" id="modalCaption"></div>
+    </div>
+  </div>
+  
+  <script>
+    // Figure data with full captions from paper
+    const figures = [
+      { number: 1, file: "figure1_energy_distribution.png", caption: "Distribution of total energy consumption [kWh/100 km] for PHEVs in the OBFCM 2021-2022 dataset (N = 260,243). The histogram shows a right-skewed distribution with mean 22.6 kWh/100 km and median 21.6 kWh/100 km." },
+      { number: 2, file: "figure2_eds_distribution.png", caption: "Distribution of Electric Driving Share (EDS) [%] for PHEVs in the OBFCM 2021-2022 dataset (N = 265,603). The distribution shows high variability with mean 30.5% and median 28.1%." },
+      { number: 3, file: "figure3_energy_vs_eds.png", caption: "Relationship between total energy consumption [kWh/100 km] and Electric Driving Share (EDS) [%]. Points are colored by All-Electric Range (AER) [km]. The GAM fit (red line) shows a decreasing trend with diminishing returns at high EDS values." },
+      { number: 4, file: "figure4_fleet_vs_campaign.png", caption: "Comparison of energy consumption and EDS between fleet-level (OBFCM) and campaign data. Campaign data were not available at the time of analysis." },
+      { number: 5, file: "figure5_variable_importance_lmg.png", caption: "Variable importance from Linear Model using LMG decomposition method." },
+      { number: "5a", file: "figure5a_variable_importance_gam.png", caption: "Variable importance from GAM model showing F-statistics for each predictor. Mass and engine power show the strongest effects, followed by AER and EDS." },
+      { number: "5b", file: "figure5b_variable_importance_rf.png", caption: "Variable importance from Random Forest model showing %IncMSE (Mean Decrease in MSE). Region (73% importance), engineered features (30-37% importance), and EDS (28% importance) are the most important predictors." },
+      { number: "5c", file: "figure5c_variable_importance_combined.png", caption: "Combined variable importance comparison across methods (LMG, GAM, Random Forest)." },
+      { number: 6, file: "figure6_model_comparison_final.png", caption: "Model performance comparison showing test R² for all modeling approaches using 26 clean variables. XGBoost achieves the highest individual model R² (73.71%), followed by Neural Network (73.22%), Random Forest (71.63%), and GAM (64.31%). The Ensemble (weighted average of all four models) achieves 73.54% test R², providing robust predictions by combining multiple diverse models." },
+      { number: "6b", file: "figure6b_comprehensive_metrics_comparison.png", caption: "Comprehensive metrics comparison showing all performance metrics (R², RMSE, MAE, MAPE) for all models using 26 clean variables. This multi-metric view enables comprehensive assessment of model performance across different error measures. XGBoost performs best on most metrics, while the Ensemble provides robust performance by combining all models." },
+      { number: "6c", file: "figure6c_train_test_comparison.png", caption: "Train vs Test R² comparison showing generalization performance. Models with similar train and test R² indicate good generalization, while large gaps suggest overfitting. Most models show good generalization with test R² close to train R², indicating robust model performance." },
+      { number: "7a", file: "figure7a_residuals_vs_predicted.png", caption: "Residuals vs predicted values for Random Forest model. Residuals are approximately centered around zero with no strong patterns, indicating good model fit across the range of energy consumption values." },
+      { number: "7b", file: "figure7b_residuals_vs_eds.png", caption: "Residuals vs Electric Driving Share (EDS) for Random Forest model. Residuals show relatively uniform distribution across EDS ranges, suggesting the model captures EDS effects well, with slightly higher errors in extreme EDS quartiles." },
+      { number: "7c", file: "figure7c_residuals_vs_mass.png", caption: "Residuals vs vehicle mass for Random Forest model. Residuals are relatively uniform across mass ranges, indicating the model captures mass effects adequately without systematic biases." },
+      { number: "7d", file: "figure7d_residuals_qq.png", caption: "Q-Q plot of residuals for Random Forest model. Residuals approximate normality, supporting model assumptions and indicating that the model's errors are well-behaved." },
+      { number: "7e", file: "figure7e_residuals_distribution.png", caption: "Distribution of residuals for Random Forest model. Residuals are approximately normally distributed with mean near zero (-0.0046) and standard deviation of 3.11 kWh/100 km, indicating good model fit." },
+      { number: "7f", file: "figure7f_residuals_by_eds_quartile.png", caption: "Absolute residuals by EDS quartiles. Prediction accuracy is relatively consistent across EDS ranges, with slightly higher errors in extreme quartiles (very low or very high EDS), suggesting that the model performs well across the full range of electric driving shares." },
+      { number: 18, file: "figure18_eds_by_country.png", caption: "Mean Electric Driving Share by country, colored by region. Countries are ordered by mean EDS, showing substantial variation across countries. Southern European countries (orange) tend to show higher EDS values, while variation exists within each region." },
+      { number: 19, file: "figure19_eds_by_region.png", caption: "Distribution of Electric Driving Share by region (individual vehicle-level data). Boxplots show the full distribution of EDS values within each region, revealing substantial within-region variability. The median EDS ranges from approximately 28% (Northern) to 32% (Southern), with wide interquartile ranges indicating high variability." },
+      { number: 20, file: "figure20_energy_vs_eds_country.png", caption: "Energy consumption vs Electric Driving Share by country. Each point represents a country, colored by region, with point size proportional to fleet size. The negative relationship between EDS and energy consumption is evident, with higher EDS associated with lower energy consumption. The dashed line shows the linear trend." },
+      { number: 21, file: "figure21_eds_categories_region.png", caption: "Distribution of EDS categories by region. Stacked bars show the number of countries in each EDS category (High: >50%, Medium: 20-50%, Low: <20%) within each region. All regions show predominantly medium EDS countries, with no countries achieving high EDS (>50%) at the country level." },
+      { number: 23, file: "figure23_regional_summary.png", caption: "Regional summary comparison showing mean EDS, mean energy consumption, and mean temperature (where available) by region. This figure provides a comprehensive overview of regional differences in PHEV performance metrics." },
+      { number: 25, file: "figure25_eds_map_choropleth.png", caption: "Choropleth map showing mean Electric Driving Share by country across Europe. Countries are colored by mean EDS value, with warmer colors (green) indicating higher EDS and cooler colors (red) indicating lower EDS. The map reveals geographical patterns in EDS, with Southern European countries generally showing higher values." },
+      { number: 26, file: "figure26_regional_map.png", caption: "Choropleth map showing European regions with EuroVoc classification colors. Northern Europe (blue), Southern Europe (orange), Western Europe (green), and Central & Eastern Europe (purple) are clearly distinguished, providing geographical context for regional EDS analysis." },
+      { number: 27, file: "figure27_eds_threshold_analysis.png", caption: "EDS threshold analysis by region. Stacked bars show the distribution of vehicles across EDS categories (High: >50%, Medium: 20-50%, Low: <20%) within each region. Western Europe has the largest number of high EDS vehicles (31,185), while all regions show substantial numbers of low EDS vehicles." },
+      { number: 28, file: "figure28_battery_vs_eds.png", caption: "Electric Driving Share by battery capacity category, stratified by region. Large batteries (≥15 kWh) show higher EDS across all regions, with Northern Europe achieving the highest EDS (41.8%) for large battery vehicles." },
+      { number: 29, file: "figure29_segment_analysis.png", caption: "Electric Driving Share by vehicle segment for top 8 segments by vehicle count, stratified by region. Lower medium cars show consistently higher EDS across regions, while large cars show lower EDS." },
+      { number: 30, file: "figure30_model_specific_eds.png", caption: "Model-specific EDS variability for top 15 models by vehicle count. Each point shows mean EDS with error bars indicating ±1 SD, point size proportional to vehicle count, and color indicating EDS range. This figure demonstrates substantial variability in EDS even for identical vehicle models." },
+      { number: 31, file: "figure31_charging_behavior.png", caption: "Charging behavior vs Electric Driving Share by country. Each point represents a country, colored by region, with point size proportional to fleet size. The positive relationship between energy into battery and EDS is evident, with the dashed line showing the linear trend. Countries with higher charging activity achieve higher EDS." },
+      { number: 32, file: "figure32_north_south_divide.png", caption: "North-South divide comparison showing mean EDS, mean energy consumption, and mean temperature. Southern Europe shows higher EDS and temperature, while energy consumption is similar between regions." },
+      { number: 33, file: "figure33_regression_results.png", caption: "Country-level regression model results showing coefficient estimates with 95% confidence intervals. Significant predictors (p < 0.05) are highlighted in green. Battery capacity, AER, and mass are significant predictors of country-level EDS." },
+      { number: 34, file: "figure34_eds_prediction_performance.png", caption: "Individual vehicle-level EDS prediction model performance. The low R² values (4-12%) demonstrate that EDS cannot be accurately predicted from vehicle characteristics alone, confirming that user behavior and charging patterns are the primary drivers of electric driving share." },
+      { number: 35, file: "figure35_temporal_trends.png", caption: "Temporal trends in Electric Driving Share by reporting period and region. Lines show mean EDS over time, colored by region. The figure reveals both regional patterns and temporal changes in EDS across the study period." },
+      { number: 36, file: "figure36_infrastructure_vs_eds.png", caption: "Charging infrastructure vs Electric Driving Share by country. Each point represents a country, colored by region, with point size proportional to fleet size. The dashed line shows the linear trend. The weak negative correlation (r=-0.224) suggests that infrastructure availability alone does not directly drive higher EDS, with temperature and other factors playing more important roles." },
+    ];
+    
+    async function renderFigures() {
+      const grid = document.getElementById('figuresGrid');
+      
+      // Try to load from project file loader first
+      let figureFiles = [];
+      if (window.projectFileLoader) {
+        await window.projectFileLoader.loadManifest();
+        figureFiles = window.projectFileLoader.getFigures();
+      }
+      
+      // Create figure cards - images will load from local figures folder
+      const figureCards = figures.map(fig => {
+        // Try to find matching file from project loader
+        let imagePath = `../paper_a_analysis/figures/${fig.file}`;
+        if (figureFiles.length > 0) {
+          const matchedFile = figureFiles.find(f => f.name === fig.file);
+          if (matchedFile) {
+            imagePath = matchedFile.path;
+          }
+        }
+        
+        return `
+        <div class="figure-card">
+          <div class="figure-wrapper">
+            <img src="${imagePath}" alt="Figure ${fig.number}" class="figure-image" 
+                 onerror="handleImageError(this, '${fig.file}');" 
+                 onload="handleImageLoad(this);"
+                 onclick="openModal('${imagePath}', 'Figure ${fig.number}: ${fig.caption}')">
+          </div>
+          <div class="figure-info">
+            <div class="figure-number">Figure ${fig.number}</div>
+            <div class="figure-caption">${fig.caption}</div>
+          </div>
+        </div>
+      `;
+      }).join('');
+      
+      grid.innerHTML = figureCards;
+      
+      // Initialize resizable functionality after rendering
+      setTimeout(() => {
+        if (window.globalResizablePortfolio) {
+          // Re-wrap items after new figures are loaded
+          window.globalResizablePortfolio.wrapAllItems();
+          // Update slider to current width
+          window.globalResizablePortfolio.applyWidth('figure', window.globalResizablePortfolio.figureWidth);
+        }
+        if (window.initResizableFiguresTables) {
+          window.initResizableFiguresTables();
+        }
+      }, 100);
+      
+      // Count loaded images after a delay
+      setTimeout(() => {
+        const images = grid.querySelectorAll('.figure-image');
+        let loadedCount = 0;
+        let hiddenCount = 0;
+        images.forEach(img => {
+          if (img.complete && img.naturalHeight !== 0) {
+            loadedCount++;
+          } else if (img.parentElement.style.display === 'none') {
+            hiddenCount++;
+          }
+        });
+        console.log(`Figures portfolio: ${loadedCount} loaded, ${hiddenCount} hidden (not found)`);
+      }, 2000);
+    }
+    
+    function handleImageError(img, filename) {
+      // Hide the card if image fails to load
+      img.parentElement.style.display = 'none';
+      console.warn(`Figure not found: ${filename}`);
+    }
+    
+    function handleImageLoad(img) {
+      // Image loaded successfully
+      img.parentElement.style.display = 'block';
+    }
+    
+    function openModal(imagePath, caption) {
+      const modal = document.getElementById('figureModal');
+      if (!modal) {
+        console.error('Modal not found');
+        return;
+      }
+      
+      const modalImage = document.getElementById('modalImage');
+      const modalCaption = document.getElementById('modalCaption');
+      
+      // Use the full image path passed in
+      modalImage.src = imagePath;
+      modalImage.onerror = function() {
+        // Try alternative paths
+        const altPaths = [
+          imagePath,
+          `../paper_a_analysis/figures/${imagePath.split('/').pop()}`,
+          `paper_a_analysis/figures/${imagePath.split('/').pop()}`,
+          `figures/${imagePath.split('/').pop()}`
+        ];
+        let pathIndex = 0;
+        const tryNext = () => {
+          if (pathIndex < altPaths.length) {
+            this.src = altPaths[pathIndex++];
+          } else {
+            this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600"%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle" font-size="24" fill="%23999"%3EImage not found%3C/text%3E%3C/svg%3E';
+          }
+        };
+        this.onerror = tryNext;
+        tryNext();
+      };
+      
+      modalCaption.textContent = caption;
+      modal.style.display = 'block';
+      
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal() {
+      const modal = document.getElementById('figureModal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+    
+    function searchFigures() {
+      const query = document.getElementById('searchBox').value.toLowerCase();
+      const cards = document.querySelectorAll('.figure-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    }
+    
+    window.onclick = function(event) {
+      const modal = document.getElementById('figureModal');
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
+    
+    renderFigures();
+    
+    // Google Drive link configuration
+    const DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1PSRm7LG9QyBRnVgHREzQITe5Bthrniro?usp=sharing';
+    
+    if (DRIVE_FOLDER_URL !== 'YOUR_GOOGLE_DRIVE_FOLDER_URL_HERE') {
+      const driveSection = document.createElement('div');
+      driveSection.className = 'drive-section';
+      driveSection.innerHTML = `
+        <h3 style="margin-bottom: 1rem; color: #0f4c81;">📚 Literature Reviews & Database Files</h3>
+        <p style="color: #666; margin-bottom: 1rem;">
+          Supplementary research materials, including literature reviews and database files, are available through cloud storage integration. Connect your preferred cloud service to access these resources.
+        </p>
+        <a href="${DRIVE_FOLDER_URL}" class="drive-button" target="_blank" rel="noopener noreferrer">
+          <span>📁</span>
+          <span>Open Google Drive Folder</span>
+          <span>→</span>
+        </a>
+        <p style="font-size: 0.85rem; color: #666; margin-top: 1rem;">
+          Contains: 54+ literature review .txt files, large database files, paper drafts, and supplementary materials
+        </p>
+      `;
+      document.body.appendChild(driveSection);
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,289 @@
+/* ============================================
+   ENHANCED MARKDOWN STYLES
+   Beautiful, readable markdown with multiple fonts, colors, and emojis
+   ============================================ */
+
+/* Font Families */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@400;600;700&display=swap');
+
+.markdown-content {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  line-height: 1.8;
+  color: #1a1a1a;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Headings with Playfair Display */
+.markdown-content h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f4c81;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #0f4c81;
+  line-height: 1.2;
+}
+
+.markdown-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1a6ba3;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+  border-left: 4px solid #1a6ba3;
+}
+
+.markdown-content h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c5282;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Paragraphs */
+.markdown-content p {
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  color: #2d3748;
+  line-height: 1.8;
+}
+
+/* Lists */
+.markdown-content ul,
+.markdown-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1rem;
+}
+
+.markdown-content li {
+  font-size: 1.05rem;
+  margin-bottom: 0.75rem;
+  color: #2d3748;
+  line-height: 1.7;
+}
+
+.markdown-content li::marker {
+  color: #0f4c81;
+  font-weight: 600;
+}
+
+/* Code blocks with JetBrains Mono */
+.markdown-content code {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  background: #f7fafc;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  color: #c53030;
+  border: 1px solid #e2e8f0;
+}
+
+.markdown-content pre {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  background: #1a202c;
+  color: #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #4299e1;
+}
+
+.markdown-content pre code {
+  background: transparent;
+  color: #e2e8f0;
+  padding: 0;
+  border: none;
+}
+
+/* Links */
+.markdown-content a {
+  color: #2b6cb0;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.markdown-content a:hover {
+  color: #2c5282;
+  border-bottom-color: #2c5282;
+}
+
+/* Blockquotes */
+.markdown-content blockquote {
+  border-left: 4px solid #4299e1;
+  padding-left: 1.5rem;
+  margin-left: 0;
+  margin-bottom: 1.5rem;
+  color: #4a5568;
+  font-style: italic;
+  background: #f7fafc;
+  padding: 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+}
+
+/* Tables */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.markdown-content th {
+  background: #0f4c81;
+  color: #ffffff;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+.markdown-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #2d3748;
+}
+
+.markdown-content tr:nth-child(even) {
+  background: #f7fafc;
+}
+
+.markdown-content tr:hover {
+  background: #edf2f7;
+}
+
+/* Horizontal Rules */
+.markdown-content hr {
+  border: none;
+  border-top: 2px solid #e2e8f0;
+  margin: 2rem 0;
+}
+
+/* Strong and Emphasis */
+.markdown-content strong {
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.markdown-content em {
+  font-style: italic;
+  color: #4a5568;
+}
+
+/* Emoji Support */
+.markdown-content {
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+/* Special sections with colored backgrounds */
+.markdown-content .highlight-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.markdown-content .info-box {
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+}
+
+.markdown-content .warning-box {
+  background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(237, 137, 54, 0.3);
+}
+
+.markdown-content .success-box {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .markdown-content {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .markdown-content h1 {
+    font-size: 2rem;
+  }
+  
+  .markdown-content h2 {
+    font-size: 1.75rem;
+  }
+  
+  .markdown-content h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .markdown-content {
+    background: #1a202c;
+    color: #e2e8f0;
+  }
+  
+  .markdown-content h1,
+  .markdown-content h2,
+  .markdown-content h3 {
+    color: #90cdf4;
+  }
+  
+  .markdown-content p,
+  .markdown-content li {
+    color: #cbd5e0;
+  }
+  
+  .markdown-content code {
+    background: #2d3748;
+    color: #f687b3;
+  }
+  
+  .markdown-content pre {
+    background: #0d1117;
+  }
+}
+
