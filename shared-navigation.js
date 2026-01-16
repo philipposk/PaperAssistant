@@ -23,7 +23,16 @@ function createBurgerMenu() {
                 <a href="obfcm-quality-checker.html">🔍 Quality Checker Tool</a>
             </div>
             <div class="menu-item">
-                <a href="index.html">🏠 Home</a>
+                            <div class="menu-item">
+                <a href="paper-a-figures-models.html">📊 Figures & Models</a>
+            </div>
+            <div class="menu-item">
+                <a href="figures_portfolio.html">🎨 Figures Portfolio</a>
+            </div>
+            <div class="menu-item">
+                <a href="tables_portfolio.html">📋 Tables Portfolio</a>
+            </div>
+            <a href="index.html">🏠 Home</a>
             </div>
         </div>
     </div>

@@ -196,8 +196,136 @@
   <input type="text" class="search-box" placeholder="Search figures by number or caption..." id="searchBox" onkeyup="searchFigures()">
   
   <div class="figures-grid" id="figuresGrid">
-    <!-- Figures will be loaded here -->
-  </div>
+      <!-- NEW FIGURES (Following Markos's Instructions) -->
+
+      <div class="figure-card" data-priority="new" data-section="EDS Analysis (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure01_eds_distribution.png" 
+               alt="Figure 1: EDS Distribution" 
+               onclick="openModal('paper_a_analysis/figures/figure01_eds_distribution.png', 'Figure 1: EDS Distribution')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure01_eds_distribution.png'; this.src='paper_a_analysis/figures/figure01_eds_distribution.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 1: EDS Distribution</h3>
+          <p>Distribution of Electric Driving Share across all PHEV records with median and quartiles</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+
+      <div class="figure-card" data-priority="new" data-section="EDS Analysis (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure02_eds_by_country.png" 
+               alt="Figure 2: EDS by Country" 
+               onclick="openModal('paper_a_analysis/figures/figure02_eds_by_country.png', 'Figure 2: EDS by Country')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure02_eds_by_country.png'; this.src='paper_a_analysis/figures/figure02_eds_by_country.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 2: EDS by Country</h3>
+          <p>Median EDS by country with IQR bars, top 15 countries</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+
+      <div class="figure-card" data-priority="new" data-section="EDS Analysis (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure03_eds_density_timeline.png" 
+               alt="Figure 3: EDS Density with Timeline" 
+               onclick="openModal('paper_a_analysis/figures/figure03_eds_density_timeline.png', 'Figure 3: EDS Density with Timeline')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure03_eds_density_timeline.png'; this.src='paper_a_analysis/figures/figure03_eds_density_timeline.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 3: EDS Density with Timeline</h3>
+          <p>EDS distribution over time (Markos's Screenshot 1 - recreated)</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+
+      <div class="figure-card" data-priority="new" data-section="EDS Analysis (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure04_eds_correlates.png" 
+               alt="Figure 4: EDS vs Key Variables" 
+               onclick="openModal('paper_a_analysis/figures/figure04_eds_correlates.png', 'Figure 4: EDS vs Key Variables')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure04_eds_correlates.png'; this.src='paper_a_analysis/figures/figure04_eds_correlates.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 4: EDS vs Key Variables</h3>
+          <p>Scatter plots showing EDS relationships with electric range, mileage, mass, and AER/mass ratio</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+
+      <div class="figure-card" data-priority="new" data-section="Energy Analysis (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure05_energy_split_vs_eds.png" 
+               alt="Figure 5: Energy Split vs EDS" 
+               onclick="openModal('paper_a_analysis/figures/figure05_energy_split_vs_eds.png', 'Figure 5: Energy Split vs EDS')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure05_energy_split_vs_eds.png'; this.src='paper_a_analysis/figures/figure05_energy_split_vs_eds.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 5: Energy Split vs EDS</h3>
+          <p>Stacked area plot showing ICE and electric energy contributions as EDS increases</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+
+      <div class="figure-card" data-priority="new" data-section="Energy Analysis (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure06_total_energy_distribution.png" 
+               alt="Figure 6: Total Energy Distribution" 
+               onclick="openModal('paper_a_analysis/figures/figure06_total_energy_distribution.png', 'Figure 6: Total Energy Distribution')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure06_total_energy_distribution.png'; this.src='paper_a_analysis/figures/figure06_total_energy_distribution.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 6: Total Energy Distribution</h3>
+          <p>Distribution of total energy consumption with median and quartiles</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+
+      <div class="figure-card" data-priority="new" data-section="Energy Analysis (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure07_energy_heatmap_mass_eds.png" 
+               alt="Figure 7: Energy Heatmap (Mass vs EDS)" 
+               onclick="openModal('paper_a_analysis/figures/figure07_energy_heatmap_mass_eds.png', 'Figure 7: Energy Heatmap (Mass vs EDS)')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure07_energy_heatmap_mass_eds.png'; this.src='paper_a_analysis/figures/figure07_energy_heatmap_mass_eds.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 7: Energy Heatmap (Mass vs EDS)</h3>
+          <p>Heatmap showing energy consumption across mass and EDS combinations</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+
+      <div class="figure-card" data-priority="new" data-section="Regional Analysis (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure08_regional_comparison.png" 
+               alt="Figure 8: Regional Comparison" 
+               onclick="openModal('paper_a_analysis/figures/figure08_regional_comparison.png', 'Figure 8: Regional Comparison')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure08_regional_comparison.png'; this.src='paper_a_analysis/figures/figure08_regional_comparison.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 8: Regional Comparison</h3>
+          <p>Energy and EDS patterns by region (Markos's Screenshot 2 - recreated)</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+
+      <div class="figure-card" data-priority="new" data-section="Vehicle Categories (New)">
+        <div class="figure-wrapper">
+          <img src="paper_a_analysis/figures/figure09_eds_density_mass_category.png" 
+               alt="Figure 9: EDS Density by Mass Category" 
+               onclick="openModal('paper_a_analysis/figures/figure09_eds_density_mass_category.png', 'Figure 9: EDS Density by Mass Category')"
+               onerror="this.onerror=null; this.src='paper_a_analysis/figures/figure09_eds_density_mass_category.png'; this.src='paper_a_analysis/figures/figure09_eds_density_mass_category.png'" />
+        </div>
+        <div class="figure-info">
+          <h3>Figure 9: EDS Density by Mass Category</h3>
+          <p>EDS distribution and summary statistics by vehicle mass category (Markos's Screenshot 3 - recreated)</p>
+          <span class="figure-badge new-badge">NEW</span>
+        </div>
+      </div>
+      
+      <!-- EXISTING FIGURES (Available in File Explorer) -->
+</div>
   
   <div id="figureModal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
