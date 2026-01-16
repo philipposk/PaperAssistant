@@ -134,7 +134,42 @@
                 </div>
             </div>
             
-            <div class="section">
+                  <div class="section">
+                <h2>🤖 Model Code</h2>
+                
+                <h3>XGBoost Models with SHAP</h3>
+                <p>The paper uses XGBoost models with SHAP for explainable machine learning:</p>
+                <ul>
+                    <li><strong>EDS Model:</strong> 13 variables, R² = 21.1% (CV)</li>
+                    <li><strong>Energy Model (with EDS):</strong> 14 variables, R² = 82.3% (CV)</li>
+                    <li><strong>Energy Model (without EDS):</strong> 13 variables, R² = 51.6% (CV)</li>
+                </ul>
+                
+                <h3>R Scripts for Models (Windows Compatible)</h3>
+                <div class="two-columns">
+                    <div>
+                        <h4>Main Model Script</h4>
+                        <a href="paper_a_analysis/04_explainable_ml_improved.R" class="download-btn" download>📥 Download EDS/Energy Models (R)</a>
+                        <p>XGBoost models with SHAP for EDS and energy prediction</p>
+                    </div>
+                    <div>
+                        <h4>Variable Importance</h4>
+                        <a href="paper_a_analysis/05_variable_importance.R" class="download-btn" download>📥 Download Variable Importance (R)</a>
+                        <p>SHAP-based feature importance analysis</p>
+                    </div>
+                </div>
+                
+                <h3>Model Results</h3>
+                <p>Model results and SHAP values are saved as RDS files in:</p>
+                <div class="code-block">
+                    <code>paper_a_analysis/data/processed/<br>
+  - model_results.rds<br>
+  - shap_values_eds.rds<br>
+  - shap_values_energy.rds</code>
+                </div>
+            </div>
+            
+      <div class="section">
                 <h2>📄 Latest Paper Document</h2>
                 <a href="paper_a_analysis/LATEST_PAPER_DRAFT.docx" class="download-btn" id="docx-btn">📄 Open/Download Latest Paper (DOCX)</a>
             </div>
