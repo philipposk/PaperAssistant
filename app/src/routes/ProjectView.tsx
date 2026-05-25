@@ -4,6 +4,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { FileText, Image as ImageIcon, StickyNote, Table as TableIcon } from "lucide-react";
 import { db } from "../lib/db";
 import { useCurrentProject } from "../lib/currentProject";
+import { PushToGitHubButton } from "../components/PushToGitHubButton";
 
 export function ProjectView() {
   const { id = "" } = useParams();
@@ -35,13 +36,16 @@ export function ProjectView() {
 
   return (
     <div className="px-12 py-12 max-w-4xl mx-auto">
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 relative">
         <div className="mono uppercase text-[10px] tracking-wider text-[var(--color-warm)]">
           Active project · {project.name}
         </div>
         <h1 className="serif text-3xl mt-3 mb-4 leading-tight">
           {project.description || project.name}
         </h1>
+        <div className="flex justify-center">
+          <PushToGitHubButton project={project} />
+        </div>
       </div>
 
       <div className="border-t border-b border-[var(--color-line)] py-4 flex items-center justify-center gap-8 text-sm mb-12">

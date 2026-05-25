@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTheme } from "../lib/theme";
 import { signOut, useAuth } from "../lib/auth";
+import { GitHubSection } from "../components/GitHubSection";
 
 export function Settings() {
   const { theme, setTheme } = useTheme();
@@ -78,6 +79,8 @@ export function Settings() {
           </>
         )}
       </section>
+
+      <GitHubSection />
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5">
         <div className="serif text-lg mb-1">About</div>
