@@ -37,6 +37,10 @@ html[data-theme="dark"] {
   --color-ink-2: #c8cdd4;
   --color-ink-3: #9097a1;
   --color-ink-4: #6b7280;
+  /* In dark mode, accent text on accent-soft needs to be brighter than
+     the deep navy used in light mode so the active nav item stays legible. */
+  --color-accent: #6ea8d4;
+  --color-accent-2: #8cbce0;
   --color-accent-soft: #14304a;
   --color-warm-soft: #3a2218;
 }
