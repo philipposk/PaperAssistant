@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research Hub - PHEV Research Portal</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; line-height: 1.5; background: #f7f9fb; color: #1f2a3d; }
+    header { background: #0f4c81; color: #fff; padding: 16px 24px; }
+    h1, h2, h3 { margin: 0 0 8px 0; }
+    main { padding: 24px; max-width: 1100px; margin: auto; }
+    section { background: #fff; border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+    ul { margin: 6px 0 12px 18px; }
+    a { color: #0f4c81; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; background: #e6eef7; color: #0f4c81; margin-left: 6px; }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; background: #0f4c81; color: #fff; margin-right: 6px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    .card { background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+    .drive-button { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      padding: 12px 24px; 
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); 
+      color: white; 
+      border-radius: 8px; 
+      text-decoration: none; 
+      font-weight: 600; 
+      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+      transition: all 0.3s;
+      margin: 1rem 0;
+    }
+    .drive-button:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 16px rgba(66, 133, 244, 0.4);
+      text-decoration: none;
+      color: white;
+    }
+    .drive-section {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-left: 4px solid #4285f4;
+    }
+  </style>
+  <script src="UNIFIED_NAVIGATION.js"></script>
+  <script src="BREADCRUMBS_SYSTEM.js"></script>
+  <script src="ADDITIONAL_FEATURES.js"></script>
+  <script src="SHARED_FEATURES.js"></script>
+  <script src="MODAL_SYSTEM.js"></script>
+  <script src="AI_TRAINING_SYSTEM.js"></script>
+  <script src="MULTI_USE_CASE_SYSTEM.js"></script>
+  <script src="EDITOR_SELECTOR.js"></script>
+  <script src="PROJECT_IMPORT_ANALYSIS.js"></script>
+</head>
+<body>
+  <!-- Header will be created by UNIFIED_NAVIGATION.js -->
+  <!-- Local header for page title (below unified header) -->
+  <div style="padding: 1.5rem 2rem; background: #0f4c81; color: white;">
+    <h1 style="margin: 0 0 0.5rem 0; font-size: 2rem; color: white;">📚 Research Hub</h1>
+    <p style="margin: 0; opacity: 0.95; color: white;">Cross-referenced view of all key documents, papers, and AI/ML ideas.</p>
+  </div>
+  
+  <style>
+    /* Ensure Research Hub text is visible in light mode */
+    .unified-header .unified-nav-link[href*="research_hub"],
+    .unified-header .unified-nav-link.active {
+      color: var(--text-primary) !important;
+    }
+    
+    [data-theme="light"] .unified-header .unified-nav-link[href*="research_hub"],
+    body:not([data-theme="dark"]) .unified-header .unified-nav-link[href*="research_hub"] {
+      color: #0f172a !important;
+      font-weight: 600;
+    }
+    
+    [data-theme="dark"] .unified-header .unified-nav-link[href*="research_hub"] {
+      color: #f1f5f9 !important;
+    }
+    
+    /* Fix logo text visibility */
+    .unified-header .logo-text {
+      color: var(--text-primary) !important;
+    }
+    
+    [data-theme="light"] .unified-header .logo-text,
+    body:not([data-theme="dark"]) .unified-header .logo-text {
+      color: #0f172a !important;
+    }
+  </style>
+  <main>
+    <section style="background: linear-gradient(135deg, #0f4c81 0%, #1a6ba3 100%); color: white; padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
+      <h2 style="color: white; margin-bottom: 1rem;">📄 Paper A: Development Progression</h2>
+      <p style="margin-bottom: 1rem; opacity: 0.95;">Complete timeline, dashboard, and build guide for Paper A development</p>
+      <a href="paper_progression.html" style="display: inline-block; padding: 0.75rem 1.5rem; background: white; color: #0f4c81; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: 1rem;">Open Paper Progression Portal →</a>
+    </section>
+    
+    <section>
+      <h2>Start Here</h2>
+      <ul>
+        <li><a href="paper_progression.html">Paper A: Development Progression</a> <span class="tag">⭐ New</span> <span class="tag">Timeline</span> <span class="tag">Dashboard</span></li>
+        <li><a href="#" onclick="openFileFromDrive('PAPER_BUILD_GUIDE.md', event); return false;">PAPER_BUILD_GUIDE.md</a> <span class="tag">Complete Guide</span> <span class="tag">📁 Drive</span></li>
+        <li><a href="#" onclick="openFileFromDrive('FINAL_SUMMARY_AND_ACTION_PLAN.md', event); return false;">FINAL_SUMMARY_AND_ACTION_PLAN.md</a> <span class="tag">Summary</span> <span class="tag">📁 Drive</span></li>
+        <li><a href="#" onclick="openFileFromDrive('EXPERT_LEVEL_COMPREHENSIVE_ANALYSIS.md', event); return false;">EXPERT_LEVEL_COMPREHENSIVE_ANALYSIS.md</a> <span class="tag">Main reference</span> <span class="tag">📁 Drive</span></li>
+        <li><a href="#" onclick="openFileFromDrive('QUICK_REFERENCE_GUIDE.md', event); return false;">QUICK_REFERENCE_GUIDE.md</a> <span class="tag">Implementation</span> <span class="tag">📁 Drive</span></li>
+        <li><a href="#" onclick="openFileFromDrive('DOCUMENT_INDEX.md', event); return false;">DOCUMENT_INDEX.md</a> <span class="tag">Map</span> <span class="tag">📁 Drive</span></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Paper Packages</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="pill">Paper A</div>
+          <p>Energy & EDS (OBFCM 2021–2023 + campaigns). See:</p>
+          <ul>
+            <li><a href="../06_documentation/EXPERT_LEVEL_COMPREHENSIVE_ANALYSIS.md">Analysis Plan (Part 3.1)</a></li>
+            <li><a href="../06_documentation/FIGURES_TABLES_INVENTORY.md">Figures/Tables</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="pill">Paper B</div>
+          <p>CO₂-gap & policy UFs (future). See:</p>
+          <ul>
+            <li><a href="../06_documentation/EXPERT_LEVEL_COMPREHENSIVE_ANALYSIS.md">Outline (Part 3.2)</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="pill">Paper C</div>
+          <p>Variable importance methods (future). See:</p>
+          <ul>
+            <li><a href="../06_documentation/EXPERT_LEVEL_COMPREHENSIVE_ANALYSIS.md">Outline (Part 3.3)</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="pill">Paper D/E/F</div>
+          <p>New AI/ML concepts (UF modeling, generative trips, compliance). See:</p>
+          <ul>
+            <li><a href="../06_documentation/NEW_PAPER_IDEAS.md">NEW_PAPER_IDEAS.md</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Key Reviews & Methods</h2>
+      <ul>
+        <li><a href="../06_documentation/MARKOS_WORK_COMPREHENSIVE_SUMMARY.md">Markos Work Review</a></li>
+        <li><a href="../06_documentation/METHODS_DATASETS_COMPILATION.md">Methods & Datasets</a></li>
+        <li><a href="../06_documentation/FIGURES_TABLES_INVENTORY.md">Figures/Tables Inventory</a></li>
+        <li><a href="../06_documentation/state_of_art/INITIAL_LITERATURE_MAP.md">Initial Literature Map</a></li>
+        <li><a href="../06_documentation/STEP1_STEP2_SYNTHESIS.md">Step1/Step2 Synthesis</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Data Cleaning Documentation</h2>
+      <p>Complete documentation of the PHEV database cleaning process. All 7.7M vehicles retained with quality flags applied.</p>
+      <ul>
+        <li><a href="data_cleaning_docs/README.md">Data Cleaning Documentation Index</a> <span class="tag">Overview</span></li>
+        <li><a href="data_cleaning_docs/DATA_CLEANING_DOCUMENTATION.md">Data Cleaning Documentation</a> <span class="tag">Main Doc</span> <span class="tag">PHEV Focus</span></li>
+        <li><a href="data_cleaning_docs/FLAGGING_STATISTICS_TABLE.md">Flagging Statistics Table</a> <span class="tag">Summary</span> <span class="tag">Statistics</span></li>
+        <li><a href="data_cleaning_docs/FLAGGING_APPROACH_EXPLANATION.md">Flagging Approach Explanation</a> <span class="tag">Methodology</span></li>
+        <li><a href="data_cleaning_docs/CLEANING_EXECUTION_SUMMARY.md">Cleaning Execution Summary</a> <span class="tag">Execution</span></li>
+        <li><a href="data_cleaning_docs/CLEANING_SCRIPT_README.md">Cleaning Script README</a> <span class="tag">Script Guide</span></li>
+        <li><a href="data_cleaning_docs/DATA_CLEANING_DETAILED_LOG.txt">Detailed Cleaning Log</a> <span class="tag">Log File</span> <span class="tag">Detailed</span></li>
+      </ul>
+      <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">
+        <strong>Results:</strong> 994,764 PHEVs processed. 938,604 clean (94.4%), 56,160 flagged (5.6%). All vehicles retained.
+      </p>
+    </section>
+
+    <section>
+      <h2>Supervisor Meeting Questions</h2>
+      <p>Critical questions and decisions needed for supervisor meetings regarding Paper A development, methodology, and publication strategy.</p>
+      <ul>
+        <li><a href="docs/SUPERVISOR_MEETING_QUESTIONS.md">Supervisor Meeting Questions</a> <span class="tag">Full Questions</span> <span class="tag">Decisions</span></li>
+        <li><a href="docs/SUPERVISOR_MEETING_QUICK_REFERENCE.md">Supervisor Meeting Quick Reference</a> <span class="tag">Quick Summary</span> <span class="tag">One-Page</span></li>
+      </ul>
+      <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">
+        Topics include: Variable selection (26 vs 44 variables), policy messaging, model presentation, target journal selection, and co-authorship decisions.
+      </p>
+    </section>
+
+    <section>
+      <h2>New AI/ML Ideas (Cross-links)</h2>
+      <ul>
+        <li>Paper D (UF personalization) → leverage <a href="../06_documentation/EXPERT_LEVEL_COMPREHENSIVE_ANALYSIS.md">Part 3.1</a> metrics + <a href="../06_documentation/FINAL_SUMMARY_AND_ACTION_PLAN.md">policy notes</a></li>
+        <li>Paper E (Generative trips) → seed from campaigns in <a href="../06_documentation/METHODS_DATASETS_COMPILATION.md">datasets</a> + priors from <a href="../06_documentation/FIGURES_TABLES_INVENTORY.md">distributions</a></li>
+        <li>Paper F (Compliance monitor) → thresholds/policy from <a href="../06_documentation/FINAL_SUMMARY_AND_ACTION_PLAN.md">UF/CO₂ gap</a> + benchmarks in <a href="../06_documentation/NEW_PAPER_IDEAS.md">ideas</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Document Map</h2>
+      <p>Full index with categories: <a href="../06_documentation/DOCUMENT_INDEX.md">DOCUMENT_INDEX.md</a></p>
+      <p>Papers to download/status: <a href="../06_documentation/PAPERS_TO_DOWNLOAD.md">PAPERS_TO_DOWNLOAD.md</a></p>
+      <p>New literature summary: <a href="../06_documentation/NEW_PAPERS_FOUND_SUMMARY.md">NEW_PAPERS_FOUND_SUMMARY.md</a></p>
+    </section>
+
+    <section class="drive-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 4px solid #4285f4; padding: 2rem;">
+      <h2 style="color: #0f4c81; margin-bottom: 1rem;">📚 Literature Reviews & Database Files</h2>
+      <p style="margin-bottom: 1.5rem; color: #333;">
+        Supplementary research materials, including literature reviews and database files, are available through cloud storage integration. Access all research materials, datasets, and supplementary files:
+      </p>
+      <a href="#" id="drive-link" class="drive-button" target="_blank" rel="noopener noreferrer">
+        <span>📁</span>
+        <span>Open Google Drive Folder</span>
+        <span>→</span>
+      </a>
+      <div style="margin-top: 1.5rem; padding: 1rem; background: white; border-radius: 8px;">
+        <h3 style="font-size: 1rem; color: #0f4c81; margin-bottom: 0.75rem;">What's in Google Drive:</h3>
+        <ul style="margin: 0; padding-left: 1.5rem; color: #555;">
+          <li><strong>Literature Reviews:</strong> All .txt files from paper reviews (54+ files)</li>
+          <li><strong>Database Files:</strong> Large datasets and data archives</li>
+          <li><strong>Paper Drafts:</strong> DOCX files and working documents</li>
+          <li><strong>Supplementary Materials:</strong> Additional analysis files and documentation</li>
+        </ul>
+      </div>
+      <p style="font-size: 0.85rem; color: #666; margin-top: 1rem; font-style: italic;">
+        Note: Figures and tables are accessible directly from the platform. Literature reviews and databases are available through integrated cloud storage providers.
+      </p>
+    </section>
+  </main>
+  <script>
+    // Google Drive folder link
+    const DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1PSRm7LG9QyBRnVgHREzQITe5Bthrniro?usp=sharing';
+    
+    // Function to open files from Google Drive
+    function openFileFromDrive(fileName, event) {
+      if (event) {
+        event.preventDefault();
+      }
+      // Show message that file is in Google Drive
+      if(typeof window.ModalSystem !== 'undefined') {
+        window.ModalSystem.info(
+          'File in Cloud Storage',
+          `This file is stored in cloud storage. Click the button below to access it.`,
+          null,
+          [
+            { text: 'Open Cloud Storage', action: () => { window.open(DRIVE_FOLDER_URL, '_blank'); }, primary: true },
+            { text: 'Close', action: 'close', primary: false }
+          ]
+        );
+      } else {
+        alert(`File "${fileName}" is in cloud storage. Click "Open Cloud Storage" button below to access it.`);
+      }
+      // Optionally open Google Drive
+      window.open(DRIVE_FOLDER_URL, '_blank');
+    }
+    
+    if (DRIVE_FOLDER_URL !== 'YOUR_GOOGLE_DRIVE_FOLDER_URL_HERE') {
+      document.getElementById('drive-link').href = DRIVE_FOLDER_URL;
+    } else {
+      // Hide button if URL not set
+      document.querySelector('.drive-section').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

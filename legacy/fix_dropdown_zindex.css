@@ -1,0 +1,17 @@
+/* Fix dropdown z-index to ensure it appears above all elements */
+.docx-dropdown {
+  position: relative !important;
+  z-index: 10000 !important;
+}
+
+.docx-dropdown-content {
+  z-index: 10005 !important;
+  position: absolute !important;
+  display: none;
+}
+
+.docx-dropdown-content.show {
+  display: block !important;
+  z-index: 10005 !important;
+  position: absolute !important;
+}

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloads & Resources - Data Flagging</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+        
+        .burger-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .burger-btn {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+        }
+        
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: #667eea;
+            margin: 3px 0;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+        
+        .burger-menu.active .burger-line:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+        
+        .burger-menu.active .burger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .burger-menu.active .burger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+        
+        .menu-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-width: 300px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        
+        .burger-menu.active .menu-dropdown {
+            max-height: 600px;
+            padding: 10px 0;
+            overflow-y: auto;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .menu-item:hover { background: #f8f9fa; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            font-weight: 500;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 40px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .download-section {
+            margin-bottom: 40px;
+        }
+        
+        .download-section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .download-item {
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+        }
+        
+        .download-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .download-item h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .download-item p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .file-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+    </style>
+  <script src="UNIFIED_NAVIGATION.js"></script>
+</head>
+<body>
+    <div class="burger-menu" id="burgerMenu">
+        <div class="burger-btn" onclick="toggleMenu()">
+            <div class="burger-line"></div>
+            <div class="burger-line"></div>
+            <div class="burger-line"></div>
+        </div>
+        <div class="menu-dropdown">
+            <div class="menu-item">
+                <a href="data-flagging-results.html">📊 Main Results</a>
+            </div>
+            <div class="menu-item">
+                <a href="data-flagging-downloads.html">📥 Downloads & Resources</a>
+            </div>
+            <div class="menu-item">
+                <a href="obfcm-quality-checker.html">🔍 Quality Checker Tool</a>
+            </div>
+            <div class="menu-item">
+                <a href="index.html">🏠 Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>📥 Downloads & Resources</h1>
+            <p style="font-size: 1.3em; margin-top: 10px;">All documentation, reports, and analysis files</p>
+            <p style="font-size: 1.1em; margin-top: 15px; opacity: 0.9;">
+                <a href="data-flagging-readme.html" style="color: white; text-decoration: underline;">📖 View Documentation Page</a>
+            </p>
+        </div>
+
+        <div class="content">
+            <div class="download-section">
+                <h2>📄 Reports & Analysis</h2>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">📊</span>Flagged Vehicles Pattern Analysis (PDF)</h3>
+                    <p>Comprehensive analysis report in PDF format with all findings, tables, and visualizations.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_PATTERN_ANALYSIS.pdf" class="download-btn" download>Download PDF</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">🌐</span>Flagged Vehicles Pattern Analysis (HTML)</h3>
+                    <p>Interactive HTML version of the analysis report.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_PATTERN_ANALYSIS.html" class="download-btn" download>Download HTML</a>
+                </div>
+            </div>
+
+            <div class="download-section">
+                <h2>📚 Documentation</h2>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">📖</span>Data Cleaning Documentation</h3>
+                    <p>Main comprehensive documentation of all cleaning steps, criteria, and results.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/DATA_CLEANING_DOCUMENTATION.md" class="download-btn" download>Download MD</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">📋</span>Data Cleaning Detailed Log</h3>
+                    <p>Complete detailed log from script execution with all statistics and removal details.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/DATA_CLEANING_DETAILED_LOG.txt" class="download-btn" download>Download TXT</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">📝</span>README</h3>
+                    <p>Overview and quick start guide for the data cleaning documentation.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/README.md" class="download-btn" download>Download MD</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">📊</span>Flagging Statistics Table</h3>
+                    <p>Summary table with flagging statistics by step.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/FLAGGING_STATISTICS_TABLE.md" class="download-btn" download>Download MD</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">💡</span>Flagging Approach Explanation</h3>
+                    <p>Explanation of the flagging approach (vs. removal approach).</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/FLAGGING_APPROACH_EXPLANATION.md" class="download-btn" download>Download MD</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">📈</span>Cleaning Execution Summary</h3>
+                    <p>Executive summary of cleaning execution and key findings.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/CLEANING_EXECUTION_SUMMARY.md" class="download-btn" download>Download MD</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">⚙️</span>Cleaning Script README</h3>
+                    <p>Instructions for running the cleaning script.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/CLEANING_SCRIPT_README.md" class="download-btn" download>Download MD</a>
+                
+            <div class="download-section">
+                <h2>💻 Code & Scripts</h2>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">💻</span>Flagged Vehicles Analysis Script (Mac/Linux)</h3>
+                    <p>R script for analyzing flagged vehicle patterns. Mac and Linux compatible.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_ANALYSIS.R" class="download-btn" download>Download R Script</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">💻</span>Flagged Vehicles Analysis Script (Windows)</h3>
+                    <p>R script for analyzing flagged vehicle patterns. Windows compatible version.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_ANALYSIS_Windows.R" class="download-btn" download>Download R Script</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">⚙️</span>Data Cleaning Script with Logging</h3>
+                    <p>Main R script for running the PHEV data cleaning process with comprehensive logging.</p>
+                    <a href="paper_a_analysis/RUN_CLEANING_WITH_LOG.R" class="download-btn" download>Download R Script</a>
+                </div>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">📊</span>Data Cleaning Module</h3>
+                    <p>R script containing the data cleaning functions and logic.</p>
+                    <a href="paper_a_analysis/02_data_cleaning.R" class="download-btn" download>Download R Script</a>
+                </div>
+            </div>
+
+            <div class="download-section">
+                <h2>📖 Additional Documentation</h2>
+                
+                <div class="download-item">
+                    <h3><span class="file-icon">📄</span>Flagged Vehicles Pattern Analysis (Markdown)</h3>
+                    <p>Markdown version of the pattern analysis report.</p>
+                    <a href="paper_a_analysis/data_cleaning_docs/FLAGGED_VEHICLES_PATTERN_ANALYSIS.md" class="download-btn" download>Download MD</a>
+                </div>
+            </div>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('burgerMenu');
+            if (menu) {
+                menu.classList.toggle('active');
+            }
+        }
+    </script>
+</body>
+</html>

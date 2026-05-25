@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>FLAGGED_VEHICLES_PATTERN_ANALYSIS</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css" />
+</head>
+<body>
+<h1 id="flagged-vehicles-pattern-analysis">🔍 Flagged Vehicles Pattern
+Analysis</h1>
+<p><strong>📅 Date:</strong> December 24, 2024<br />
+<strong>📊 Dataset:</strong> OBFCM 2021-2023 PHEV data (995,511
+records)<br />
+<strong>🎯 Analysis Focus:</strong> Identifying patterns, correlations,
+and interesting connections in flagged vehicles</p>
+<hr />
+<h2 id="table-of-contents">📑 Table of Contents</h2>
+<ol type="1">
+<li><a href="#-executive-summary">Executive Summary</a></li>
+<li><a href="#-detailed-findings-by-filter-step">Detailed Findings by Filter Step</a>
+<ul>
+<li><a href="#-step-1-cs-invalid-33348-vehicles-flagged">Step 1: CS Invalid</a></li>
+<li><a href="#-step-2-missing-rw_ec-12554-vehicles-flagged">Step 2: Missing RW_EC</a></li>
+<li><a href="#-step-3-missing-oem-model-5753-vehicles-flagged">Step 3: Missing OEM/Model</a></li>
+<li><a href="#-step-4-rw_ec-zero-18779-vehicles-flagged">Step 4: RW_EC Zero</a></li>
+<li><a href="#-step-5-vfn-issue-32363-vehicles-flagged">Step 5: VFN Issue</a></li>
+<li><a href="#-step-6-physics-co2-fc-420-vehicles-flagged">Step 6: Physics CO2/FC</a></li>
+<li><a href="#-step-7-mileage-fc-inconsistency-565-vehicles-flagged">Step 7: Mileage/FC Inconsistency</a></li>
+<li><a href="#-step-8-eds-energy-violation-3506-vehicles-flagged">Step 8: EDS/Energy Violation</a></li>
+</ul></li>
+<li><a href="#-cross-step-patterns">Cross-Step Patterns</a></li>
+<li><a href="#-references">References</a></li>
+</ol>
+<hr />
+<h2 id="executive-summary">📋 Executive Summary</h2>
+<p>Analysis of flagged vehicles reveals several significant
+patterns:</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 41%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th>Filter Step</th>
+<th>Vehicles Flagged</th>
+<th>Key Finding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Step 1</strong> (CS Invalid)</td>
+<td>33,348</td>
+<td>Dominated by Stellantis group vehicles (Fiat, Jeep, Opel) and
+Mitsubishi Eclipse Cross</td>
+</tr>
+<tr>
+<td><strong>Step 2</strong> (Missing RW_EC)</td>
+<td>12,554</td>
+<td>Strongly associated with Hyundai models (Tucson, Santa Fe) and Ford
+vehicles</td>
+</tr>
+<tr>
+<td><strong>Step 4</strong> (RW_EC Zero)</td>
+<td>18,779</td>
+<td>Heavily dominated by Porsche Panamera and Cayenne E-Hybrid
+models</td>
+</tr>
+<tr>
+<td><strong>Step 3</strong> (Missing OEM/Model)</td>
+<td>5,753</td>
+<td>Vehicles with missing manufacturer or model information</td>
+</tr>
+<tr>
+<td><strong>Step 5</strong> (VFN Issue)</td>
+<td>32,363</td>
+<td>Volvo/Polestar models and Geely vehicles overrepresented</td>
+</tr>
+<tr>
+<td><strong>Step 6</strong> (Physics CO2/FC)</td>
+<td>420</td>
+<td>Physically implausible CO₂ or fuel consumption values</td>
+</tr>
+<tr>
+<td><strong>Step 7</strong> (Mileage/FC Inconsistency)</td>
+<td>565</td>
+<td>Logical impossibilities in mileage and fuel consumption</td>
+</tr>
+<tr>
+<td><strong>Step 8</strong> (EDS/Energy Violation)</td>
+<td>3,506</td>
+<td>EDS or energy values outside acceptable ranges</td>
+</tr>
+</tbody>
+</table>
+<h3 id="key-insights">Key Insights</h3>
+<ol type="1">
+<li><strong>Manufacturer Patterns</strong> - Stellantis group shows
+consistent data quality issues across multiple steps</li>
+<li><strong>Vehicle Characteristics</strong> - Flagged vehicles show
+systematic differences in mass, engine power, and electric range</li>
+<li><strong>Model-Specific Issues</strong> - Certain models (Porsche
+Panamera, Hyundai Tucson, Mitsubishi Eclipse Cross) show extreme
+overrepresentation</li>
+<li><strong>Data Quality Concerns</strong> - Patterns suggest both
+genuine vehicle characteristics and potential data reporting issues</li>
+</ol>
+<hr />
+<h2 id="detailed-findings-by-filter-step">📊 Detailed Findings by Filter
+Step</h2>
+<h3 id="step-1-cs-invalid-33348-vehicles-flagged">🔴 Step 1: CS Invalid
+(33,348 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with invalid
+Charge-Sustaining (CS) mode data</p>
+<h4 id="top-manufacturers">Top Manufacturers</h4>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 24%" />
+<col style="width: 30%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jaguar Land Rover Limited</td>
+<td>5,654</td>
+<td>16.95%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Fiat Group</td>
+<td>5,561</td>
+<td>16.68%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Volkswagen</td>
+<td>4,091</td>
+<td>12.27%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Ford Werke GmbH</td>
+<td>3,903</td>
+<td>11.70%</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Skoda</td>
+<td>2,991</td>
+<td>8.97%</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-models-by-overrepresentation">Top Models (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mitsubishi Eclipse Cross</td>
+<td><strong>19,345%</strong> ⚠️</td>
+</tr>
+<tr>
+<td>Volkswagen Passat</td>
+<td><strong>10,020%</strong> ⚠️</td>
+</tr>
+<tr>
+<td>Jaguar E-PACE P300E R-Dynamic</td>
+<td><strong>9,502%</strong> ⚠️</td>
+</tr>
+<tr>
+<td>Opel Grandland X</td>
+<td><strong>8,542%</strong> ⚠️</td>
+</tr>
+</tbody>
+</table>
+<h4 id="vehicle-characteristics-comparison">Vehicle Characteristics
+Comparison</h4>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 24%" />
+<col style="width: 21%" />
+<col style="width: 16%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>Flagged Vehicles</th>
+<th>Clean Vehicles</th>
+<th>Difference</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mass</strong></td>
+<td>2,060 kg</td>
+<td>2,121 kg</td>
+<td>-2.89%</td>
+<td>⬇️ Lighter</td>
+</tr>
+<tr>
+<td><strong>TA_CO₂</strong></td>
+<td>37.4 g/km</td>
+<td>35.2 g/km</td>
+<td>+6.10%</td>
+<td>⬆️ Higher</td>
+</tr>
+<tr>
+<td><strong>Electric Range</strong></td>
+<td>77.5 km</td>
+<td>63.3 km</td>
+<td>+22.32%</td>
+<td>⬆️ Longer</td>
+</tr>
+<tr>
+<td><strong>Engine Displacement</strong></td>
+<td>1,642 cc</td>
+<td>1,863 cc</td>
+<td>-11.84%</td>
+<td>⬇️ Smaller</td>
+</tr>
+<tr>
+<td><strong>Engine Power</strong></td>
+<td>123 kW</td>
+<td>141 kW</td>
+<td>-12.92%</td>
+<td>⬇️ Lower</td>
+</tr>
+<tr>
+<td><strong>Total Mileage</strong></td>
+<td>19,807 km</td>
+<td>26,443 km</td>
+<td>-25.10%</td>
+<td>⬇️ Lower</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight">💡 Key Insight</h4>
+<p>Vehicles flagged in Step 1 tend to be <strong>lighter</strong> and
+have <strong>smaller engines</strong>, but paradoxically show
+<strong>higher CO₂ emissions</strong> and <strong>longer electric
+range</strong>. This suggests potential issues with: - Charge-sustaining
+mode operation - Data reporting in these specific models - Possible
+calibration or sensor issues</p>
+<h4 id="online-research-context">🌐 Online Research Context</h4>
+<ul>
+<li><strong>Jeep/Chrysler:</strong> Research shows these brands have
+high complaint rates (1,488 complaints per car for Jeep) and recall
+rates (1.06 for Jeep/Chrysler), suggesting broader quality control
+issues that may extend to data reporting.
+<ul>
+<li><a
+href="https://www.carscoops.com/2025/01/volvo-subaru-tesla-lead-study-with-most-5-star-safety-ratings/">Source:
+Carscoops - Safety Ratings Study</a></li>
+</ul></li>
+<li><strong>Mitsubishi Eclipse Cross PHEV:</strong> Limited specific
+information found, but the extreme overrepresentation suggests
+model-specific issues with CS mode data collection or reporting.</li>
+</ul>
+<hr />
+<h3 id="step-2-missing-rw_ec-12554-vehicles-flagged">🟠 Step 2: Missing
+RW_EC (12,554 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles missing Real-World Electric
+Consumption (RW_EC) data</p>
+<h4 id="top-manufacturers-1">Top Manufacturers</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ford Werke GmbH</td>
+<td>3,720</td>
+<td>29.63%</td>
+</tr>
+<tr>
+<td>Stellantis Auto</td>
+<td>3,352</td>
+<td>26.70%</td>
+</tr>
+<tr>
+<td>Skoda</td>
+<td>2,603</td>
+<td>20.73%</td>
+</tr>
+<tr>
+<td>BMW AG</td>
+<td>597</td>
+<td>4.76%</td>
+</tr>
+<tr>
+<td>Hyundai Czech</td>
+<td>590</td>
+<td>4.70%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-models-by-overrepresentation-1">Top Models (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hyundai Tucson/Tucson IX35</td>
+<td><strong>216,430%</strong> ⚠️⚠️</td>
+</tr>
+<tr>
+<td>Hyundai Santa Fe</td>
+<td><strong>110,157%</strong> ⚠️⚠️</td>
+</tr>
+</tbody>
+</table>
+<h4 id="vehicle-characteristics-comparison-1">Vehicle Characteristics
+Comparison</h4>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 24%" />
+<col style="width: 21%" />
+<col style="width: 16%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>Flagged Vehicles</th>
+<th>Clean Vehicles</th>
+<th>Difference</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mass</strong></td>
+<td>1,926 kg</td>
+<td>2,122 kg</td>
+<td>-9.21%</td>
+<td>⬇️ Lighter</td>
+</tr>
+<tr>
+<td><strong>TA_CO₂</strong></td>
+<td>28.9 g/km</td>
+<td>35.4 g/km</td>
+<td>-18.20%</td>
+<td>⬇️ Lower</td>
+</tr>
+<tr>
+<td><strong>Engine Power</strong></td>
+<td>120 kW</td>
+<td>141 kW</td>
+<td>-14.85%</td>
+<td>⬇️ Lower</td>
+</tr>
+<tr>
+<td><strong>Total Mileage</strong></td>
+<td>18,907 km</td>
+<td>26,314 km</td>
+<td>-28.15%</td>
+<td>⬇️ Lower</td>
+</tr>
+<tr>
+<td><strong>FC_Tot</strong> (Total Fuel Consumption)</td>
+<td>1,011 L</td>
+<td>1,610 L</td>
+<td>-37.18%</td>
+<td>⬇️ Lower</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-1">💡 Key Insight</h4>
+<p>Missing RW_EC is <strong>strongly associated</strong> with Hyundai
+models (Tucson, Santa Fe) and Ford vehicles. These vehicles tend to be:
+- <strong>Lighter</strong> than average - Have <strong>lower
+emissions</strong> - Have <strong>lower total fuel consumption</strong>
+- May be <strong>newer models</strong> or have <strong>different
+monitoring systems</strong></p>
+<h4 id="online-research-context-1">🌐 Online Research Context</h4>
+<ul>
+<li><strong>Hyundai/Kia:</strong> Recent recalls affecting millions of
+vehicles, though not specifically related to PHEV data reporting. The
+extreme overrepresentation of Hyundai models suggests potential issues
+with their OBFCM implementation or data transmission.
+<ul>
+<li><a
+href="https://apnews.com/article/ae2e71914fc229d70a4cceb089e465ce">Source:
+AP News - Hyundai/Kia Recalls</a></li>
+</ul></li>
+</ul>
+<hr />
+
+<h3 id="step-3-missing-oem-model-5753-vehicles-flagged">🟡 Step 3: Missing OEM/Model (5,753 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with missing manufacturer or model information</p>
+<h4 id="top-manufacturers-2">Top Manufacturers</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Volvo</td>
+<td>1,270</td>
+<td>22.06%</td>
+</tr>
+<tr>
+<td>Peugeot</td>
+<td>461</td>
+<td>8.00%</td>
+</tr>
+<tr>
+<td>Missing (NA)</td>
+<td>449</td>
+<td>7.80%</td>
+</tr>
+<tr>
+<td>Audi</td>
+<td>224</td>
+<td>3.89%</td>
+</tr>
+<tr>
+<td>SEAT</td>
+<td>117</td>
+<td>2.03%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-1">💡 Key Insight</h4>
+<p>Step 3 flags vehicles with missing OEM or Model information. This is a data quality issue that affects vehicle identification and analysis. Volvo vehicles show the highest number of missing information cases, followed by Peugeot.</p>
+<hr />
+<h3 id="step-4-rw_ec-zero-18779-vehicles-flagged">🔵 Step 4: RW_EC Zero
+(18,779 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles reporting zero Real-World
+Electric Consumption (indicating no electric mode usage)</p>
+<h4 id="top-manufacturers-by-overrepresentation">Top Manufacturers (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Porsche</td>
+<td><strong>225,325%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Ferrari</td>
+<td>420%</td>
+</tr>
+<tr>
+<td>Suzuki</td>
+<td>378%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-models-by-overrepresentation-2">Top Models (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Porsche Panamera 4S E-Hybrid</td>
+<td><strong>4,426,839%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Porsche Panamera 4 E-Hybrid</td>
+<td><strong>2,691,396%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Porsche Panamera 4</td>
+<td><strong>1,187,172%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Porsche Cayenne E-Hybrid</td>
+<td><strong>164,224%</strong> ⚠️⚠️</td>
+</tr>
+</tbody>
+</table>
+<h4 id="vehicle-characteristics-comparison-2">Vehicle Characteristics
+Comparison</h4>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 24%" />
+<col style="width: 21%" />
+<col style="width: 16%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Characteristic</th>
+<th>Flagged Vehicles</th>
+<th>Clean Vehicles</th>
+<th>Difference</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mass</strong></td>
+<td>2,350 kg</td>
+<td>2,115 kg</td>
+<td>+11.11%</td>
+<td>⬆️ Heavier</td>
+</tr>
+<tr>
+<td><strong>TA_CO₂</strong></td>
+<td>57.3 g/km</td>
+<td>34.9 g/km</td>
+<td>+64.36%</td>
+<td>⬆️ Much Higher</td>
+</tr>
+<tr>
+<td><strong>Electric Range</strong></td>
+<td>53.3 km</td>
+<td>64.0 km</td>
+<td>-16.75%</td>
+<td>⬇️ Shorter</td>
+</tr>
+<tr>
+<td><strong>Engine Displacement</strong></td>
+<td>2,513 cc</td>
+<td>1,842 cc</td>
+<td>+36.39%</td>
+<td>⬆️ Much Larger</td>
+</tr>
+<tr>
+<td><strong>Engine Power</strong></td>
+<td>213 kW</td>
+<td>139 kW</td>
+<td>+52.74%</td>
+<td>⬆️ Much Higher</td>
+</tr>
+<tr>
+<td><strong>FC_Tot</strong> (Total Fuel Consumption)</td>
+<td>2,198 L</td>
+<td>1,591 L</td>
+<td>+38.20%</td>
+<td>⬆️ Higher</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-2">💡 Key Insight</h4>
+<p>This is the <strong>most striking pattern</strong> - Porsche luxury
+PHEVs (Panamera, Cayenne) are reporting <strong>zero electric
+consumption</strong>. These are: - <strong>High-performance</strong>
+vehicles - <strong>Heavy</strong> vehicles (2,350 kg average) -
+<strong>Large engines</strong> (2,513 cc average) - <strong>High
+power</strong> (213 kW average)</p>
+<p><strong>Possible explanations for zero RW_EC:</strong> 1. 🔋
+<strong>Battery issues</strong> preventing electric mode operation 2. 🚗
+<strong>Driver behavior</strong> (not charging vehicles) 3. 📊
+<strong>Data reporting problems</strong> specific to Porsche’s OBFCM
+implementation 4. ⚙️ <strong>Design issues</strong> where electric mode
+is rarely engaged</p>
+<hr />
+<h3 id="step-5-vfn-issue-32363-vehicles-flagged">🟣 Step 5: VFN Issue
+(32,363 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicle Family Name (VFN) validation
+failures</p>
+<h4 id="top-manufacturers-by-overrepresentation-1">Top Manufacturers (by
+Overrepresentation)</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Geely</td>
+<td><strong>529,641%</strong> ⚠️⚠️⚠️</td>
+</tr>
+<tr>
+<td>Ferrari</td>
+<td>3,379%</td>
+</tr>
+<tr>
+<td>Opel Automobile</td>
+<td>1,619%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-models-by-overrepresentation-3">Top Models (by
+Overrepres
+<h3 id="step-6-physics-co2-fc-420-vehicles-flagged">🟢 Step 6: Physics CO2/FC (420 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with physically implausible CO₂ or fuel consumption values</p>
+<p><strong>Criteria:</strong> FCgap_perc > 1800 OR TA_CO2 >= 190 OR RW_CO2 > 800</p>
+<h4 id="top-manufacturers-3">Top Manufacturers</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mercedes-Benz</td>
+<td>280</td>
+<td>66.67%</td>
+</tr>
+<tr>
+<td>Land Rover</td>
+<td>99</td>
+<td>23.57%</td>
+</tr>
+<tr>
+<td>Ferrari</td>
+<td>14</td>
+<td>3.33%</td>
+</tr>
+<tr>
+<td>BMW</td>
+<td>8</td>
+<td>1.90%</td>
+</tr>
+<tr>
+<td>Volvo</td>
+<td>6</td>
+<td>1.43%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-4">💡 Key Insight</h4>
+<p>Step 6 flags vehicles with physically impossible values, suggesting data reporting errors or sensor malfunctions. Mercedes-Benz vehicles, particularly GLC models, show the highest incidence of physics violations.</p>
+<hr />
+
+<h3 id="step-7-mileage-fc-inconsistency-565-vehicles-flagged">🟠 Step 7: Mileage/FC Inconsistency (565 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with inconsistent mileage and fuel consumption relationships</p>
+<p><strong>Criteria:</strong> Logical impossibilities such as fuel consumption without distance, or large distance with zero fuel</p>
+<h4 id="breakdown-by-inconsistency-type">Breakdown by Inconsistency Type</h4>
+<table>
+<thead>
+<tr>
+<th>Inconsistency Type</th>
+<th>Vehicles Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CD engine-on (mileage=0, FC>0.1)</td>
+<td>196</td>
+</tr>
+<tr>
+<td>CS zero distance (mileage=0, FC>0.1)</td>
+<td>27</td>
+</tr>
+<tr>
+<td>CI zero distance (mileage=0, FC>3)</td>
+<td>359</td>
+</tr>
+<tr>
+<td>CS large distance, zero fuel (mileage>100, FC=0)</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-5">💡 Key Insight</h4>
+<p>Step 7 identifies logical impossibilities in the data, such as reporting fuel consumption without corresponding distance traveled. These inconsistencies suggest data collection or reporting errors.</p>
+<hr />
+
+<h3 id="step-8-eds-energy-violation-3506-vehicles-flagged">🔵 Step 8: EDS/Energy Violation (3,506 vehicles flagged)</h3>
+<p><strong>What it means:</strong> Vehicles with EDS or energy values outside acceptable ranges</p>
+<p><strong>Criteria:</strong> EDS outside 0-100%, negative energy values, or energy accounting inconsistencies</p>
+<h4 id="breakdown-by-violation-type">Breakdown by Violation Type</h4>
+<table>
+<thead>
+<tr>
+<th>Violation Type</th>
+<th>Vehicles Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EDS bounds violations (outside 0-100%)</td>
+<td>4,396</td>
+</tr>
+<tr>
+<td>Negative energy values</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Energy identity violations</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="top-manufacturers-4">Top Manufacturers</h4>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Vehicles Flagged</th>
+<th>Percentage of Flagged</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Missing (NA)</td>
+<td>21,395</td>
+<td>85.12%</td>
+</tr>
+<tr>
+<td>Jeep</td>
+<td>3,210</td>
+<td>12.77%</td>
+</tr>
+<tr>
+<td>Opel</td>
+<td>322</td>
+<td>1.28%</td>
+</tr>
+<tr>
+<td>Peugeot</td>
+<td>300</td>
+<td>1.19%</td>
+</tr>
+<tr>
+<td>Volvo</td>
+<td>245</td>
+<td>0.97%</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-6">💡 Key Insight</h4>
+<p>Step 8 flags vehicles with EDS values outside the physically possible range of 0-100%. Most violations occur in vehicles with missing OEM information, suggesting data quality issues in identification and reporting.</p>
+<hr />
+entation)</h4>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Overrepresentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Volvo V60 T6 Twin Engine</td>
+<td><strong>133,677%</strong> ⚠️⚠️</td>
+</tr>
+<tr>
+<td>Polestar 1</td>
+<td><strong>111,381%</strong> ⚠️⚠️</td>
+</tr>
+<tr>
+<td>Volvo XC90 T8 Twin Engine</td>
+<td><strong>92,057%</strong> ⚠️⚠️</td>
+</tr>
+</tbody>
+</table>
+<h4 id="key-insight-3">💡 Key Insight</h4>
+<p>VFN issues are <strong>primarily</strong> with: -
+<strong>Volvo/Polestar models</strong> (owned by Geely) - <strong>Other
+Geely-owned brands</strong></p>
+<p>This suggests: - VFN whitelist may need updating - Naming
+inconsistencies in Geely’s reporting - Corporate structure changes
+affecting data standardization</p>
+<h4 id="online-research-context-2">🌐 Online Research Context</h4>
+<ul>
+<li><strong>Geely-Volvo Relationship:</strong> Geely acquired Volvo Cars
+in 2010, explaining VFN naming inconsistencies between different
+reporting systems.</li>
+</ul>
+<hr />
+<h2 id="cross-step-patterns">🔗 Cross-Step Patterns</h2>
+<h3 id="stellantis-group-fiat-opel-peugeot-chrysler-jeep">🏢 Stellantis
+Group (Fiat, Opel, Peugeot, Chrysler, Jeep)</h3>
+<p><strong>Consistent Issues Across Multiple Steps:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Filter Step</th>
+<th>Issue Type</th>
+<th>Affected Brands</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Step 1</td>
+<td>CS Invalid</td>
+<td>Fiat, Opel, Jeep</td>
+</tr>
+<tr>
+<td>Step 2</td>
+<td>Missing RW_EC</td>
+<td>Stellantis Auto</td>
+</tr>
+<tr>
+<td>Step 3</td>
+<td>Missing OEM/Model</td>
+<td>Stellantis Auto, Peugeot</td>
+</tr>
+<tr>
+<td>Step 8</td>
+<td>EDS/Energy Violation</td>
+<td>Stellantis Europe, Fiat, Opel, PSA</td>
+</tr>
+</tbody>
+</table>
+<h4 id="analysis">Analysis</h4>
+<p>The consistent data quality issues across Stellantis brands
+suggest:</p>
+<ol type="1">
+<li><strong>Common OBFCM implementation</strong> across brands</li>
+<li><strong>Shared data reporting infrastructure</strong></li>
+<li><strong>Potential systemic issues</strong> in their PHEV monitoring
+systems</li>
+</ol>
+<h4 id="online-research-context-3">🌐 Online Research Context</h4>
+<ul>
+<li><strong>Stellantis Formation:</strong> Stellantis was formed in 2021
+from the merger of FCA (Fiat Chrysler Automobiles) and PSA (Peugeot
+Société Anonyme)</li>
+<li>The merger may have created integration challenges in data reporting
+systems</li>
+</ul>
+<hr />
+<h2 id="references">📚 References</h2>
+<h3 id="online-research-sources">Online Research Sources</h3>
+<ol type="1">
+<li><strong>Jeep/Chrysler Quality Issues:</strong>
+<ul>
+<li><a
+href="https://www.carscoops.com/2025/01/volvo-subaru-tesla-lead-study-with-most-5-star-safety-ratings/">Carscoops:
+Volvo, Subaru, Tesla Lead Study with Most 5-Star Safety Ratings</a></li>
+<li>Jeep: 1,488 complaints per car, recall rate of 1.06</li>
+</ul></li>
+<li><strong>Hyundai/Kia Recalls:</strong>
+<ul>
+<li><a
+href="https://apnews.com/article/ae2e71914fc229d70a4cceb089e465ce">AP
+News: Millions of recalled Hyundai and Kia vehicles with dangerous
+defect remain on road</a></li>
+</ul></li>
+<li><strong>Automotive Recall Statistics:</strong>
+<ul>
+<li><a
+href="https://www.autoinsurance.com/research/car-recall-facts-statistics/">AutoInsurance.com:
+Car Recall Facts &amp; Statistics</a></li>
+<li>Ford: 94 recalls affecting 5.6M vehicles (2024-2025)</li>
+<li>Tesla: 20 recalls affecting 5.8M vehicles</li>
+</ul></li>
+<li><strong>Stellantis Formation:</strong>
+<ul>
+<li>Stellantis formed in 2021 from merger of FCA (Fiat Chrysler
+Automobiles) and PSA (Peugeot Société Anonyme)</li>
+</ul></li>
+<li><strong>Geely-Volvo Relationship:</strong>
+<ul>
+<li>Geely acquired Volvo Cars in 2010, explaining VFN naming
+inconsistencies</li>
+</ul></li>
+</ol>
+<h3 id="data-sources">Data Sources</h3>
+<ul>
+<li><strong>OBFCM dataset analysis</strong> (2021-2023)</li>
+<li><strong>Pattern analysis</strong> using statistical tests (t-tests,
+overrepresentation analysis)</li>
+<li><strong>Internal flagging statistics</strong> from cleaning
+pipeline</li>
+</ul>
+<hr />
+<h2 id="important-notes">📌 Important Notes</h2>
+<blockquote>
+<p><strong>⚠️ Disclaimer:</strong> This analysis is based on OBFCM data
+from 2021-2023. Patterns may reflect both genuine vehicle
+characteristics and data quality issues. Further investigation with
+manufacturers is recommended for flagged models.</p>
+</blockquote>
+<h3 id="recommendations">Recommendations</h3>
+<ol type="1">
+<li><strong>Contact manufacturers</strong> for flagged models to verify
+data reporting accuracy</li>
+<li><strong>Update VFN whitelist</strong> to include Geely/Volvo naming
+variations</li>
+<li><strong>Investigate Porsche OBFCM implementation</strong> for zero
+RW_EC reporting</li>
+<li><strong>Review Stellantis data pipeline</strong> for systemic
+issues</li>
+<li><strong>Monitor Hyundai models</strong> for missing RW_EC data in
+future datasets</li>
+</ol>
+<hr />
+<p><strong>Document Version:</strong> 1.0<br />
+<strong>Last Updated:</strong> December 24, 2024<br />
+<strong>Author:</strong> Data Analysis Team</p>
+</body>
+</html>

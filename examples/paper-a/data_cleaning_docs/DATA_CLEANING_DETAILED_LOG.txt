@@ -1,0 +1,884 @@
+==================================================================================================== 
+PHEV DATABASE CLEANING - DETAILED REMOVAL STATISTICS
+Source: Adapted from PHEV_paper_12_25.R
+Date: 2025-12-18 21:38:16.798891 
+Focus: PHEVs (Plug-in Hybrid Electric Vehicles) only
+==================================================================================================== 
+
+
+[0] DATA LOADING
+==================================================================================================== 
+Extracting from 7z archive (this may take 10-20 minutes for full dataset)...
+Loaded 7732320 records from 7z archive
+
+Initial dataset size: 7732320 vehicles
+Expected: ~7.7M vehicles
+
+
+[1] VARIABLE PREPARATION
+==================================================================================================== 
+Variables prepared
+
+
+[2] OEM CLEANING AND HARMONIZATION
+==================================================================================================== 
+Vehicles with problematic OEMs (before replacement): 728889 
+OEM harmonization completed
+Unique OEMs (all vehicles): 43 
+Unique OEMs (PHEVs): 28 
+
+
+[3] MODEL CLEANING AND HARMONIZATION
+==================================================================================================== 
+NOTE: Full model harmonization list has 500+ harmonization rules.
+This script applies all harmonization rules from the original file.
+For complete list, see PHEV_paper_12_25.R lines 388-910
+
+Model basic cleaning applied
+Extracting and applying model harmonization rules from original file...
+WARNING: Could not locate harmonization section in original file
+Start pattern found at line: NOT FOUND 
+End pattern found at line: NOT FOUND 
+Unique Models (PHEVs) after harmonization: 780 
+Unique OEM_Model combinations (PHEVs): 807 
+
+
+[INTERMEDIATE 1] VFN-based Reassignments for Missing OEM/Model
+==================================================================================================== 
+PHEVs with missing OEM filled from VFN mapping: 88 
+PHEVs with missing Modelup filled from VFN mapping: 3107 
+
+
+[INTERMEDIATE] Reassignments and Data Corrections
+==================================================================================================== 
+
+Applying Land Rover 2021 corrections...
+PHEVs with Electric_range > 140 km (set to NA): 22 
+
+Reassigning PHEVs with high TA_CO2 to non-PHEV powertrains...
+PHEVs reassigned to non-PHEV (high TA_CO2 > 101): 747 
+
+OEM_Model distribution of reassigned PHEVs:
+
+   VOLVO XC60    VOLVO XC40    VOLVO XC90     VOLVO V60     VOLVO S90 
+          307           215           138            41            19 
+    VOLVO S60     VOLVO V90 SKODA OCTAVIA 
+           16            10             1 
+PHEV count after reassignments: 994764 
+
+
+[REMOVAL STEP 1] CS (Charge Sustaining) Mileage and Fuel Consumption
+==================================================================================================== 
+
+ ---------------------------------------------------------------------------------------------------- 
+STEP: Step 1: CS Mileage/FC Invalid 
+---------------------------------------------------------------------------------------------------- 
+Criteria: PHEVs with Mileage_CS < 0 OR FC_CS < 0 OR missing Mileage_CS OR missing FC_CS 
+PHEVs before step: 994764 
+PHEVs removed: 33348 
+Percentage removed: 3.352 %
+
+OEM Distribution of Removed PHEVs:
+
+         JEEP    LAND ROVER    VOLKSWAGEN          FORD         SKODA 
+         9900          5654          4091          3903          2991 
+       TOYOTA       RENAULT          AUDI         VOLVO    MITSUBISHI 
+         1641          1392          1312           550           478 
+         OPEL       PEUGEOT           KIA       CITROEN         GEELY 
+          340           335           206           146           109 
+   ALFA ROMEO            DS          SEAT MERCEDES-BENZ           BMW 
+           87            65            40            37            30 
+      HYUNDAI          SAIC         MAZDA       FERRARI        SUZUKI 
+           27            10             2             1             1 
+
+Top 30 Models Removed (PHEVs):
+
+                 COMPASS                     KUGA       RANGE ROVER EVOQUE 
+                    7504                     3702                     3004 
+                RENEGADE                   PASSAT          DISCOVERY SPORT 
+                    2219                     1999                     1501 
+             TOYOTA RAV4                   SUPERB                  OCTAVIA 
+                    1486                     1416                     1245 
+                  TIGUAN                   CAPTUR                 GOLF GTE 
+                     826                      722                      619 
+                  MEGANE            JAGUAR E PACE MITSUBISHI ECLIPSE CROSS 
+                     519                      477                      447 
+                  ARTEON               OCTAVIA RS              GRANDLAND X 
+                     375                      322                      320 
+             A3 40 TFSIE        RANGE ROVER VELAR      Q3 SPORTBACK E TRON 
+                     263                      240                      233 
+               Q3 E TRON                     XC60                      508 
+                     207                      196                      189 
+                    GOLF                 EXPLORER                   E PACE 
+                     187                      156                      143 
+             C5 AIRCROSS       WRANGLER UNLIMITED            LEXUS NX450H+ 
+                     141                      139                      135 
+
+Top 30 OEM_Model Combinations Removed (PHEVs):
+
+                       JEEP COMPASS                           FORD KUGA 
+                               7504                                3702 
+      LAND ROVER RANGE ROVER EVOQUE                       JEEP RENEGADE 
+                               3004                                2219 
+                  VOLKSWAGEN PASSAT          LAND ROVER DISCOVERY SPORT 
+                               1999                                1501 
+                 TOYOTA TOYOTA RAV4                        SKODA SUPERB 
+                               1486                                1416 
+                      SKODA OCTAVIA                   VOLKSWAGEN TIGUAN 
+                               1245                                 826 
+                     RENAULT CAPTUR                 VOLKSWAGEN GOLF GTE 
+                                722                                 619 
+                     RENAULT MEGANE            LAND ROVER JAGUAR E PACE 
+                                519                                 477 
+MITSUBISHI MITSUBISHI ECLIPSE CROSS                   VOLKSWAGEN ARTEON 
+                                447                                 375 
+                   SKODA OCTAVIA RS                    OPEL GRANDLAND X 
+                                322                                 320 
+                   AUDI A3 40 TFSIE        LAND ROVER RANGE ROVER VELAR 
+                                263                                 240 
+           AUDI Q3 SPORTBACK E TRON                      AUDI Q3 E TRON 
+                                233                                 207 
+                         VOLVO XC60                         PEUGEOT 508 
+                                196                                 189 
+                    VOLKSWAGEN GOLF                       FORD EXPLORER 
+                                187                                 156 
+                  LAND ROVER E PACE                 CITROEN C5 AIRCROSS 
+                                143                                 141 
+            JEEP WRANGLER UNLIMITED                TOYOTA LEXUS NX450H+ 
+                                139                                 135 
+
+Most Common Removed OEM_Model:
+JEEP COMPASS : 7504 vehicles
+
+Year Distribution of Removed PHEVs:
+
+ 2021  2022  2023 
+26013  5687  1648 
+
+
+[FLAGGED, NOT REMOVED] Vehicles flagged for Step 1 issues remain in dataset
+
+[REMOVAL STEP 2] Missing Real-World Electric Consumption (RW_EC)
+==================================================================================================== 
+
+ ---------------------------------------------------------------------------------------------------- 
+STEP: Step 2: Missing RW_EC 
+---------------------------------------------------------------------------------------------------- 
+Criteria: PHEVs with missing RW_EC (Real-World Electric Consumption) 
+PHEVs before step: 994764 
+PHEVs removed: 12554 
+Percentage removed: 1.262 %
+
+OEM Distribution of Removed PHEVs:
+
+         FORD         SKODA       PEUGEOT       CITROEN       HYUNDAI 
+         3720          2603          1760           891           767 
+           DS           BMW          SAIC        TOYOTA          OPEL 
+          665           597           425           370           362 
+         <NA>    LAND ROVER    VOLKSWAGEN    MITSUBISHI         VOLVO 
+          113            62            56            46            42 
+         SEAT           KIA          AUDI         GEELY       RENAULT 
+           27            16            10             9             9 
+      FERRARI MERCEDES-BENZ 
+            3             1 
+
+Top 30 Models Removed (PHEVs):
+
+                                            KUGA 
+                                            3487 
+                                             308 
+                                            1550 
+                                          SUPERB 
+                                            1299 
+                                         OCTAVIA 
+                                            1047 
+                                            C5 X 
+                                             801 
+                                             DS4 
+                                             506 
+                                          TUCSON 
+                                             329 
+                                     TOYOTA RAV4 
+                                             324 
+                                    X1 XDRIVE25E 
+                                             320 
+                                           ASTRA 
+                                             318 
+                           MG EHS PLUG IN HYBRID 
+                                             300 
+                                      OCTAVIA RS 
+                                             250 
+                       COUNTRYMAN COOPER SE ALL4 
+                                             196 
+                                        EXPLORER 
+                                             187 
+                                      TUCSONIX35 
+                                             163 
+                                            <NA> 
+                                             147 
+                                            DS 4 
+                                              88 
+                                         SANTAFE 
+                                              83 
+                           MG RX6 PLUG IN HYBRID 
+                                              62 
+NUEVO CITRO N C5 X PLUG IN HYBRID 225 EAT8 SHINE 
+                                              61 
+                                    X2 XDRIVE25E 
+                                              55 
+                        MITSUBISHI ECLIPSE CROSS 
+                                              46 
+                                   LEXUS NX450H+ 
+                                              42 
+                                            3008 
+                                              41 
+                                        SANTA FE 
+                                              39 
+                                        GOLF GTE 
+                                              38 
+           NUEVO 308 5P GT PACK HYBRID 225 EEAT8 
+                                              37 
+                                     TUCSON IX35 
+                                              37 
+                                      MG HS PHEV 
+                                              24 
+               DS 4 E TENSE 225 PERFORMANCE LINE 
+                                              23 
+
+Top 30 OEM_Model Combinations Removed (PHEVs):
+
+                                               FORD KUGA 
+                                                    3487 
+                                             PEUGEOT 308 
+                                                    1550 
+                                            SKODA SUPERB 
+                                                    1299 
+                                           SKODA OCTAVIA 
+                                                    1047 
+                                            CITROEN C5 X 
+                                                     801 
+                                                  DS DS4 
+                                                     506 
+                                          HYUNDAI TUCSON 
+                                                     329 
+                                      TOYOTA TOYOTA RAV4 
+                                                     324 
+                                        BMW X1 XDRIVE25E 
+                                                     320 
+                                              OPEL ASTRA 
+                                                     318 
+                              SAIC MG EHS PLUG IN HYBRID 
+                                                     300 
+                                        SKODA OCTAVIA RS 
+                                                     250 
+                           BMW COUNTRYMAN COOPER SE ALL4 
+                                                     196 
+                                           FORD EXPLORER 
+                                                     187 
+                                      HYUNDAI TUCSONIX35 
+                                                     163 
+                                                   NA NA 
+                                                     113 
+                                                 DS DS 4 
+                                                      88 
+                                         HYUNDAI SANTAFE 
+                                                      83 
+                              SAIC MG RX6 PLUG IN HYBRID 
+                                                      62 
+CITROEN NUEVO CITRO N C5 X PLUG IN HYBRID 225 EAT8 SHINE 
+                                                      61 
+                                        BMW X2 XDRIVE25E 
+                                                      55 
+                     MITSUBISHI MITSUBISHI ECLIPSE CROSS 
+                                                      46 
+                                    TOYOTA LEXUS NX450H+ 
+                                                      42 
+                                            PEUGEOT 3008 
+                                                      41 
+                                        HYUNDAI SANTA FE 
+                                                      39 
+                                     VOLKSWAGEN GOLF GTE 
+                                                      38 
+                                     HYUNDAI TUCSON IX35 
+                                                      37 
+           PEUGEOT NUEVO 308 5P GT PACK HYBRID 225 EEAT8 
+                                                      37 
+                                              HYUNDAI NA 
+                                                      33 
+                                         SAIC MG HS PHEV 
+                                                      24 
+
+Most Common Removed OEM_Model:
+FORD KUGA : 3487 vehicles
+
+Year Distribution of Removed PHEVs:
+
+2022 2021 2023 
+5829 5323 1402 
+
+
+[FLAGGED, NOT REMOVED] Vehicles flagged for Step 2 issues remain in dataset
+
+[REMOVAL STEP 3] Missing OEM or Model Information
+==================================================================================================== 
+
+ ---------------------------------------------------------------------------------------------------- 
+STEP: Step 3: Missing OEM/Model 
+---------------------------------------------------------------------------------------------------- 
+Criteria: PHEVs with missing OEM OR missing Modelup 
+PHEVs before step: 994764 
+PHEVs removed: 2646 
+Percentage removed: 0.266 %
+
+OEM Distribution of Removed PHEVs:
+
+  VOLVO PEUGEOT    <NA>    AUDI    SEAT    OPEL HYUNDAI PORSCHE      DS    FORD 
+   1270     461     449     224     117      65      34      19       5       2 
+
+Top 30 Models Removed (PHEVs):
+<NA> 
+2646 
+
+Top 30 OEM_Model Combinations Removed (PHEVs):
+
+  VOLVO NA PEUGEOT NA      NA NA    AUDI NA    SEAT NA    OPEL NA HYUNDAI NA 
+      1270        461        449        224        117         65         34 
+PORSCHE NA      DS NA    FORD NA 
+        19          5          2 
+
+Most Common Removed OEM_Model:
+VOLVO NA : 1270 vehicles
+
+Year Distribution of Removed PHEVs:
+
+2022 2021 
+2612   34 
+
+
+[FLAGGED, NOT REMOVED] Vehicles flagged for Step 3 issues remain in dataset
+
+[REMOVAL STEP 4] RW_EC Zero Reporting Issues
+==================================================================================================== 
+
+Case A - Systematic Zero Reporting (95th percentile == 0):
+OEM_Model × Year combinations removed: 63 
+Vehicles removed: 10503 
+
+Case B - Partial Zero Reporting (>30% zeros):
+Vehicles removed: 597 
+
+ ---------------------------------------------------------------------------------------------------- 
+STEP: Step 4: RW_EC Zero Reporting 
+---------------------------------------------------------------------------------------------------- 
+Criteria: Case A: p95_RW_EC == 0 (systematic zero reporting). Case B: share_zero > 30% (partial zero reporting) 
+PHEVs before step: 994764 
+PHEVs removed: 11100 
+Percentage removed: 1.116 %
+
+OEM Distribution of Removed PHEVs:
+
+   PORSCHE     SUZUKI    PEUGEOT LAND ROVER       SAIC 
+     11068         23          7          1          1 
+
+Top 30 Models Removed (PHEVs):
+
+                                  CAYENNE E HYBRID 
+                                              7698 
+                               PANAMERA 4 E HYBRID 
+                                              1038 
+                              PANAMERA 4S E HYBRID 
+                                               856 
+                          CAYENNE TURBO S E HYBRID 
+                                               541 
+                                        PANAMERA 4 
+                                               459 
+                         PANAMERA TURBO S E HYBRID 
+                                               218 
+                                   CAYENNE E HYBR. 
+                                                61 
+                            CAYENNE E HYBRID COUPE 
+                                                30 
+                 CAYENNE E HYBRID PLATINUM EDITION 
+                                                30 
+                                     SUZUKI ACROSS 
+                                                23 
+                 PANAMERA 4 E HYBRID SPORT TURISMO 
+                                                20 
+                                              <NA> 
+                                                19 
+           CAYENNE E HYBRID COUPE PLATINUM EDITION 
+                                                16 
+                          PANAMERA TURBO S E HYBRI 
+                                                11 
+                                       PANAMERA 4S 
+                                                10 
+                             CAYENNE E HYBRID AUT. 
+                                                 6 
+                                      PANAMERA 4 E 
+                                                 6 
+              PANAMERA 4 E HYBRID PLATINUM EDITION 
+                                                 6 
+                                         4 E TENSE 
+                                                 5 
+                            CAYENNE E HYBRID COUP  
+                                                 5 
+                PANAMERA 4S E HYBRID SPORT TURISMO 
+                                                 5 
+                                   CAYENNE TURBO S 
+                                                 4 
+                                          PANAMERA 
+                                                 4 
+                                           CAYENNE 
+                                                 3 
+                                    CAYENNE E HYBR 
+                                                 3 
+PANAMERA 4 E HYBRID SPORT TURISMO PLATINUM EDITION 
+                                                 3 
+                    CAYENNE TURBO S E HYBRID COUPE 
+                                                 2 
+                          PANAMERA 4 E HYBRID AUT. 
+                                                 2 
+                         PANAMERA 4S E HYBRID AUT. 
+                                                 2 
+                    PANAMERA TURBO S E HYBRID AUT. 
+                                                 2 
+
+Top 30 OEM_Model Combinations Removed (PHEVs):
+
+                                  PORSCHE CAYENNE E HYBRID 
+                                                      7698 
+                               PORSCHE PANAMERA 4 E HYBRID 
+                                                      1038 
+                              PORSCHE PANAMERA 4S E HYBRID 
+                                                       856 
+                          PORSCHE CAYENNE TURBO S E HYBRID 
+                                                       541 
+                                        PORSCHE PANAMERA 4 
+                                                       459 
+                         PORSCHE PANAMERA TURBO S E HYBRID 
+                                                       218 
+                                   PORSCHE CAYENNE E HYBR. 
+                                                        61 
+                            PORSCHE CAYENNE E HYBRID COUPE 
+                                                        30 
+                 PORSCHE CAYENNE E HYBRID PLATINUM EDITION 
+                                                        30 
+                                      SUZUKI SUZUKI ACROSS 
+                                                        23 
+                 PORSCHE PANAMERA 4 E HYBRID SPORT TURISMO 
+                                                        20 
+                                                PORSCHE NA 
+                                                        19 
+           PORSCHE CAYENNE E HYBRID COUPE PLATINUM EDITION 
+                                                        16 
+                          PORSCHE PANAMERA TURBO S E HYBRI 
+                                                        11 
+                                       PORSCHE PANAMERA 4S 
+                                                        10 
+                             PORSCHE CAYENNE E HYBRID AUT. 
+                                                         6 
+                                      PORSCHE PANAMERA 4 E 
+                                                         6 
+              PORSCHE PANAMERA 4 E HYBRID PLATINUM EDITION 
+                                                         6 
+                                         PEUGEOT 4 E TENSE 
+                                                         5 
+                            PORSCHE CAYENNE E HYBRID COUP  
+                                                         5 
+                PORSCHE PANAMERA 4S E HYBRID SPORT TURISMO 
+                                                         5 
+                                   PORSCHE CAYENNE TURBO S 
+                                                         4 
+                                          PORSCHE PANAMERA 
+                                                         4 
+                                           PORSCHE CAYENNE 
+                                                         3 
+                                    PORSCHE CAYENNE E HYBR 
+                                                         3 
+PORSCHE PANAMERA 4 E HYBRID SPORT TURISMO PLATINUM EDITION 
+                                                         3 
+                    PORSCHE CAYENNE TURBO S E HYBRID COUPE 
+                                                         2 
+                          PORSCHE PANAMERA 4 E HYBRID AUT. 
+                                                         2 
+                         PORSCHE PANAMERA 4S E HYBRID AUT. 
+                                                         2 
+                    PORSCHE PANAMERA TURBO S E HYBRID AUT. 
+                                                         2 
+
+Most Common Removed OEM_Model:
+PORSCHE CAYENNE E HYBRID : 7698 vehicles
+
+Year Distribution of Removed PHEVs:
+
+2021 2022 2023 
+6756 3598  746 
+
+
+[FLAGGED, NOT REMOVED] Vehicles flagged for Step 4 issues remain in dataset
+
+[REMOVAL STEP 5] Problematic VFN Filtering
+==================================================================================================== 
+VFN validation file not found, skipping VFN filtering step
+Expected file: 02_data/OBFCM_2021-2023/Dataset/PHEVs_VFN_obfcm_ok.xlsx 
+
+
+[REMOVAL STEP 6] Physics-Based CO2 and Fuel Consumption Filters
+==================================================================================================== 
+
+ ---------------------------------------------------------------------------------------------------- 
+STEP: Step 6: Physics-Based CO2/FC (PHEVs) 
+---------------------------------------------------------------------------------------------------- 
+Criteria: PHEVs with FCgap_perc > 1800 OR TA_CO2 >= 190 OR RW_CO2 > 800 
+PHEVs before step: 994764 
+PHEVs removed: 417 
+Percentage removed: 0.042 %
+
+OEM Distribution of Removed PHEVs:
+
+MERCEDES-BENZ    LAND ROVER       FERRARI           BMW         VOLVO 
+          280            99            14             8             6 
+      PORSCHE          FORD    VOLKSWAGEN          AUDI 
+            5             2             2             1 
+
+Top 30 Models Removed (PHEVs):
+
+              GLC 300 E 4MATIC              GLC 300 DE 4MATIC 
+                           110                             68 
+             RANGE ROVER SPORT                        C 300 E 
+                            55                             44 
+                   RANGE ROVER               GLC 400 E 4MATIC 
+                            42                             30 
+                       S 580 E                  SF90 STRADALE 
+                            14                             11 
+                S 580 E 4MATIC                     POLESTAR 1 
+                             7                              6 
+                          330E               CAYENNE E HYBRID 
+                             5                              4 
+                          KUGA                    SF90 SPIDER 
+                             2                              2 
+                       296 GTS                    530E XDRIVE 
+                             1                              1 
+                       A 250 E      AMG GT 63 S E PERFORMANCE 
+                             1                              1 
+                C 400 E 4MATIC                        E 300 E 
+                             1                              1 
+             GLE 350 DE 4MATIC        GLE 350 DE 4MATIC COUPE 
+                             1                              1 
+                      MULTIVAN            PANAMERA 4 E HYBRID 
+                             1                              1 
+                        PASSAT                   Q7 60 TFSI E 
+                             1                              1 
+            RANGE ROVER EVOQUE RANGE ROVER SPORT P510E AUTOBI 
+                             1                              1 
+                       S 450 E                   X1 XDRIVE25E 
+                             1                              1 
+
+Top 30 OEM_Model Combinations Removed (PHEVs):
+
+           MERCEDES-BENZ GLC 300 E 4MATIC 
+                                      110 
+          MERCEDES-BENZ GLC 300 DE 4MATIC 
+                                       68 
+             LAND ROVER RANGE ROVER SPORT 
+                                       55 
+                    MERCEDES-BENZ C 300 E 
+                                       44 
+                   LAND ROVER RANGE ROVER 
+                                       42 
+           MERCEDES-BENZ GLC 400 E 4MATIC 
+                                       30 
+                    MERCEDES-BENZ S 580 E 
+                                       14 
+                    FERRARI SF90 STRADALE 
+                                       11 
+             MERCEDES-BENZ S 580 E 4MATIC 
+                                        7 
+                         VOLVO POLESTAR 1 
+                                        6 
+                                 BMW 330E 
+                                        5 
+                 PORSCHE CAYENNE E HYBRID 
+                                        4 
+                      FERRARI SF90 SPIDER 
+                                        2 
+                                FORD KUGA 
+                                        2 
+                        AUDI Q7 60 TFSI E 
+                                        1 
+                          BMW 530E XDRIVE 
+                                        1 
+                         BMW X1 XDRIVE25E 
+                                        1 
+                         BMW X3 XDRIVE30E 
+                                        1 
+                          FERRARI 296 GTS 
+                                        1 
+            LAND ROVER RANGE ROVER EVOQUE 
+                                        1 
+LAND ROVER RANGE ROVER SPORT P510E AUTOBI 
+                                        1 
+                    MERCEDES-BENZ A 250 E 
+                                        1 
+  MERCEDES-BENZ AMG GT 63 S E PERFORMANCE 
+                                        1 
+             MERCEDES-BENZ C 400 E 4MATIC 
+                                        1 
+                    MERCEDES-BENZ E 300 E 
+                                        1 
+          MERCEDES-BENZ GLE 350 DE 4MATIC 
+                                        1 
+    MERCEDES-BENZ GLE 350 DE 4MATIC COUPE 
+                                        1 
+                    MERCEDES-BENZ S 450 E 
+                                        1 
+              PORSCHE PANAMERA 4 E HYBRID 
+                                        1 
+                      VOLKSWAGEN MULTIVAN 
+                                        1 
+
+Most Common Removed OEM_Model:
+MERCEDES-BENZ GLC 300 E 4MATIC : 110 vehicles
+
+Year Distribution of Removed PHEVs:
+
+2023 2022 2021 
+ 330   59   28 
+
+
+[FLAGGED, NOT REMOVED] Vehicles flagged for Step 6 issues remain in dataset
+
+[REMOVAL STEP 7] Mileage and Fuel Consumption Inconsistencies
+==================================================================================================== 
+
+Breakdown by inconsistency type:
+CD engine-on (mileage=0, FC>0.1): 196 
+CS zero distance (mileage=0, FC>0.1): 27 
+CI zero distance (mileage=0, FC>3): 359 
+CS large distance, zero fuel (mileage>100, FC=0): 6 
+
+ ---------------------------------------------------------------------------------------------------- 
+STEP: Step 7: Mileage/FC Inconsistencies 
+---------------------------------------------------------------------------------------------------- 
+Criteria: Logical impossibilities: fuel without distance, or large distance with zero fuel 
+PHEVs before step: 994764 
+PHEVs removed: 565 
+Percentage removed: 0.057 %
+
+OEM Distribution of Removed PHEVs:
+
+         <NA>          FORD          JEEP         SKODA         VOLVO 
+        16638           169            77            77            74 
+      PORSCHE          SAIC    VOLKSWAGEN        TOYOTA MERCEDES-BENZ 
+           50            27            20            15            13 
+      HYUNDAI    ALFA ROMEO    LAND ROVER           BMW       PEUGEOT 
+            9             7             5             4             4 
+         SEAT        SUZUKI           KIA          AUDI         GEELY 
+            4             3             2             1             1 
+        MAZDA          OPEL       RENAULT 
+            1             1             1 
+
+Top 30 Models Removed (PHEVs):
+
+                    <NA>                     KUGA                     XC40 
+                   16640                      157                       45 
+                 OCTAVIA                  COMPASS         CAYENNE E HYBRID 
+                      41                       37                       31 
+                  SUPERB                 RENEGADE       WRANGLER UNLIMITED 
+                      22                       20                       19 
+   MG EHS PLUG IN HYBRID               OCTAVIA RS              TOYOTA RAV4 
+                      17                       14                       14 
+                    XC60                     XC90    MG RX6 PLUG IN HYBRID 
+                      13                       13                       10 
+                GOLF GTE                 EXPLORER                     GOLF 
+                       9                        7                        7 
+     PANAMERA 4 E HYBRID                   TONALE                  C 300 E 
+                       6                        6                        5 
+             TUCSON IX35 CAYENNE TURBO S E HYBRID                  A 250 E 
+                       5                        4                        3 
+    PANAMERA 4S E HYBRID        RANGE ROVER SPORT                  TARRACO 
+                       3                        3                        3 
+                    3008           HYUNDAISANTAFE          KUGA TITANIUM X 
+                       2                        2                        2 
+
+Top 30 OEM_Model Combinations Removed (PHEVs):
+
+                            <NA>                        FORD KUGA 
+                           16638                              157 
+                      VOLVO XC40                    SKODA OCTAVIA 
+                              45                               41 
+                    JEEP COMPASS         PORSCHE CAYENNE E HYBRID 
+                              37                               31 
+                    SKODA SUPERB                    JEEP RENEGADE 
+                              22                               20 
+         JEEP WRANGLER UNLIMITED       SAIC MG EHS PLUG IN HYBRID 
+                              19                               17 
+                SKODA OCTAVIA RS               TOYOTA TOYOTA RAV4 
+                              14                               14 
+                      VOLVO XC60                       VOLVO XC90 
+                              13                               13 
+      SAIC MG RX6 PLUG IN HYBRID              VOLKSWAGEN GOLF GTE 
+                              10                                9 
+                   FORD EXPLORER                  VOLKSWAGEN GOLF 
+                               7                                7 
+               ALFA ROMEO TONALE      PORSCHE PANAMERA 4 E HYBRID 
+                               6                                6 
+             HYUNDAI TUCSON IX35            MERCEDES-BENZ C 300 E 
+                               5                                5 
+PORSCHE CAYENNE TURBO S E HYBRID     LAND ROVER RANGE ROVER SPORT 
+                               4                                3 
+           MERCEDES-BENZ A 250 E     PORSCHE PANAMERA 4S E HYBRID 
+                               3                                3 
+                    SEAT TARRACO                 BMW X1 XDRIVE25E 
+                               3                                2 
+            FORD KUGA TITANIUM X           HYUNDAI HYUNDAISANTAFE 
+                               2                                2 
+
+Most Common Removed OEM_Model:
+NA : 16638 vehicles
+
+Year Distribution of Removed PHEVs:
+
+ <NA>  2021  2022  2023 
+16638   342   176    47 
+
+
+[FLAGGED, NOT REMOVED] Vehicles flagged for Step 7 issues remain in dataset
+
+[REMOVAL STEP 8] EDS and Energy Violations
+==================================================================================================== 
+
+Breakdown by violation type:
+EDS bounds violations: 4396 
+Negative energy values: 0 
+Energy identity violations: 0 
+
+ ---------------------------------------------------------------------------------------------------- 
+STEP: Step 8: EDS/Energy Violations 
+---------------------------------------------------------------------------------------------------- 
+Criteria: EDS outside 0-100%, negative energy values, or energy accounting inconsistencies 
+PHEVs before step: 994764 
+PHEVs removed: 4396 
+Percentage removed: 0.442 %
+
+OEM Distribution of Removed PHEVs:
+
+         <NA>          JEEP          OPEL       PEUGEOT         VOLVO 
+        21395          3210           322           300           245 
+      CITROEN    ALFA ROMEO            DS           KIA          FORD 
+          137            66            55            28            16 
+   LAND ROVER         SKODA           BMW MERCEDES-BENZ       RENAULT 
+            6             4             3             2             1 
+         SEAT 
+            1 
+
+Top 30 Models Removed (PHEVs):
+
+                               <NA>                             COMPASS 
+                              21395                                3014 
+                        GRANDLAND X                                 508 
+                                306                                 167 
+                        C5 AIRCROSS                                3008 
+                                133                                 119 
+                               XC60                            RENEGADE 
+                                 98                                  87 
+                 WRANGLER UNLIMITED                              TONALE 
+                                 86                                  64 
+                               XC90                                 V60 
+                                 56                                  55 
+                     DS 7 CROSSBACK                             SORENTO 
+                                 47                                  27 
+                                V90                        COMPASS PHEV 
+                                 25                                  20 
+                               KUGA                           GRANDLAND 
+                                 16                                   9 
+                              NUEVO                                 S60 
+                                  9                                   9 
+                          3008 5008                         7 CROSSBACK 
+                                  6                                   6 
+                             SUPERB     GRANDLAND X 1.6 TURBO PHEV AUT. 
+                                  4                                   3 
+                           WRANGLER                         ALFA TONALE 
+                                  3                                   2 
+GRANDLAND X 1.6 TURBO PHEV AWD AUT.                  RANGE ROVER EVOQUE 
+                                  2                                   2 
+                  RANGE ROVER SPORT                        X5 XDRIVE45E 
+                                  2                                   2 
+
+Top 30 OEM_Model Combinations Removed (PHEVs):
+
+                                <NA>                         JEEP COMPASS 
+                               21395                                 3014 
+                    OPEL GRANDLAND X                          PEUGEOT 508 
+                                 306                                  167 
+                 CITROEN C5 AIRCROSS                         PEUGEOT 3008 
+                                 133                                  119 
+                          VOLVO XC60                        JEEP RENEGADE 
+                                  98                                   87 
+             JEEP WRANGLER UNLIMITED                    ALFA ROMEO TONALE 
+                                  86                                   64 
+                          VOLVO XC90                            VOLVO V60 
+                                  56                                   55 
+                   DS DS 7 CROSSBACK                          KIA SORENTO 
+                                  47                                   27 
+                           VOLVO V90                    JEEP COMPASS PHEV 
+                                  25                                   20 
+                           FORD KUGA                       OPEL GRANDLAND 
+                                  16                                    9 
+                           VOLVO S60                       DS 7 CROSSBACK 
+                                   9                                    6 
+                   PEUGEOT 3008 5008                        PEUGEOT NUEVO 
+                                   6                                    5 
+                       CITROEN NUEVO                         SKODA SUPERB 
+                                   4                                    4 
+                       JEEP WRANGLER OPEL GRANDLAND X 1.6 TURBO PHEV AUT. 
+                                   3                                    3 
+              ALFA ROMEO ALFA TONALE                     BMW X5 XDRIVE45E 
+                                   2                                    2 
+       LAND ROVER RANGE ROVER EVOQUE         LAND ROVER RANGE ROVER SPORT 
+                                   2                                    2 
+
+Most Common Removed OEM_Model:
+NA : 21395 vehicles
+
+Year Distribution of Removed PHEVs:
+
+ <NA>  2021  2022  2023 
+21395  2719  1516   161 
+
+
+[FLAGGED, NOT REMOVED] Vehicles flagged for Step 8 issues remain in dataset
+
+ ==================================================================================================== 
+FINAL SUMMARY
+==================================================================================================== 
+
+=== DATASET RETENTION (ALL VEHICLES KEPT) ===
+Initial dataset size: 7732320 vehicles
+Final dataset size: 7732320 vehicles
+Vehicles retained: ALL (100%)
+Approach: FLAGGED instead of REMOVED
+
+=== PHEV FLAGGING SUMMARY ===
+Total PHEVs in dataset: 994764 
+
+Step 1 - Flagged PHEVs (CS Mileage/FC Invalid): 33348 
+Step 2 - Flagged PHEVs (Missing RW_EC): 12554 
+Step 3 - Flagged PHEVs (Missing OEM/Model): 2646 
+Step 4 - Flagged PHEVs (RW_EC Zero Reporting): 11100 
+Step 6 - Flagged PHEVs (Physics-Based CO2/FC): 417 
+Step 7 - Flagged PHEVs (Mileage/FC Inconsistencies): 565 
+Step 8 - Flagged PHEVs (EDS/Energy Violations): 4396 
+
+Total PHEVs with ANY quality flag: 56160 
+PHEVs with NO quality flags (clean): 938604 
+
+Final dataset size: 7732320 vehicles
+Final unique counts:
+  OEMs (PHEVs): 28 
+  Models (PHEVs): 780 
+  OEM_Model combinations (PHEVs): 806 
+
+ ==================================================================================================== 
+CLEANING COMPLETE - ALL VEHICLES RETAINED (FLAGGED APPROACH)
+==================================================================================================== 
