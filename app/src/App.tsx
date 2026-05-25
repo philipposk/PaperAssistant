@@ -9,6 +9,8 @@ import { Tables } from "./routes/Tables";
 import { Notes } from "./routes/Notes";
 import { Settings } from "./routes/Settings";
 import { Examples } from "./routes/Examples";
+import { Auth } from "./routes/Auth";
+import { AuthCallback } from "./routes/AuthCallback";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,8 @@ const router = createBrowserRouter([
       { path: "projects/:id/notes", element: <Notes /> },
       { path: "settings", element: <Settings /> },
       { path: "examples", element: <Examples /> },
+      { path: "auth", element: <Auth /> },
+      { path: "auth/callback", element: <AuthCallback /> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },

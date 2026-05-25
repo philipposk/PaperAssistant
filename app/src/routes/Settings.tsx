@@ -1,8 +1,10 @@
+import { Link } from "react-router-dom";
 import { useTheme } from "../lib/theme";
-import { isCloudConfigured } from "../lib/supabase";
+import { signOut, useAuth } from "../lib/auth";
 
 export function Settings() {
   const { theme, setTheme } = useTheme();
+  const { isCloudConfigured, isSignedIn, user } = useAuth();
 
   return (
     <div className="px-8 py-8 max-w-3xl mx-auto">
@@ -34,21 +36,47 @@ export function Settings() {
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 mb-5">
         <div className="serif text-lg mb-1">Cloud sync</div>
-        <p className="text-sm text-[var(--color-ink-3)] mb-3">
-          {isCloudConfigured
-            ? "Supabase is configured. Sign in to sync projects across devices."
-            : "Cloud sync is not configured yet. The app works fully offline; your data lives in this browser."}
-        </p>
-        <div className="mono text-[11px] uppercase text-[var(--color-ink-3)]">
-          Status:{" "}
-          <span
-            className={
-              isCloudConfigured ? "text-[var(--color-green)]" : "text-[var(--color-amber)]"
-            }
-          >
-            {isCloudConfigured ? "ready" : "local-only"}
-          </span>
-        </div>
+        {!isCloudConfigured && (
+          <>
+            <p className="text-sm text-[var(--color-ink-3)] mb-3">
+              Cloud sync is not configured yet. The app works fully offline; your data lives in this browser.
+            </p>
+            <div className="mono text-[11px] uppercase text-[var(--color-ink-3)]">
+              Status: <span className="text-[var(--color-amber)]">local-only</span>
+            </div>
+          </>
+        )}
+        {isCloudConfigured && !isSignedIn && (
+          <>
+            <p className="text-sm text-[var(--color-ink-3)] mb-3">
+              Supabase is configured. Sign in to back up projects to the cloud and access them from any device.
+            </p>
+            <Link
+              to="/auth"
+              className="inline-block px-4 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium hover:bg-[var(--color-accent-2)]"
+            >
+              Sign in
+            </Link>
+          </>
+        )}
+        {isCloudConfigured && isSignedIn && (
+          <>
+            <p className="text-sm text-[var(--color-ink-3)] mb-3">
+              Signed in as <strong>{user?.email ?? user?.user_metadata?.name}</strong>.
+              Your projects sync across devices.
+            </p>
+            <div className="mono text-[11px] uppercase text-[var(--color-ink-3)] mb-3">
+              Status: <span className="text-[var(--color-green)]">syncing</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => void signOut()}
+              className="px-4 py-2 rounded-md border border-[var(--color-line)] text-sm hover:bg-[var(--color-surface-2)]"
+            >
+              Sign out
+            </button>
+          </>
+        )}
       </section>
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5">

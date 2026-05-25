@@ -17,6 +17,7 @@ import { db } from "../lib/db";
 import { useTheme } from "../lib/theme";
 import { useCurrentProject } from "../lib/currentProject";
 import { ProjectPicker } from "./ProjectPicker";
+import { AccountWidget } from "./AccountWidget";
 
 function NavItem({
   to,
@@ -172,6 +173,8 @@ export function Sidebar() {
         <NavItem to="/settings" icon={Wrench} label="Settings" />
         <NavItem to="/examples" icon={Flag} label="Examples" />
       </nav>
+
+      <AccountWidget />
 
       <button
         type="button"
