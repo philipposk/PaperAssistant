@@ -25,3 +25,6 @@ app/dist-ssr/
 .env
 .env.local
 .env.*.local
+
+# Local design mockups (kept off git per user preference)
+frontend mockup/
