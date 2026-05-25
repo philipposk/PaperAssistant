@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   LayoutDashboard,
@@ -18,6 +18,7 @@ import { useTheme } from "../lib/theme";
 import { useCurrentProject } from "../lib/currentProject";
 import { ProjectPicker } from "./ProjectPicker";
 import { AccountWidget } from "./AccountWidget";
+import { useSyncStore } from "../lib/sync";
 
 function NavItem({
   to,
@@ -65,7 +66,6 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 export function Sidebar() {
   const { theme, toggle } = useTheme();
   const { currentProject } = useCurrentProject();
-  const location = useLocation();
 
   const fileCount = useLiveQuery(
     () =>
@@ -189,11 +189,29 @@ export function Sidebar() {
           {theme}
         </span>
       </button>
-      <div className="px-4 pb-3 text-[11px] text-[var(--color-ink-3)] flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-green)]" />
-        <span className="flex-1">All systems normal</span>
-        <span className="mono">{location.pathname === "/" ? "v0.1" : ""}</span>
-      </div>
+      <SyncBadge />
     </aside>
+  );
+}
+
+function SyncBadge() {
+  const status = useSyncStore((s) => s.status);
+  const map: Record<typeof status, { color: string; label: string }> = {
+    idle: { color: "var(--color-amber)", label: "Not signed in" },
+    syncing: { color: "var(--color-amber)", label: "Syncing…" },
+    synced: { color: "var(--color-green)", label: "Synced" },
+    error: { color: "var(--color-warm)", label: "Sync error" },
+    offline: { color: "var(--color-ink-4)", label: "Local-only" },
+  };
+  const entry = map[status];
+  return (
+    <div className="px-4 pb-3 text-[11px] text-[var(--color-ink-3)] flex items-center gap-2">
+      <span
+        className="w-1.5 h-1.5 rounded-full"
+        style={{ background: entry.color }}
+      />
+      <span className="flex-1">{entry.label}</span>
+      <span className="mono">v0.1</span>
+    </div>
   );
 }

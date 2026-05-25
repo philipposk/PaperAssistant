@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Download, Trash2, Upload } from "lucide-react";
 import { db, now, uid, type FileRecord } from "../lib/db";
+import { pushFileDelete, pushFileUpsert } from "../lib/sync";
 
 function fileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -38,6 +39,7 @@ export function Files() {
     }
     await db.files.bulkAdd(records);
     await db.projects.update(id, { updated_at: now() });
+    for (const r of records) void pushFileUpsert(r);
   }
 
   async function download(f: FileRecord) {
@@ -50,7 +52,9 @@ export function Files() {
   }
 
   async function remove(fid: string) {
+    const existing = await db.files.get(fid);
     await db.files.delete(fid);
+    if (existing) void pushFileDelete(existing);
   }
 
   return (

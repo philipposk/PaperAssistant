@@ -4,6 +4,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Plus, Trash2 } from "lucide-react";
 import { db, now, uid } from "../lib/db";
 import { useCurrentProject } from "../lib/currentProject";
+import { pushProjectDelete, pushProjectUpsert } from "../lib/sync";
 
 export function Projects() {
   const projects = useLiveQuery(
@@ -20,13 +21,15 @@ export function Projects() {
     if (!name.trim()) return;
     const id = uid();
     const t = now();
-    await db.projects.add({
+    const record = {
       id,
       name: name.trim(),
       description: description.trim() || undefined,
       created_at: t,
       updated_at: t,
-    });
+    };
+    await db.projects.add(record);
+    void pushProjectUpsert(record);
     setCurrentProjectId(id);
     setName("");
     setDescription("");
@@ -41,6 +44,7 @@ export function Projects() {
       await db.notes.where("project_id").equals(id).delete();
       await db.projects.delete(id);
     });
+    void pushProjectDelete(id);
     if (currentProjectId === id) setCurrentProjectId(null);
   }
 
