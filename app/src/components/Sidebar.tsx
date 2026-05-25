@@ -12,6 +12,7 @@ import {
   Moon,
   Sun,
   Clock,
+  Quote,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { db } from "../lib/db";
@@ -104,6 +105,13 @@ export function Sidebar() {
         : Promise.resolve(0),
     [currentProject?.id],
   );
+  const refCount = useLiveQuery(
+    () =>
+      currentProject
+        ? db.references.where("project_id").equals(currentProject.id).count()
+        : Promise.resolve(0),
+    [currentProject?.id],
+  );
 
   const projectId = currentProject?.id;
 
@@ -166,6 +174,12 @@ export function Sidebar() {
               icon={StickyNote}
               label="Notes"
               badge={noteCount ?? 0}
+            />
+            <NavItem
+              to={`/projects/${projectId}/references`}
+              icon={Quote}
+              label="References"
+              badge={refCount ?? 0}
             />
             <NavItem
               to={`/projects/${projectId}/timeline`}

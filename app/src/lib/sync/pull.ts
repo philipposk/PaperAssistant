@@ -2,8 +2,20 @@
 
 import { supabase } from "../supabase";
 import { useAuthStore } from "../auth";
-import { db, type FileRecord, type Note, type Project } from "../db";
-import { toMs, type RemoteFile, type RemoteNote, type RemoteProject } from "./types";
+import {
+  db,
+  type FileRecord,
+  type Note,
+  type Project,
+  type Reference,
+} from "../db";
+import {
+  toMs,
+  type RemoteFile,
+  type RemoteNote,
+  type RemoteProject,
+  type RemoteReference,
+} from "./types";
 
 const BUCKET = "files";
 
@@ -11,13 +23,20 @@ function active(): boolean {
   return Boolean(supabase) && Boolean(useAuthStore.getState().user);
 }
 
-export async function pullAll(): Promise<{ projects: number; files: number; notes: number }> {
-  if (!active() || !supabase) return { projects: 0, files: 0, notes: 0 };
+export async function pullAll(): Promise<{
+  projects: number;
+  files: number;
+  notes: number;
+  references: number;
+}> {
+  if (!active() || !supabase)
+    return { projects: 0, files: 0, notes: 0, references: 0 };
 
-  const [projectsRes, filesRes, notesRes] = await Promise.all([
+  const [projectsRes, filesRes, notesRes, refsRes] = await Promise.all([
     supabase.from("projects").select("*"),
     supabase.from("files").select("*"),
     supabase.from("notes").select("*"),
+    supabase.from("references").select("*"),
   ]);
 
   let projects = 0;
@@ -47,7 +66,6 @@ export async function pullAll(): Promise<{ projects: number; files: number; note
       const local = await db.files.get(row.id);
       const remoteMs = toMs(row.updated_at);
       if (!local || remoteMs > local.updated_at) {
-        // Download blob (skip if local is newer or already has it).
         const dl = await supabase.storage.from(BUCKET).download(row.storage_path);
         if (dl.error || !dl.data) {
           console.warn("[sync] file blob download failed", row.storage_path, dl.error?.message);
@@ -93,5 +111,31 @@ export async function pullAll(): Promise<{ projects: number; files: number; note
     }
   }
 
-  return { projects, files, notes };
+  let references = 0;
+  if (refsRes.data) {
+    for (const row of refsRes.data as RemoteReference[]) {
+      const local = await db.references.get(row.id);
+      const remoteMs = toMs(row.updated_at);
+      if (!local || remoteMs > local.updated_at) {
+        const next: Reference = {
+          id: row.id,
+          project_id: row.project_id,
+          citation_key: row.citation_key,
+          csl_json: row.csl_json ?? {},
+          bibtex: row.bibtex ?? undefined,
+          doi: row.doi ?? undefined,
+          url: row.url ?? undefined,
+          pdf_file_id: row.pdf_file_id ?? undefined,
+          tags: row.tags ?? [],
+          created_at: toMs(row.created_at),
+          updated_at: remoteMs,
+          remote_id: row.id,
+        };
+        await db.references.put(next);
+        references++;
+      }
+    }
+  }
+
+  return { projects, files, notes, references };
 }

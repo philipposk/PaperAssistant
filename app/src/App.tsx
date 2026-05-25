@@ -39,6 +39,9 @@ const SearchRoute = lazy(() =>
 const Timeline = lazy(() =>
   import("./routes/Timeline").then((m) => ({ default: m.Timeline })),
 );
+const References = lazy(() =>
+  import("./routes/References").then((m) => ({ default: m.References })),
+);
 const AuthCallback = lazy(() =>
   import("./routes/AuthCallback").then((m) => ({ default: m.AuthCallback })),
 );
@@ -69,6 +72,7 @@ const router = createBrowserRouter([
       { path: "projects/:id/tables", element: <Lazy><Tables /></Lazy> },
       { path: "projects/:id/notes", element: <Lazy><Notes /></Lazy> },
       { path: "projects/:id/timeline", element: <Lazy><Timeline /></Lazy> },
+      { path: "projects/:id/references", element: <Lazy><References /></Lazy> },
       { path: "settings", element: <Lazy><Settings /></Lazy> },
       { path: "examples", element: <Lazy><Examples /></Lazy> },
       { path: "auth", element: <Lazy><Auth /></Lazy> },

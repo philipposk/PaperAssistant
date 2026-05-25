@@ -12,6 +12,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@citation-js/core": "^0.7.21",
+    "@citation-js/plugin-bibtex": "^0.7.21",
+    "@citation-js/plugin-csl": "^0.7.22",
+    "@citation-js/plugin-doi": "^0.7.21",
     "@octokit/rest": "^22.0.1",
     "@supabase/supabase-js": "^2.106.1",
     "@uiw/react-md-editor": "^4.1.1",

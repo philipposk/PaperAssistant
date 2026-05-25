@@ -33,6 +33,21 @@ export interface RemoteNote {
   updated_at: string;
 }
 
+export interface RemoteReference {
+  id: string;
+  project_id: string;
+  user_id: string;
+  citation_key: string;
+  csl_json: Record<string, unknown>;
+  bibtex: string | null;
+  doi: string | null;
+  url: string | null;
+  pdf_file_id: string | null;
+  tags: string[];
+  created_at: string;
+  updated_at: string;
+}
+
 export function toMs(iso: string): number {
   return new Date(iso).getTime();
 }

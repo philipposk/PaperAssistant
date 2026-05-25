@@ -33,6 +33,21 @@ export interface Note {
   remote_id?: string;
 }
 
+export interface Reference {
+  id: string;
+  project_id: string;
+  citation_key: string;
+  csl_json: Record<string, unknown>;
+  bibtex?: string;
+  doi?: string;
+  url?: string;
+  pdf_file_id?: string;
+  tags: string[];
+  created_at: number;
+  updated_at: number;
+  remote_id?: string;
+}
+
 export interface Setting {
   key: string;
   value: unknown;
@@ -41,7 +56,7 @@ export interface Setting {
 export interface SyncOp {
   id?: number;
   op: "create" | "update" | "delete";
-  entity: "project" | "file" | "note";
+  entity: "project" | "file" | "note" | "reference";
   entity_id: string;
   created_at: number;
 }
@@ -50,6 +65,7 @@ class PaperDB extends Dexie {
   projects!: Table<Project, string>;
   files!: Table<FileRecord, string>;
   notes!: Table<Note, string>;
+  references!: Table<Reference, string>;
   settings!: Table<Setting, string>;
   sync_queue!: Table<SyncOp, number>;
 
@@ -59,6 +75,14 @@ class PaperDB extends Dexie {
       projects: "id, name, updated_at",
       files: "id, project_id, name, mime, updated_at",
       notes: "id, project_id, title, updated_at",
+      settings: "key",
+      sync_queue: "++id, entity, entity_id, created_at",
+    });
+    this.version(2).stores({
+      projects: "id, name, updated_at",
+      files: "id, project_id, name, mime, updated_at",
+      notes: "id, project_id, title, updated_at",
+      references: "id, project_id, citation_key, doi, updated_at",
       settings: "key",
       sync_queue: "++id, entity, entity_id, created_at",
     });

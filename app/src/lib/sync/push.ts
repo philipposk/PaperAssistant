@@ -3,7 +3,13 @@
 
 import { supabase } from "../supabase";
 import { useAuthStore } from "../auth";
-import { db, type FileRecord, type Note, type Project } from "../db";
+import {
+  db,
+  type FileRecord,
+  type Note,
+  type Project,
+  type Reference,
+} from "../db";
 
 const BUCKET = "files";
 
@@ -125,4 +131,39 @@ export async function pushNoteDelete(id: string): Promise<void> {
   if (!active() || !supabase) return;
   const { error } = await supabase.from("notes").delete().eq("id", id);
   if (error) console.warn("[sync] pushNoteDelete failed", error.message);
+}
+
+// ----- references -----
+
+export async function pushReferenceUpsert(r: Reference): Promise<void> {
+  if (!active() || !supabase) return;
+  const uid = userId()!;
+  const row = {
+    id: r.id,
+    project_id: r.project_id,
+    user_id: uid,
+    citation_key: r.citation_key,
+    csl_json: r.csl_json,
+    bibtex: r.bibtex ?? null,
+    doi: r.doi ?? null,
+    url: r.url ?? null,
+    pdf_file_id: r.pdf_file_id ?? null,
+    tags: r.tags,
+    created_at: new Date(r.created_at).toISOString(),
+    updated_at: new Date(r.updated_at).toISOString(),
+  };
+  const { error } = await supabase.from("references").upsert(row);
+  if (error) {
+    console.warn("[sync] pushReferenceUpsert failed", error.message);
+    return;
+  }
+  if (!r.remote_id) {
+    await db.references.update(r.id, { remote_id: r.id });
+  }
+}
+
+export async function pushReferenceDelete(id: string): Promise<void> {
+  if (!active() || !supabase) return;
+  const { error } = await supabase.from("references").delete().eq("id", id);
+  if (error) console.warn("[sync] pushReferenceDelete failed", error.message);
 }
