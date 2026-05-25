@@ -11,12 +11,12 @@ import {
   Flag,
   Moon,
   Sun,
-  ChevronDown,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { db } from "../lib/db";
 import { useTheme } from "../lib/theme";
 import { useCurrentProject } from "../lib/currentProject";
+import { ProjectPicker } from "./ProjectPicker";
 
 function NavItem({
   to,
@@ -119,23 +119,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      <NavLink
-        to="/projects"
-        className="mx-3 mt-2 mb-1 px-3 py-2.5 rounded-md border border-[var(--color-line)] bg-[var(--color-surface-2)] hover:bg-[var(--color-line)] transition-colors flex items-center justify-between"
-      >
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-[var(--color-warm)] shrink-0" />
-          <div className="min-w-0">
-            <div className="mono uppercase text-[10px] tracking-wider text-[var(--color-ink-3)]">
-              Current project
-            </div>
-            <div className="text-sm truncate">
-              {currentProject?.name ?? "No project selected"}
-            </div>
-          </div>
-        </div>
-        <ChevronDown size={14} className="text-[var(--color-ink-3)]" />
-      </NavLink>
+      <ProjectPicker />
 
       <nav className="flex-1 overflow-y-auto px-2 pb-4">
         <SectionLabel>Workspace</SectionLabel>

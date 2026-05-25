@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { FileText, Image as ImageIcon, Table as TableIcon, Wrench } from "lucide-react";
-import { db } from "../lib/db";
+import {
+  FileText,
+  Image as ImageIcon,
+  StickyNote,
+  Table as TableIcon,
+  Wrench,
+} from "lucide-react";
+import { db, type FileRecord, type Note } from "../lib/db";
 import { useCurrentProject } from "../lib/currentProject";
 
 function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
@@ -36,37 +42,84 @@ function QuickAccess({
   );
 }
 
+type ActivityEntry =
+  | { kind: "file"; item: FileRecord }
+  | { kind: "note"; item: Note };
+
+function formatRelative(ts: number): string {
+  const diff = Date.now() - ts;
+  const min = 60_000;
+  const hr = 60 * min;
+  const day = 24 * hr;
+  if (diff < min) return "just now";
+  if (diff < hr) return `${Math.floor(diff / min)}m ago`;
+  if (diff < day) return `${Math.floor(diff / hr)}h ago`;
+  if (diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
+  return new Date(ts).toLocaleDateString();
+}
+
+function ActivityIcon({ kind, mime }: { kind: "file" | "note"; mime?: string }) {
+  if (kind === "note") return <StickyNote size={16} className="text-[var(--color-ink-3)]" />;
+  if (mime?.startsWith("image/")) return <ImageIcon size={16} className="text-[var(--color-ink-3)]" />;
+  if (mime === "text/csv" || mime?.endsWith("csv")) return <TableIcon size={16} className="text-[var(--color-ink-3)]" />;
+  return <FileText size={16} className="text-[var(--color-ink-3)]" />;
+}
+
 export function Dashboard() {
   const { currentProject } = useCurrentProject();
   const projectCount = useLiveQuery(() => db.projects.count(), []);
+  const projectId = currentProject?.id;
   const fileCount = useLiveQuery(
-    () =>
-      currentProject
-        ? db.files.where("project_id").equals(currentProject.id).count()
-        : Promise.resolve(0),
-    [currentProject?.id],
+    () => (projectId ? db.files.where("project_id").equals(projectId).count() : Promise.resolve(0)),
+    [projectId],
   );
   const figCount = useLiveQuery(
     () =>
-      currentProject
+      projectId
         ? db.files
             .where("project_id")
-            .equals(currentProject.id)
+            .equals(projectId)
             .filter((f) => f.mime.startsWith("image/"))
             .count()
         : Promise.resolve(0),
-    [currentProject?.id],
+    [projectId],
   );
   const tableCount = useLiveQuery(
     () =>
-      currentProject
+      projectId
         ? db.files
             .where("project_id")
-            .equals(currentProject.id)
+            .equals(projectId)
             .filter((f) => f.mime === "text/csv" || f.name.endsWith(".csv"))
             .count()
         : Promise.resolve(0),
-    [currentProject?.id],
+    [projectId],
+  );
+  const recentActivity = useLiveQuery<ActivityEntry[]>(
+    async () => {
+      if (!projectId) return [];
+      const [files, notes] = await Promise.all([
+        db.files
+          .where("project_id")
+          .equals(projectId)
+          .reverse()
+          .sortBy("updated_at")
+          .then((arr) => arr.slice(0, 6)),
+        db.notes
+          .where("project_id")
+          .equals(projectId)
+          .reverse()
+          .sortBy("updated_at")
+          .then((arr) => arr.slice(0, 6)),
+      ]);
+      const combined: ActivityEntry[] = [
+        ...files.map<ActivityEntry>((item) => ({ kind: "file", item })),
+        ...notes.map<ActivityEntry>((item) => ({ kind: "note", item })),
+      ];
+      combined.sort((a, b) => b.item.updated_at - a.item.updated_at);
+      return combined.slice(0, 5);
+    },
+    [projectId],
   );
 
   if (!currentProject) {
@@ -103,26 +156,36 @@ export function Dashboard() {
   return (
     <div className="px-8 py-8 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2 rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-8">
-          <div className="mono uppercase text-[10px] tracking-wider text-[var(--color-warm)]">
-            {currentProject.name} · active
-          </div>
-          <h1 className="serif text-4xl mt-3 mb-4 leading-tight">
-            {currentProject.description || currentProject.name}
-          </h1>
-          <div className="flex gap-3 mt-6">
-            <Link
-              to={`/projects/${currentProject.id}/files`}
-              className="px-4 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium hover:bg-[var(--color-accent-2)]"
-            >
-              Browse files
-            </Link>
-            <Link
-              to={`/projects/${currentProject.id}/notes`}
-              className="px-4 py-2 rounded-md border border-[var(--color-line)] text-sm hover:bg-[var(--color-surface-2)]"
-            >
-              Open notes
-            </Link>
+        <div className="lg:col-span-2 relative rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-8 overflow-hidden">
+          <div
+            className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(circle, var(--color-warm-soft) 0%, transparent 70%)",
+              opacity: 0.6,
+            }}
+          />
+          <div className="relative">
+            <div className="mono uppercase text-[10px] tracking-wider text-[var(--color-warm)]">
+              {currentProject.name} · active
+            </div>
+            <h1 className="serif text-4xl mt-3 mb-4 leading-tight">
+              {currentProject.description || currentProject.name}
+            </h1>
+            <div className="flex gap-3 mt-6">
+              <Link
+                to={`/projects/${currentProject.id}/files`}
+                className="px-4 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium hover:bg-[var(--color-accent-2)]"
+              >
+                Browse files
+              </Link>
+              <Link
+                to={`/projects/${currentProject.id}/notes`}
+                className="px-4 py-2 rounded-md border border-[var(--color-line)] text-sm hover:bg-[var(--color-surface-2)]"
+              >
+                Open notes
+              </Link>
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -133,24 +196,61 @@ export function Dashboard() {
         </div>
       </div>
 
-      <h2 className="serif text-2xl mb-4">Quick access</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <QuickAccess
-          to={`/projects/${currentProject.id}/files`}
-          icon={FileText}
-          label="Files"
-        />
-        <QuickAccess
-          to={`/projects/${currentProject.id}/figures`}
-          icon={ImageIcon}
-          label="Figures"
-        />
-        <QuickAccess
-          to={`/projects/${currentProject.id}/tables`}
-          icon={TableIcon}
-          label="Tables"
-        />
-        <QuickAccess to="/settings" icon={Wrench} label="Settings" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section className="lg:col-span-2">
+          <h2 className="serif text-2xl mb-4">Recent activity</h2>
+          {recentActivity && recentActivity.length > 0 ? (
+            <ul className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] divide-y divide-[var(--color-line)]">
+              {recentActivity.map((entry) => {
+                const name = entry.kind === "note" ? entry.item.title : entry.item.name;
+                const mime = entry.kind === "file" ? entry.item.mime : undefined;
+                return (
+                  <li
+                    key={`${entry.kind}-${entry.item.id}`}
+                    className="px-5 py-3 flex items-center gap-3"
+                  >
+                    <ActivityIcon kind={entry.kind} mime={mime} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm truncate">{name}</div>
+                      <div className="mono text-[10px] uppercase text-[var(--color-ink-3)]">
+                        {entry.kind === "note" ? "Note" : mime || "file"}
+                      </div>
+                    </div>
+                    <div className="text-xs text-[var(--color-ink-3)] shrink-0">
+                      {formatRelative(entry.item.updated_at)}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="rounded-[var(--radius-lg)] border border-dashed border-[var(--color-line-2)] p-8 text-center text-sm text-[var(--color-ink-3)]">
+              No activity yet. Upload files or write notes to get started.
+            </div>
+          )}
+        </section>
+
+        <section>
+          <h2 className="serif text-2xl mb-4">Quick access</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <QuickAccess
+              to={`/projects/${currentProject.id}/files`}
+              icon={FileText}
+              label="Files"
+            />
+            <QuickAccess
+              to={`/projects/${currentProject.id}/figures`}
+              icon={ImageIcon}
+              label="Figures"
+            />
+            <QuickAccess
+              to={`/projects/${currentProject.id}/tables`}
+              icon={TableIcon}
+              label="Tables"
+            />
+            <QuickAccess to="/settings" icon={Wrench} label="Settings" />
+          </div>
+        </section>
       </div>
     </div>
   );
