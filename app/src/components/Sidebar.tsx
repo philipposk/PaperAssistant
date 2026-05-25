@@ -11,6 +11,7 @@ import {
   Flag,
   Moon,
   Sun,
+  Clock,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { db } from "../lib/db";
@@ -165,6 +166,11 @@ export function Sidebar() {
               icon={StickyNote}
               label="Notes"
               badge={noteCount ?? 0}
+            />
+            <NavItem
+              to={`/projects/${projectId}/timeline`}
+              icon={Clock}
+              label="Timeline"
             />
           </>
         )}

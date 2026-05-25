@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Plus, Trash2 } from "lucide-react";
+import { FileArchive, Loader2, Plus, Trash2 } from "lucide-react";
 import { db, now, uid } from "../lib/db";
 import { useCurrentProject } from "../lib/currentProject";
 import { pushProjectDelete, pushProjectUpsert } from "../lib/sync";
+import { importZipAsProject } from "../lib/zipImport";
 
 export function Projects() {
   const projects = useLiveQuery(
@@ -16,6 +17,29 @@ export function Projects() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
+  const zipInput = useRef<HTMLInputElement>(null);
+  const [importing, setImporting] = useState(false);
+  const [importMsg, setImportMsg] = useState<string | null>(null);
+
+  async function handleZip(list: FileList | null) {
+    if (!list || !list.length) return;
+    const file = list[0];
+    if (!file.name.toLowerCase().endsWith(".zip")) {
+      setImportMsg("That doesn't look like a .zip file.");
+      return;
+    }
+    setImporting(true);
+    setImportMsg(null);
+    try {
+      const result = await importZipAsProject(file);
+      setCurrentProjectId(result.project.id);
+      navigate(`/projects/${result.project.id}`);
+    } catch (e) {
+      setImportMsg(e instanceof Error ? e.message : String(e));
+    } finally {
+      setImporting(false);
+    }
+  }
 
   async function createProject() {
     if (!name.trim()) return;
@@ -50,16 +74,42 @@ export function Projects() {
 
   return (
     <div className="px-8 py-8 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-2">
         <h1 className="serif text-3xl">Projects</h1>
-        <button
-          type="button"
-          onClick={() => setCreating(true)}
-          className="px-3 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium hover:bg-[var(--color-accent-2)] flex items-center gap-2"
-        >
-          <Plus size={14} /> New project
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => zipInput.current?.click()}
+            disabled={importing}
+            className="px-3 py-2 rounded-md border border-[var(--color-line)] hover:bg-[var(--color-surface-2)] text-sm flex items-center gap-2 disabled:opacity-60"
+          >
+            {importing ? <Loader2 size={14} className="animate-spin" /> : <FileArchive size={14} />}
+            {importing ? "Importing…" : "Import .zip"}
+          </button>
+          <input
+            ref={zipInput}
+            type="file"
+            accept=".zip,application/zip"
+            hidden
+            onChange={(e) => {
+              void handleZip(e.target.files);
+              e.target.value = "";
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => setCreating(true)}
+            className="px-3 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium hover:bg-[var(--color-accent-2)] flex items-center gap-2"
+          >
+            <Plus size={14} /> New project
+          </button>
+        </div>
       </div>
+      {importMsg && (
+        <div className="mb-4 rounded-md border border-[var(--color-warm)] bg-[var(--color-warm-soft)] px-4 py-2 text-sm">
+          {importMsg}
+        </div>
+      )}
 
       {creating && (
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 mb-5">

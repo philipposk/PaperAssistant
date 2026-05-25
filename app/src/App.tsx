@@ -1,33 +1,79 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { AppShell } from "./components/AppShell";
-import { Dashboard } from "./routes/Dashboard";
-import { Projects } from "./routes/Projects";
-import { ProjectView } from "./routes/ProjectView";
-import { Files } from "./routes/Files";
-import { Figures } from "./routes/Figures";
-import { Tables } from "./routes/Tables";
-import { Notes } from "./routes/Notes";
-import { Settings } from "./routes/Settings";
-import { Examples } from "./routes/Examples";
-import { Auth } from "./routes/Auth";
-import { AuthCallback } from "./routes/AuthCallback";
+
+const Dashboard = lazy(() =>
+  import("./routes/Dashboard").then((m) => ({ default: m.Dashboard })),
+);
+const Projects = lazy(() =>
+  import("./routes/Projects").then((m) => ({ default: m.Projects })),
+);
+const ProjectView = lazy(() =>
+  import("./routes/ProjectView").then((m) => ({ default: m.ProjectView })),
+);
+const Files = lazy(() =>
+  import("./routes/Files").then((m) => ({ default: m.Files })),
+);
+const Figures = lazy(() =>
+  import("./routes/Figures").then((m) => ({ default: m.Figures })),
+);
+const Tables = lazy(() =>
+  import("./routes/Tables").then((m) => ({ default: m.Tables })),
+);
+const Notes = lazy(() =>
+  import("./routes/Notes").then((m) => ({ default: m.Notes })),
+);
+const Settings = lazy(() =>
+  import("./routes/Settings").then((m) => ({ default: m.Settings })),
+);
+const Examples = lazy(() =>
+  import("./routes/Examples").then((m) => ({ default: m.Examples })),
+);
+const Auth = lazy(() =>
+  import("./routes/Auth").then((m) => ({ default: m.Auth })),
+);
+const SearchRoute = lazy(() =>
+  import("./routes/Search").then((m) => ({ default: m.Search })),
+);
+const Timeline = lazy(() =>
+  import("./routes/Timeline").then((m) => ({ default: m.Timeline })),
+);
+const AuthCallback = lazy(() =>
+  import("./routes/AuthCallback").then((m) => ({ default: m.AuthCallback })),
+);
+
+function RouteFallback() {
+  return (
+    <div className="h-full flex items-center justify-center text-sm text-[var(--color-ink-3)]">
+      <Loader2 size={16} className="animate-spin mr-2" />
+      Loading…
+    </div>
+  );
+}
+
+function Lazy({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<RouteFallback />}>{children}</Suspense>;
+}
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <AppShell />,
     children: [
-      { index: true, element: <Dashboard /> },
-      { path: "projects", element: <Projects /> },
-      { path: "projects/:id", element: <ProjectView /> },
-      { path: "projects/:id/files", element: <Files /> },
-      { path: "projects/:id/figures", element: <Figures /> },
-      { path: "projects/:id/tables", element: <Tables /> },
-      { path: "projects/:id/notes", element: <Notes /> },
-      { path: "settings", element: <Settings /> },
-      { path: "examples", element: <Examples /> },
-      { path: "auth", element: <Auth /> },
-      { path: "auth/callback", element: <AuthCallback /> },
+      { index: true, element: <Lazy><Dashboard /></Lazy> },
+      { path: "projects", element: <Lazy><Projects /></Lazy> },
+      { path: "projects/:id", element: <Lazy><ProjectView /></Lazy> },
+      { path: "projects/:id/files", element: <Lazy><Files /></Lazy> },
+      { path: "projects/:id/figures", element: <Lazy><Figures /></Lazy> },
+      { path: "projects/:id/tables", element: <Lazy><Tables /></Lazy> },
+      { path: "projects/:id/notes", element: <Lazy><Notes /></Lazy> },
+      { path: "projects/:id/timeline", element: <Lazy><Timeline /></Lazy> },
+      { path: "settings", element: <Lazy><Settings /></Lazy> },
+      { path: "examples", element: <Lazy><Examples /></Lazy> },
+      { path: "auth", element: <Lazy><Auth /></Lazy> },
+      { path: "auth/callback", element: <Lazy><AuthCallback /></Lazy> },
+      { path: "search", element: <Lazy><SearchRoute /></Lazy> },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
   },

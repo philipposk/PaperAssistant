@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { Bell, Search, Settings } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../lib/db";
 
@@ -9,6 +10,10 @@ function isUuid(s: string): boolean {
 
 export function Topbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isSearchRoute = location.pathname === "/search";
+  const [q, setQ] = useState(isSearchRoute ? (searchParams.get("q") ?? "") : "");
   const segments = location.pathname.split("/").filter(Boolean);
 
   const projectIds = segments.filter(isUuid);
@@ -23,6 +28,17 @@ export function Topbar() {
         : Promise.resolve({} as Record<string, string>),
     [projectIds.join(",")],
   );
+
+  useEffect(() => {
+    if (isSearchRoute) setQ(searchParams.get("q") ?? "");
+  }, [isSearchRoute, searchParams]);
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = q.trim();
+    if (!trimmed) return;
+    navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+  }
 
   return (
     <header className="h-16 shrink-0 border-b border-[var(--color-line)] bg-[var(--color-surface)] px-6 flex items-center justify-between gap-4">
@@ -47,16 +63,19 @@ export function Topbar() {
       </nav>
 
       <div className="flex items-center gap-2">
-        <div className="relative">
+        <form onSubmit={submit} className="relative">
           <Search
             size={14}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-3)]"
           />
           <input
-            placeholder="Search files, figures, sections…"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search files, notes, projects…"
+            aria-label="Search"
             className="w-80 pl-9 pr-3 py-2 text-sm rounded-md border border-[var(--color-line)] bg-[var(--color-bg)] focus:outline-none focus:border-[var(--color-accent)] focus:bg-[var(--color-surface)] transition-colors"
           />
-        </div>
+        </form>
         <button
           type="button"
           aria-label="Notifications"
