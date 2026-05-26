@@ -5,6 +5,7 @@ import { useAuthStore } from "../auth";
 import {
   db,
   type FileRecord,
+  type Highlight,
   type Note,
   type Project,
   type Reference,
@@ -12,6 +13,7 @@ import {
 import {
   toMs,
   type RemoteFile,
+  type RemoteHighlight,
   type RemoteNote,
   type RemoteProject,
   type RemoteReference,
@@ -28,15 +30,17 @@ export async function pullAll(): Promise<{
   files: number;
   notes: number;
   references: number;
+  highlights: number;
 }> {
   if (!active() || !supabase)
-    return { projects: 0, files: 0, notes: 0, references: 0 };
+    return { projects: 0, files: 0, notes: 0, references: 0, highlights: 0 };
 
-  const [projectsRes, filesRes, notesRes, refsRes] = await Promise.all([
+  const [projectsRes, filesRes, notesRes, refsRes, hlsRes] = await Promise.all([
     supabase.from("projects").select("*"),
     supabase.from("files").select("*"),
     supabase.from("notes").select("*"),
     supabase.from("references").select("*"),
+    supabase.from("highlights").select("*"),
   ]);
 
   let projects = 0;
@@ -137,5 +141,30 @@ export async function pullAll(): Promise<{
     }
   }
 
-  return { projects, files, notes, references };
+  let highlights = 0;
+  if (hlsRes.data) {
+    for (const row of hlsRes.data as RemoteHighlight[]) {
+      const local = await db.highlights.get(row.id);
+      const remoteMs = toMs(row.updated_at);
+      if (!local || remoteMs > local.updated_at) {
+        const next: Highlight = {
+          id: row.id,
+          file_id: row.file_id,
+          project_id: row.project_id,
+          page: row.page,
+          position: row.position ?? {},
+          content: row.content ?? {},
+          comment: row.comment ?? "",
+          color: row.color ?? "#ffd54f",
+          created_at: toMs(row.created_at),
+          updated_at: remoteMs,
+          remote_id: row.id,
+        };
+        await db.highlights.put(next);
+        highlights++;
+      }
+    }
+  }
+
+  return { projects, files, notes, references, highlights };
 }

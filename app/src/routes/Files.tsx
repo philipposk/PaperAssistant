@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Download, Trash2, Upload } from "lucide-react";
+import { Download, Eye, Trash2, Upload } from "lucide-react";
 import { db, now, uid, type FileRecord } from "../lib/db";
 import { pushFileDelete, pushFileUpsert } from "../lib/sync";
 
@@ -115,6 +115,16 @@ export function Files() {
                   {new Date(f.updated_at).toLocaleString()}
                 </div>
               </div>
+              {(f.mime === "application/pdf" ||
+                f.name.toLowerCase().endsWith(".pdf")) && (
+                <Link
+                  to={`/projects/${id}/files/${f.id}/view`}
+                  aria-label="Open in PDF viewer"
+                  className="p-2 text-[var(--color-ink-3)] hover:text-[var(--color-accent)]"
+                >
+                  <Eye size={15} />
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => download(f)}

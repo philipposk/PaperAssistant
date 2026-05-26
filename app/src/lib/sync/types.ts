@@ -48,6 +48,20 @@ export interface RemoteReference {
   updated_at: string;
 }
 
+export interface RemoteHighlight {
+  id: string;
+  file_id: string;
+  project_id: string;
+  user_id: string;
+  page: number;
+  position: Record<string, unknown>;
+  content: { text?: string; image?: string };
+  comment: string;
+  color: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export function toMs(iso: string): number {
   return new Date(iso).getTime();
 }

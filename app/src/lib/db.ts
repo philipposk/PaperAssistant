@@ -48,6 +48,22 @@ export interface Reference {
   remote_id?: string;
 }
 
+// Highlights anchored into PDF files. position is the
+// react-pdf-highlighter-extended ScaledPosition JSON; we keep it opaque.
+export interface Highlight {
+  id: string;
+  file_id: string;
+  project_id: string;
+  page: number;
+  position: Record<string, unknown>;
+  content: { text?: string; image?: string };
+  comment: string;
+  color: string;
+  created_at: number;
+  updated_at: number;
+  remote_id?: string;
+}
+
 export interface Setting {
   key: string;
   value: unknown;
@@ -56,7 +72,7 @@ export interface Setting {
 export interface SyncOp {
   id?: number;
   op: "create" | "update" | "delete";
-  entity: "project" | "file" | "note" | "reference";
+  entity: "project" | "file" | "note" | "reference" | "highlight";
   entity_id: string;
   created_at: number;
 }
@@ -66,6 +82,7 @@ class PaperDB extends Dexie {
   files!: Table<FileRecord, string>;
   notes!: Table<Note, string>;
   references!: Table<Reference, string>;
+  highlights!: Table<Highlight, string>;
   settings!: Table<Setting, string>;
   sync_queue!: Table<SyncOp, number>;
 
@@ -83,6 +100,15 @@ class PaperDB extends Dexie {
       files: "id, project_id, name, mime, updated_at",
       notes: "id, project_id, title, updated_at",
       references: "id, project_id, citation_key, doi, updated_at",
+      settings: "key",
+      sync_queue: "++id, entity, entity_id, created_at",
+    });
+    this.version(3).stores({
+      projects: "id, name, updated_at",
+      files: "id, project_id, name, mime, updated_at",
+      notes: "id, project_id, title, updated_at",
+      references: "id, project_id, citation_key, doi, updated_at",
+      highlights: "id, file_id, project_id, page, updated_at",
       settings: "key",
       sync_queue: "++id, entity, entity_id, created_at",
     });

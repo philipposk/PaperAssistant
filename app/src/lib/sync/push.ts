@@ -6,6 +6,7 @@ import { useAuthStore } from "../auth";
 import {
   db,
   type FileRecord,
+  type Highlight,
   type Note,
   type Project,
   type Reference,
@@ -166,4 +167,38 @@ export async function pushReferenceDelete(id: string): Promise<void> {
   if (!active() || !supabase) return;
   const { error } = await supabase.from("references").delete().eq("id", id);
   if (error) console.warn("[sync] pushReferenceDelete failed", error.message);
+}
+
+// ----- highlights -----
+
+export async function pushHighlightUpsert(h: Highlight): Promise<void> {
+  if (!active() || !supabase) return;
+  const uid = userId()!;
+  const row = {
+    id: h.id,
+    file_id: h.file_id,
+    project_id: h.project_id,
+    user_id: uid,
+    page: h.page,
+    position: h.position,
+    content: h.content,
+    comment: h.comment,
+    color: h.color,
+    created_at: new Date(h.created_at).toISOString(),
+    updated_at: new Date(h.updated_at).toISOString(),
+  };
+  const { error } = await supabase.from("highlights").upsert(row);
+  if (error) {
+    console.warn("[sync] pushHighlightUpsert failed", error.message);
+    return;
+  }
+  if (!h.remote_id) {
+    await db.highlights.update(h.id, { remote_id: h.id });
+  }
+}
+
+export async function pushHighlightDelete(id: string): Promise<void> {
+  if (!active() || !supabase) return;
+  const { error } = await supabase.from("highlights").delete().eq("id", id);
+  if (error) console.warn("[sync] pushHighlightDelete failed", error.message);
 }

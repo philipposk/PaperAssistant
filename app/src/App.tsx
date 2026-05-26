@@ -42,6 +42,9 @@ const Timeline = lazy(() =>
 const References = lazy(() =>
   import("./routes/References").then((m) => ({ default: m.References })),
 );
+const PdfViewer = lazy(() =>
+  import("./routes/PdfViewer").then((m) => ({ default: m.PdfViewer })),
+);
 const AuthCallback = lazy(() =>
   import("./routes/AuthCallback").then((m) => ({ default: m.AuthCallback })),
 );
@@ -73,6 +76,7 @@ const router = createBrowserRouter([
       { path: "projects/:id/notes", element: <Lazy><Notes /></Lazy> },
       { path: "projects/:id/timeline", element: <Lazy><Timeline /></Lazy> },
       { path: "projects/:id/references", element: <Lazy><References /></Lazy> },
+      { path: "projects/:id/files/:fileId/view", element: <Lazy><PdfViewer /></Lazy> },
       { path: "settings", element: <Lazy><Settings /></Lazy> },
       { path: "examples", element: <Lazy><Examples /></Lazy> },
       { path: "auth", element: <Lazy><Auth /></Lazy> },
