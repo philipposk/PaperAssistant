@@ -16,6 +16,7 @@ import {
   Search as SearchIcon,
   Network,
   FileArchive,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { db } from "../lib/db";
@@ -195,9 +196,24 @@ export function Sidebar() {
               label="Citation graph"
             />
             <NavItem
+              to={`/projects/${projectId}/ask`}
+              icon={Sparkles}
+              label="Ask the project"
+            />
+            <NavItem
               to={`/projects/${projectId}/export`}
               icon={FileArchive}
               label="Export"
+            />
+            <NavItem
+              to={`/projects/${projectId}/export`}
+              icon={FileArchive}
+              label="Export"
+            />
+            <NavItem
+              to={`/projects/${projectId}/ask`}
+              icon={Sparkles}
+              label="Ask"
             />
             <NavItem
               to={`/projects/${projectId}/timeline`}

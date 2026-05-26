@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Download, FileArchive, Loader2 } from "lucide-react";
 import { db } from "../lib/db";
-import { type ExportManifest } from "../lib/manuscriptExport";
+import type { ExportManifest } from "../lib/manuscriptExport";
 
 export function Export() {
   const { id = "" } = useParams();
