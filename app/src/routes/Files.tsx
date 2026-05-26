@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Download, Eye, Trash2, Upload } from "lucide-react";
+import { Download, Eye, Tag, Trash2, Upload, X } from "lucide-react";
 import { db, now, uid, type FileRecord } from "../lib/db";
 import { pushFileDelete, pushFileUpsert } from "../lib/sync";
+import { TagEditor } from "../components/TagEditor";
+import { projectTagSuggestions } from "../lib/tags";
 
 function fileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -20,6 +22,10 @@ export function Files() {
   );
   const input = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [tagFilter, setTagFilter] = useState<string[]>([]);
+
+  const suggestions = useLiveQuery(() => projectTagSuggestions(id), [id]) ?? [];
 
   async function onPick(list: FileList | null) {
     if (!list) return;
@@ -57,6 +63,18 @@ export function Files() {
     if (existing) void pushFileDelete(existing);
   }
 
+  async function setTags(fileId: string, nextTags: string[]) {
+    await db.files.update(fileId, { tags: nextTags, updated_at: now() });
+    const fresh = await db.files.get(fileId);
+    if (fresh) void pushFileUpsert(fresh);
+  }
+
+  const filtered = useMemo(() => {
+    if (!files) return [];
+    if (tagFilter.length === 0) return files;
+    return files.filter((f) => tagFilter.every((t) => f.tags?.includes(t)));
+  }, [files, tagFilter]);
+
   return (
     <div className="px-8 py-8 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
@@ -79,6 +97,43 @@ export function Files() {
           }}
         />
       </div>
+
+      {suggestions.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap mb-4">
+          <span className="mono uppercase text-[10px] tracking-wider text-[var(--color-ink-3)] mr-1">
+            Filter
+          </span>
+          {suggestions.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() =>
+                setTagFilter((cur) =>
+                  cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t],
+                )
+              }
+              className={
+                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full mono text-[10px] uppercase border transition-colors " +
+                (tagFilter.includes(t)
+                  ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)] border-[var(--color-accent)]"
+                  : "border-[var(--color-line)] text-[var(--color-ink-3)] hover:bg-[var(--color-surface-2)]")
+              }
+            >
+              <Tag size={10} />
+              {t}
+            </button>
+          ))}
+          {tagFilter.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setTagFilter([])}
+              className="text-[10px] text-[var(--color-ink-3)] hover:text-[var(--color-ink)] flex items-center gap-1"
+            >
+              <X size={10} /> clear
+            </button>
+          )}
+        </div>
+      )}
 
       <div
         onDragOver={(e) => {
@@ -104,49 +159,86 @@ export function Files() {
         </div>
       </div>
 
-      {files && files.length > 0 ? (
+      {filtered.length > 0 ? (
         <ul className="border border-[var(--color-line)] rounded-[var(--radius-lg)] bg-[var(--color-surface)] divide-y divide-[var(--color-line)]">
-          {files.map((f) => (
-            <li key={f.id} className="flex items-center px-5 py-3 gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="text-sm truncate">{f.name}</div>
-                <div className="mono text-[11px] text-[var(--color-ink-3)]">
-                  {f.mime || "binary"} · {fileSize(f.size)} ·{" "}
-                  {new Date(f.updated_at).toLocaleString()}
+          {filtered.map((f) => (
+            <li key={f.id} className="px-5 py-3">
+              <div className="flex items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm truncate">{f.name}</div>
+                  <div className="mono text-[11px] text-[var(--color-ink-3)] flex items-center gap-2 flex-wrap">
+                    <span>{f.mime || "binary"}</span>
+                    <span>· {fileSize(f.size)}</span>
+                    <span>· {new Date(f.updated_at).toLocaleString()}</span>
+                    {f.tags?.map((t) => (
+                      <span
+                        key={t}
+                        className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)] text-[9px]"
+                      >
+                        <Tag size={8} />
+                        {t}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              {(f.mime === "application/pdf" ||
-                f.name.toLowerCase().endsWith(".pdf")) && (
-                <Link
-                  to={`/projects/${id}/files/${f.id}/view`}
-                  aria-label="Open in PDF viewer"
+                <button
+                  type="button"
+                  onClick={() => setEditing(editing === f.id ? null : f.id)}
+                  aria-label="Edit tags"
+                  className={
+                    "p-2 " +
+                    (editing === f.id
+                      ? "text-[var(--color-accent)]"
+                      : "text-[var(--color-ink-3)] hover:text-[var(--color-accent)]")
+                  }
+                >
+                  <Tag size={15} />
+                </button>
+                {(f.mime === "application/pdf" ||
+                  f.name.toLowerCase().endsWith(".pdf")) && (
+                  <Link
+                    to={`/projects/${id}/files/${f.id}/view`}
+                    aria-label="Open in PDF viewer"
+                    className="p-2 text-[var(--color-ink-3)] hover:text-[var(--color-accent)]"
+                  >
+                    <Eye size={15} />
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => download(f)}
+                  aria-label="Download"
                   className="p-2 text-[var(--color-ink-3)] hover:text-[var(--color-accent)]"
                 >
-                  <Eye size={15} />
-                </Link>
+                  <Download size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => remove(f.id)}
+                  aria-label="Delete"
+                  className="p-2 text-[var(--color-ink-4)] hover:text-[var(--color-warm)]"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+              {editing === f.id && (
+                <div className="mt-2 pl-1">
+                  <TagEditor
+                    tags={f.tags ?? []}
+                    onChange={(next) => void setTags(f.id, next)}
+                    suggestions={suggestions}
+                    placeholder="add tag…"
+                  />
+                </div>
               )}
-              <button
-                type="button"
-                onClick={() => download(f)}
-                aria-label="Download"
-                className="p-2 text-[var(--color-ink-3)] hover:text-[var(--color-accent)]"
-              >
-                <Download size={15} />
-              </button>
-              <button
-                type="button"
-                onClick={() => remove(f.id)}
-                aria-label="Delete"
-                className="p-2 text-[var(--color-ink-4)] hover:text-[var(--color-warm)]"
-              >
-                <Trash2 size={15} />
-              </button>
             </li>
           ))}
         </ul>
       ) : (
         <div className="text-center py-12 text-sm text-[var(--color-ink-3)]">
-          No files yet. Upload your first one above.
+          {tagFilter.length > 0
+            ? `No files match all selected tags. Clear the filter to see everything.`
+            : "No files yet. Upload your first one above."}
         </div>
       )}
     </div>
