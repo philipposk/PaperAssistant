@@ -48,6 +48,9 @@ const PdfViewer = lazy(() =>
 const SearchPapers = lazy(() =>
   import("./routes/SearchPapers").then((m) => ({ default: m.SearchPapers })),
 );
+const AcceptInvite = lazy(() =>
+  import("./routes/AcceptInvite").then((m) => ({ default: m.AcceptInvite })),
+);
 const AuthCallback = lazy(() =>
   import("./routes/AuthCallback").then((m) => ({ default: m.AuthCallback })),
 );
@@ -81,6 +84,7 @@ const router = createBrowserRouter([
       { path: "projects/:id/references", element: <Lazy><References /></Lazy> },
       { path: "projects/:id/files/:fileId/view", element: <Lazy><PdfViewer /></Lazy> },
       { path: "projects/:id/find-papers", element: <Lazy><SearchPapers /></Lazy> },
+      { path: "accept/:token", element: <Lazy><AcceptInvite /></Lazy> },
       { path: "settings", element: <Lazy><Settings /></Lazy> },
       { path: "examples", element: <Lazy><Examples /></Lazy> },
       { path: "auth", element: <Lazy><Auth /></Lazy> },

@@ -5,6 +5,7 @@ import { FileText, Image as ImageIcon, StickyNote, Table as TableIcon } from "lu
 import { db } from "../lib/db";
 import { useCurrentProject } from "../lib/currentProject";
 import { PushToGitHubButton } from "../components/PushToGitHubButton";
+import { ShareSection } from "../components/ShareSection";
 
 export function ProjectView() {
   const { id = "" } = useParams();
@@ -64,6 +65,8 @@ export function ProjectView() {
           </span>
         </div>
       </div>
+
+      <ShareSection projectId={id} />
 
       <h2 className="serif text-xl mb-4">
         <span className="text-[var(--color-warm)] mono mr-2">§ 1</span>
