@@ -13,6 +13,7 @@ import {
   Sun,
   Clock,
   Quote,
+  Search as SearchIcon,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { db } from "../lib/db";
@@ -180,6 +181,11 @@ export function Sidebar() {
               icon={Quote}
               label="References"
               badge={refCount ?? 0}
+            />
+            <NavItem
+              to={`/projects/${projectId}/find-papers`}
+              icon={SearchIcon}
+              label="Find papers"
             />
             <NavItem
               to={`/projects/${projectId}/timeline`}
