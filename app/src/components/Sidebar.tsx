@@ -14,6 +14,7 @@ import {
   Clock,
   Quote,
   Search as SearchIcon,
+  Network,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { db } from "../lib/db";
@@ -186,6 +187,11 @@ export function Sidebar() {
               to={`/projects/${projectId}/find-papers`}
               icon={SearchIcon}
               label="Find papers"
+            />
+            <NavItem
+              to={`/projects/${projectId}/graph`}
+              icon={Network}
+              label="Citation graph"
             />
             <NavItem
               to={`/projects/${projectId}/timeline`}

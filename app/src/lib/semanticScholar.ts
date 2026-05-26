@@ -104,6 +104,81 @@ export async function getPaper(paperId: string): Promise<SsPaper> {
   return (await res.json()) as SsPaper;
 }
 
+// Outgoing references (papers this one cites).
+const REF_FIELDS = "title,authors,year,externalIds";
+
+export interface CitationEdgePaper {
+  paperId: string;
+  title: string;
+  authors: SsAuthor[];
+  year: number | null;
+  externalIds: SsPaper["externalIds"];
+}
+
+export async function getPaperReferences(
+  paperId: string,
+  limit = 50,
+): Promise<CitationEdgePaper[]> {
+  const params = new URLSearchParams({
+    fields: REF_FIELDS,
+    limit: String(limit),
+  });
+  const res = await fetch(`${BASE}/paper/${paperId}/references?${params}`, {
+    headers: { Accept: "application/json" },
+  });
+  if (!res.ok) {
+    if (res.status === 429 || res.status >= 500) return [];
+    throw new Error(`SS references failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { data: { citedPaper: CitationEdgePaper }[] };
+  return (data.data ?? [])
+    .map((d) => d.citedPaper)
+    .filter((p): p is CitationEdgePaper => Boolean(p?.paperId));
+}
+
+// Incoming citations (papers that cite this one).
+export async function getPaperCitations(
+  paperId: string,
+  limit = 50,
+): Promise<CitationEdgePaper[]> {
+  const params = new URLSearchParams({
+    fields: REF_FIELDS,
+    limit: String(limit),
+  });
+  const res = await fetch(`${BASE}/paper/${paperId}/citations?${params}`, {
+    headers: { Accept: "application/json" },
+  });
+  if (!res.ok) {
+    if (res.status === 429 || res.status >= 500) return [];
+    throw new Error(`SS citations failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { data: { citingPaper: CitationEdgePaper }[] };
+  return (data.data ?? [])
+    .map((d) => d.citingPaper)
+    .filter((p): p is CitationEdgePaper => Boolean(p?.paperId));
+}
+
+// Resolve a list of identifiers (DOI strings) to canonical SS paperIds + meta.
+// Accepts a string like "DOI:10.1038/foo" or a raw DOI; SS supports both.
+export async function batchGetPapers(
+  ids: string[],
+  fields = REF_FIELDS,
+): Promise<SsPaper[]> {
+  if (ids.length === 0) return [];
+  const params = new URLSearchParams({ fields });
+  const res = await fetch(`${BASE}/paper/batch?${params}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ ids }),
+  });
+  if (!res.ok) {
+    if (res.status === 429 || res.status >= 500) return [];
+    throw new Error(`SS batch failed: ${res.status}`);
+  }
+  const data = (await res.json()) as (SsPaper | null)[];
+  return data.filter((p): p is SsPaper => Boolean(p));
+}
+
 // Convert a Semantic Scholar paper to a CSL-JSON record so it can drop into
 // our existing Reference schema.
 export function paperToCsl(paper: SsPaper): Record<string, unknown> {
