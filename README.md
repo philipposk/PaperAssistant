@@ -1,45 +1,27 @@
 # PaperAssistant
 
-A research-paper workspace webapp. Create projects, upload your own figures, tables, and documents, write markdown notes, browse it all in a clean editorial interface. Works fully offline; signs into the cloud to sync.
+A tidy workspace for putting together a research paper. You create a project, drop in your charts, tables, and documents, jot down notes, and browse everything in one clean, easy-to-read place. It works even when you're offline, and you can sign in to save a copy in the cloud so your work follows you between devices.
+
+It's for anyone working on a research project who wants their figures, data, and writing organized in one spot instead of scattered across folders.
+
+## What it does
+- Lets you create separate projects for different papers
+- Lets you upload your own figures, tables, and documents
+- Lets you write and keep notes alongside your materials
+- Shows everything in a clean, readable layout
+- Works offline, and optionally syncs to the cloud when you sign in
 
 ## Status
+Website / web app, version 0.1 — a rebuild that's still in progress. An older version is kept in the `legacy/` folder for reference.
 
-v0.1 — rebuild in progress. The previous static Paper-A portal lives in [`legacy/`](legacy/) for reference; the new app lives in [`app/`](app/).
-
-## Develop
+---
+### For developers
+React 19 + Vite + TypeScript, Tailwind v4. Local storage via Dexie (IndexedDB); optional cloud sync via Supabase (Postgres + auth + storage). State with Zustand, routing with React Router. Layout: `app/` is the v2 app, `examples/paper-a/` is a demo dataset, `frontend mockup/` is design reference, `legacy/` is the archived static site, `supabase/` holds schema migrations. Run:
 
 ```bash
 cd app
 npm install
-npm run dev
+npm run dev      # http://localhost:5173
 ```
 
-App runs at `http://localhost:5173` (or 5174 if 5173 is taken).
-
-Production build:
-
-```bash
-npm run build
-npm run preview
-```
-
-## Stack
-
-- React 19 + Vite 8 + TypeScript
-- Tailwind v4
-- Dexie (IndexedDB) for local storage
-- Supabase (Postgres + auth + storage) for cloud sync — optional
-- Zustand for app state
-- React Router
-
-## Layout
-
-- `app/` — the v2 webapp
-- `examples/paper-a/` — demo research dataset (PHEV / OBFCM analysis)
-- `frontend mockup/` — design reference HTML
-- `legacy/` — old static site (archived)
-- `supabase/` — schema migrations (TBD)
-
-## License
-
-MIT
+See `CHANGELOG.md` and `DEPLOY.md` for more. License: MIT.
