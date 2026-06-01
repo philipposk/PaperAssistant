@@ -28,7 +28,7 @@ In Supabase dashboard → **Authentication → Providers**:
 - **Email**: enable, turn ON "Confirm email" → "Disabled" so magic-link is one-step.
 - **Google**: enable, paste your Google OAuth client ID + secret (see [Supabase Google docs](https://supabase.com/docs/guides/auth/social-login/auth-google)).
 
-Set **Authentication → URL Configuration → Site URL** to your Vercel URL (e.g. `https://paper_assistant.6x7.gr`). Add `http://localhost:5173` and `http://localhost:5174` to **Redirect URLs** for local dev.
+Set **Authentication → URL Configuration → Site URL** to your Vercel URL (e.g. `https://paperassistant.6x7.gr`). Add `http://localhost:5173` and `http://localhost:5174` to **Redirect URLs** for local dev.
 
 ## Schema overview
 

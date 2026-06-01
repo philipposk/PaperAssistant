@@ -13,11 +13,11 @@
 
 You now have a URL like `paperassistant-xxxxx.vercel.app`. Every push to `main` redeploys automatically.
 
-## Connect the custom domain `paper_assistant.6x7.gr`
+## Connect the custom domain `paperassistant.6x7.gr`
 
-1. In Vercel project → **Settings → Domains**, click **Add**, enter `paper_assistant.6x7.gr`.
+1. In Vercel project → **Settings → Domains**, click **Add**, enter `paperassistant.6x7.gr`.
 2. Vercel will show DNS records to add at your domain registrar (6x7.gr provider):
-   - Either a `CNAME` record on `paper_assistant` → `cname.vercel-dns.com`
+   - Either a `CNAME` record on `paperassistant` → `cname.vercel-dns.com`
    - Or `A` records to Vercel's IPs
 3. Add the records at 6x7.gr's DNS panel. Wait 5–15 minutes for propagation.
 4. Vercel auto-issues a Let's Encrypt SSL cert once DNS resolves.
