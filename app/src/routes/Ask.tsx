@@ -14,6 +14,8 @@ interface Turn {
   used: string[];
   tokensIn?: number;
   tokensOut?: number;
+  quotaRemaining?: number;
+  quotaLimit?: number;
 }
 
 export function Ask() {
@@ -79,7 +81,9 @@ export function Ask() {
     const q = question.trim();
     if (!q) return;
     if (!hasAiConfigured()) {
-      setError("Add an Anthropic or OpenAI key in Settings → AI assistant.");
+      setError(
+        "Choose the free tier or add your own key in Settings → AI assistant.",
+      );
       setStatus("error");
       return;
     }
@@ -122,13 +126,22 @@ export function Ask() {
           used,
           tokensIn: result.inputTokens,
           tokensOut: result.outputTokens,
+          quotaRemaining: result.quota?.remaining,
+          quotaLimit: result.quota?.limit,
         },
       ]);
       setStatus("idle");
       // optional: nudge sync that we used the assistant?
       void settings;
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      const msg = e instanceof Error ? e.message : String(e);
+      // The free tier returns a quota error once the daily limit is hit.
+      // Nudge the user toward bringing their own key for unlimited use.
+      setError(
+        /limit/i.test(msg)
+          ? `${msg} Add your own API key in Settings for unlimited use.`
+          : msg,
+      );
       setStatus("error");
     }
   }
@@ -221,7 +234,7 @@ export function Ask() {
               <div className="text-sm leading-relaxed whitespace-pre-wrap rounded-[var(--radius-md)] border border-[var(--color-line)] bg-[var(--color-surface)] p-4">
                 {t.a}
               </div>
-              {(t.used.length > 0 || t.tokensIn) && (
+              {(t.used.length > 0 || t.tokensIn || t.quotaRemaining !== undefined) && (
                 <div className="mono text-[10px] text-[var(--color-ink-3)] mt-1 flex flex-wrap items-center gap-2">
                   {t.used.map((u) => (
                     <span key={u} className="px-1.5 py-0.5 rounded bg-[var(--color-surface-2)]">
@@ -231,6 +244,11 @@ export function Ask() {
                   {t.tokensIn && (
                     <span>
                       · {t.tokensIn} in / {t.tokensOut ?? "?"} out
+                    </span>
+                  )}
+                  {t.quotaRemaining !== undefined && t.quotaLimit !== undefined && (
+                    <span className="text-[var(--color-accent)]">
+                      · Free AI: {t.quotaRemaining}/{t.quotaLimit} left today
                     </span>
                   )}
                 </div>

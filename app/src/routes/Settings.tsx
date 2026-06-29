@@ -3,6 +3,7 @@ import { useTheme } from "../lib/theme";
 import { signOut, useAuth } from "../lib/auth";
 import { GitHubSection } from "../components/GitHubSection";
 import { AiSection } from "../components/AiSection";
+import { BillingSection } from "../components/BillingSection";
 
 export function Settings() {
   const { theme, setTheme } = useTheme();
@@ -82,6 +83,8 @@ export function Settings() {
       </section>
 
       <AiSection />
+
+      <BillingSection />
 
       <GitHubSection />
 

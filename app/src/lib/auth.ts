@@ -65,6 +65,16 @@ export async function signInWithGoogle() {
   if (error) throw error;
 }
 
+export async function signInWithGitHub() {
+  if (!supabase) throw new Error("Cloud not configured");
+  const redirectTo = `${window.location.origin}/auth/callback`;
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "github",
+    options: { redirectTo },
+  });
+  if (error) throw error;
+}
+
 export async function signOut() {
   if (!supabase) return;
   await supabase.auth.signOut();
