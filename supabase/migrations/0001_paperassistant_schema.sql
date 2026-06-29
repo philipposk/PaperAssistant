@@ -8,7 +8,7 @@ create schema if not exists paperassistant;
 
 -- ===== updated_at helper =====
 create or replace function paperassistant.set_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql set search_path = '' as $$
 begin
   new.updated_at = now();
   return new;
@@ -160,7 +160,7 @@ create index if not exists project_invites_email_idx on paperassistant.project_i
 alter table paperassistant.project_invites enable row level security;
 
 create or replace function paperassistant.projects_create_owner_membership()
-returns trigger language plpgsql security definer as $$
+returns trigger language plpgsql security definer set search_path = '' as $$
 begin
   insert into paperassistant.project_members (project_id, user_id, role)
     values (new.id, new.user_id, 'owner')
