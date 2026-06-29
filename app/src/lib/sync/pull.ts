@@ -19,7 +19,7 @@ import {
   type RemoteReference,
 } from "./types";
 
-const BUCKET = "files";
+const BUCKET = "paperassistant-files";
 
 function active(): boolean {
   return Boolean(supabase) && Boolean(useAuthStore.getState().user);

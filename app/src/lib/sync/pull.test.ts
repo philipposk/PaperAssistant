@@ -149,6 +149,6 @@ describe("pullAll", () => {
   it("returns zeros and no-ops when cloud not configured", async () => {
     supabaseModuleMock.setCloud(false);
     const report = await pullAll();
-    expect(report).toEqual({ projects: 0, files: 0, notes: 0 });
+    expect(report).toEqual({ projects: 0, files: 0, notes: 0, references: 0, highlights: 0 });
   });
 });

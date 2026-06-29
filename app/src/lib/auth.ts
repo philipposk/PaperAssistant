@@ -24,11 +24,11 @@ let initialized = false;
 export function initAuth() {
   if (initialized || !supabase) return;
   initialized = true;
-  void supabase.auth.getSession().then(({ data }) => {
+  void supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
     useAuthStore.getState().setSession(data.session);
     useAuthStore.getState().setLoading(false);
   });
-  supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.auth.onAuthStateChange((_event: string, session: Session | null) => {
     useAuthStore.getState().setSession(session);
   });
 }

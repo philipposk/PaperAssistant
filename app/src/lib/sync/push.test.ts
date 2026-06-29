@@ -172,7 +172,7 @@ describe("pushFileUpsert", () => {
       updated_at: t,
     });
     expect(supabaseModuleMock.uploadCalls).toEqual([
-      { bucket: "files", path: `${FAKE_UID}/${projectId}/${id}`, mime: "text/plain" },
+      { bucket: "paperassistant-files", path: `${FAKE_UID}/${projectId}/${id}`, mime: "text/plain" },
     ]);
     expect(supabaseModuleMock.upsertCalls).toHaveLength(1);
     const meta = supabaseModuleMock.upsertCalls[0];
@@ -193,7 +193,7 @@ describe("pushFileDelete", () => {
     const projectId = "pid";
     await pushFileDelete({ id, project_id: projectId } as never);
     expect(supabaseModuleMock.removeCalls).toEqual([
-      { bucket: "files", paths: [`${FAKE_UID}/${projectId}/${id}`] },
+      { bucket: "paperassistant-files", paths: [`${FAKE_UID}/${projectId}/${id}`] },
     ]);
     expect(supabaseModuleMock.deleteCalls).toEqual([
       { table: "files", eqArg: ["id", id] },

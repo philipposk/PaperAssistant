@@ -1,47 +1,79 @@
 # Deploying PaperAssistant to Vercel
 
-## One-time setup
+PaperAssistant is one of the 13 apps on the shared `6x7.gr` platform. It uses the single shared Supabase project (`6x7`, ref `fmrnqepyyjucnfbrqawl`) — see `~/.claude/plans/3-i-think-and-cozy-hejlsberg.md` and `supabase/README.md`.
+
+## 1. Create the Vercel project (one-time)
 
 1. Sign in to [vercel.com](https://vercel.com) with your GitHub account.
 2. Click **Add New → Project**, pick the `philipposk/PaperAssistant` repo, click **Import**.
-3. Configure (Vercel will auto-detect most of this from `vercel.json`):
+3. Vercel auto-detects `vercel.json`:
    - **Framework Preset:** `Other`
-   - **Root Directory:** leave as `.` (the repo root)
-   - **Build Command:** `cd app && npm install && npm run build` (auto-filled)
-   - **Output Directory:** `app/dist` (auto-filled)
-4. Click **Deploy**. First deploy takes ~1–2 minutes.
+   - **Root Directory:** `.` (repo root)
+   - **Build Command:** `cd app && npm install && npm run build`
+   - **Output Directory:** `app/dist`
+4. Click **Deploy**.
 
-You now have a URL like `paperassistant-xxxxx.vercel.app`. Every push to `main` redeploys automatically.
+You get a temporary URL like `paperassistant-xxxxx.vercel.app`. Every push to `main` redeploys.
 
-## Connect the custom domain `paperassistant.6x7.gr`
+## 2. Link to the shared 6x7 Supabase project
 
-1. In Vercel project → **Settings → Domains**, click **Add**, enter `paperassistant.6x7.gr`.
-2. Vercel will show DNS records to add at your domain registrar (6x7.gr provider):
-   - Either a `CNAME` record on `paperassistant` → `cname.vercel-dns.com`
-   - Or `A` records to Vercel's IPs
-3. Add the records at 6x7.gr's DNS panel. Wait 5–15 minutes for propagation.
-4. Vercel auto-issues a Let's Encrypt SSL cert once DNS resolves.
+In the Vercel project → **Settings → Integrations → Supabase** (or the Vercel ↔ Supabase integration installed at the account level):
 
-## Disable the old GitHub Pages site
+- Pick the **6x7** Supabase project (ref `fmrnqepyyjucnfbrqawl`).
+- Pick **Apply to: Production, Preview, Development**.
 
-After Vercel is live and the domain points there:
+Vercel auto-injects on every deploy:
 
-1. Go to repo on GitHub → **Settings → Pages**.
-2. Under "Build and deployment" → **Source**, pick **None**.
-3. Save. This stops the dead 404 page from serving.
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (server-side only — PaperAssistant doesn't use it)
+- `POSTGRES_URL`, `POSTGRES_PRISMA_URL`, `POSTGRES_URL_NON_POOLING`
 
-The `CNAME` file in the repo root is harmless once GitHub Pages is off, but you can delete it if you prefer.
+Vite needs the `VITE_*` prefix, not `NEXT_PUBLIC_*`. Add two mirrors in **Settings → Environment Variables** (Production + Preview + Development):
 
-## Environment variables (Supabase, later)
+- `VITE_SUPABASE_URL` = `https://fmrnqepyyjucnfbrqawl.supabase.co`
+- `VITE_SUPABASE_ANON_KEY` = the publishable anon key from **Supabase dashboard → Settings → API**
 
-When you add cloud sync (Tasks #15 + #18), set these in Vercel → **Settings → Environment Variables**:
+(These can also be hard-coded since the anon key is public — see `app/.env.example`. Redeploy after setting.)
 
-- `VITE_SUPABASE_URL` — from your Supabase project's API settings
-- `VITE_SUPABASE_ANON_KEY` — same place
+## 3. Connect the custom domain `paperassistant.6x7.gr`
 
-After saving, trigger a redeploy (or just push a commit). The app reads these at build time via Vite.
+1. Vercel project → **Settings → Domains** → add `paperassistant.6x7.gr`.
+2. Vercel shows the CNAME record:
+   - **Type:** `CNAME`
+   - **Name:** `paperassistant`
+   - **Value:** `cname.vercel-dns.com`
+3. Add that record at the 6x7.gr DNS panel. TTL 300 or Auto.
+4. Wait 5–15 min for propagation. Vercel auto-issues a Let's Encrypt SSL cert.
 
-For local dev: copy `app/.env.example` to `app/.env.local` and fill in the same values.
+## 4. Disable the old GitHub Pages site
+
+Once Vercel + domain are live:
+
+1. https://github.com/philipposk/PaperAssistant → **Settings → Pages**.
+2. **Source** → **None** → **Save**.
+
+## 5. Configure Supabase auth (one-time, per shared project)
+
+In Supabase dashboard → **Authentication**:
+
+- **URL Configuration → Site URL:** `https://6x7.gr`
+- **Redirect URLs:** add `https://*.6x7.gr/**`, `http://localhost:5173`, `http://localhost:5174`
+- **Providers → Email:** enable, "Confirm email" OFF
+- **Providers → Google:** enable + paste OAuth client credentials
+
+In **Settings → API → Exposed schemas:** add `paperassistant` so the JS client can `.from('files')` against `paperassistant.files`.
+
+## 6. Local dev
+
+```bash
+cd app
+npm install
+cp .env.example .env.local   # already filled with the shared 6x7 keys
+npm run dev                  # http://localhost:5173
+```
+
+On localhost the session is stored in `localStorage` (cookie-domain `.6x7.gr` doesn't apply). On `paperassistant.6x7.gr` it switches to a cookie that every sibling app on `*.6x7.gr` reads as the same session.
 
 ## Local preview of a production build
 

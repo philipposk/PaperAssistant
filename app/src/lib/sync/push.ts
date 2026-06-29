@@ -12,7 +12,7 @@ import {
   type Reference,
 } from "../db";
 
-const BUCKET = "files";
+const BUCKET = "paperassistant-files";
 
 function userId(): string | null {
   return useAuthStore.getState().user?.id ?? null;

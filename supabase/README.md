@@ -1,39 +1,50 @@
-# Supabase schema for PaperAssistant
+# PaperAssistant schema on the shared 6x7 platform
 
-Migrations run in order against your Supabase Postgres. They define the cloud-sync schema, row-level security, and the file storage bucket.
+PaperAssistant does **not** own a Supabase project of its own. It lives in the `paperassistant` schema of the single shared **6x7** project (project ref `fmrnqepyyjucnfbrqawl`, EU central), alongside every other app on `*.6x7.gr`. See `~/.claude/plans/3-i-think-and-cozy-hejlsberg.md` for the platform-wide plan.
 
-## Apply
+Architecture in one paragraph: one Supabase project holds `auth.users` + `public.profiles` + `public.app_access`, then one **schema per app** (`paperassistant`, `school`, `digestive`, …). Every per-app table has `user_id uuid references auth.users` + RLS scoped through `project_members`. Sign-in lives at `6x7.gr` and writes a JWT cookie scoped to `.6x7.gr` so every sibling subdomain reads the same session — PaperAssistant is just one of those subdomains.
 
-Two options:
+## Apply migrations
 
-**A. Supabase Dashboard (easiest)**
-1. Create a project at [supabase.com](https://supabase.com) (free tier is fine).
-2. Open **SQL Editor → New query**.
-3. Paste `migrations/0001_init.sql`, click **Run**. Then `0002_storage.sql`.
-4. Open **Settings → API**, copy:
-   - `Project URL` → `VITE_SUPABASE_URL`
-   - `anon public` key → `VITE_SUPABASE_ANON_KEY`
-5. Paste those into Vercel → Settings → Environment Variables. Redeploy.
+The migrations have already been applied via Supabase MCP. The SQL is mirrored in `migrations/` for repeatability / version control. Order:
 
-**B. Supabase CLI**
-```bash
-supabase link --project-ref <your-ref>
-supabase db push   # applies migrations in order
-```
+1. `0001_paperassistant_schema.sql` — schema + 7 tables + triggers
+2. `0002_paperassistant_rls.sql` — member-aware RLS policies
+3. `0003_paperassistant_storage.sql` — `paperassistant-files` bucket + per-user policies
 
-## Enable auth providers
+To re-apply (e.g. after blowing away and recreating the 6x7 project), paste each into Supabase Dashboard → SQL Editor in order, or run via the Supabase CLI / MCP.
 
-In Supabase dashboard → **Authentication → Providers**:
+The pre-rebuild migrations that targeted the legacy `public` schema in PaperAssistant's own Supabase project are kept under `legacy-public-schema/` for reference.
 
-- **Email**: enable, turn ON "Confirm email" → "Disabled" so magic-link is one-step.
-- **Google**: enable, paste your Google OAuth client ID + secret (see [Supabase Google docs](https://supabase.com/docs/guides/auth/social-login/auth-google)).
+## Expose the schema via PostgREST
 
-Set **Authentication → URL Configuration → Site URL** to your Vercel URL (e.g. `https://paperassistant.6x7.gr`). Add `http://localhost:5173` and `http://localhost:5174` to **Redirect URLs** for local dev.
+Postgres allows the table to exist, but the auto-generated REST API only sees schemas listed under **Settings → API → Exposed schemas**. Add `paperassistant` there in the Supabase Dashboard (one-time, per project).
+
+## Auth configuration (one-time, per project)
+
+In the Supabase dashboard → **Authentication**:
+
+- **URL Configuration → Site URL:** `https://6x7.gr`
+- **URL Configuration → Redirect URLs:** add `https://*.6x7.gr/**`, `http://localhost:5173`, `http://localhost:5174`
+- **Providers → Email:** enable, turn "Confirm email" → OFF so the magic-link flow is one-step
+- **Providers → Google:** enable, paste your Google OAuth client ID + secret (see [Supabase Google docs](https://supabase.com/docs/guides/auth/social-login/auth-google))
+
+The PaperAssistant client (`app/src/lib/cookieStorage.ts`) writes the session under cookie name `sb-6x7-auth` on `.6x7.gr` so every sibling subdomain reads the same session.
 
 ## Schema overview
 
-- `projects (id, user_id, name, description, color, created_at, updated_at)`
-- `files (id, project_id, user_id, name, mime, size_bytes, storage_path, tags[], created_at, updated_at)` — bytes in Storage bucket `files`
-- `notes (id, project_id, user_id, title, markdown, created_at, updated_at)`
+- `paperassistant.projects` — top-level project per user
+- `paperassistant.files` — file metadata; blobs live in `storage.objects` bucket `paperassistant-files` at `{user_id}/{project_id}/{file_id}`
+- `paperassistant.notes` — markdown notes per project
+- `paperassistant."references"` — citations (CSL-JSON), with optional `pdf_file_id` link
+- `paperassistant.highlights` — PDF highlights anchored to a file
+- `paperassistant.project_members` — owner/editor/viewer membership
+- `paperassistant.project_invites` — email + token-based invitations
 
-RLS: every row is scoped to `auth.uid() = user_id`. Anonymous users see nothing in the cloud — they keep using the local-only Dexie store.
+RLS: every member of a project sees all rows; editors + owners write; only owners can delete the project itself.
+
+## Frontend wiring
+
+- `app/.env.local` → `VITE_SUPABASE_URL=https://fmrnqepyyjucnfbrqawl.supabase.co` + the publishable anon key from **Settings → API**.
+- On Vercel: the Supabase ↔ Vercel integration auto-injects these on every deploy once the Vercel project is linked to the 6x7 Supabase project. No manual paste.
+- `app/src/lib/supabase.ts` passes `db.schema = 'paperassistant'` so every `.from('files')` etc. transparently hits `paperassistant.files`.
