@@ -1,4 +1,6 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { mountVoiceSettingsPanel } from "@page-assistant/widget";
 import { useTheme } from "../lib/theme";
 import { signOut, useAuth } from "../lib/auth";
 import { APP_VERSION } from "../lib/version";
@@ -9,6 +11,15 @@ import { BillingSection } from "../components/BillingSection";
 export function Settings() {
   const { theme, setTheme } = useTheme();
   const { isCloudConfigured, isSignedIn, user } = useAuth();
+  const voicePanelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (voicePanelRef.current) {
+      mountVoiceSettingsPanel(voicePanelRef.current, {
+        storageKey: "paperassistant_pa_voice",
+      });
+    }
+  }, []);
 
   return (
     <div className="px-8 py-8 max-w-3xl mx-auto">
@@ -84,6 +95,17 @@ export function Settings() {
       </section>
 
       <AiSection />
+
+      <section
+        id="assistant"
+        className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 mb-5"
+      >
+        <div className="serif text-lg mb-1">Page assistant</div>
+        <p className="text-sm text-[var(--color-ink-3)] mb-4">
+          Voice and TTS settings for the floating site-wide assistant (separate from PDF Ask Q&A).
+        </p>
+        <div ref={voicePanelRef} />
+      </section>
 
       <BillingSection />
 

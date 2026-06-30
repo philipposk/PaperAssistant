@@ -2,7 +2,16 @@
 
 Status: pre-release working build. Local-only out of the box; cloud sync + sharing + AI all available once you wire the corresponding keys.
 
-This document covers what landed in the rebuild that started 2026-05-24 and shipped its core feature set on 2026-05-25.
+---
+
+## v0.1.3 — page-assistant integration
+
+- **page-assistant** vendored at `vendor/page-assistant` (`@page-assistant/widget` + `@page-assistant/core` in the app).
+- **Vercel API** under `/api/pa/v1/*`: LLM proxy, voice TTS/STT, agent, health, feedback — JWT auth + per-user rate limits (same Supabase session as `pa-chat`).
+- **Pilot capabilities**: `navigate_to`, `search_papers`, `list_projects`, `open_project`, `list_files`, `delete_file` (confirm gate; blocks demo projects).
+- **Widget** embedded in `AppShell`; voice settings panel on Settings → `#assistant`.
+- **Discovery**: `/llm.txt` and `/.well-known/llm-actions.json` (rewritten to API).
+- **Coexists** with project `/ask` PDF Q&A — unchanged.
 
 ---
 

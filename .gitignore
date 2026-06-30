@@ -26,5 +26,8 @@ app/dist-ssr/
 .env.local
 .env.*.local
 
+# Supabase CLI temp
+supabase/.temp/
+
 # Local design mockups (kept off git per user preference)
 frontend mockup/

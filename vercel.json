@@ -1,10 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd app && npm install && npm run build",
+  "buildCommand": "cd vendor/page-assistant && npm install && npm run build && cd ../../app && npm install && npm run build",
   "outputDirectory": "app/dist",
-  "installCommand": "echo skip-root-install",
+  "installCommand": "npm install",
   "framework": null,
   "rewrites": [
+    { "source": "/llm.txt", "destination": "/api/pa/llm.txt" },
+    { "source": "/.well-known/llm-actions.json", "destination": "/api/pa/well-known/llm-actions.json" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]

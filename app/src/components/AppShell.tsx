@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { ToastProvider } from "./Toast";
+import { PageAssistantWidget } from "./PageAssistantWidget";
 import { useSync } from "../lib/sync";
 import { ensureDemoProjects, dedupeDemoProjects } from "../lib/demoSeed";
 
@@ -18,6 +19,7 @@ export function AppShell() {
 
   return (
     <ToastProvider>
+      <PageAssistantWidget />
       <div className="flex h-screen w-screen overflow-hidden">
         <Sidebar />
         <div className="flex-1 flex flex-col min-w-0">
