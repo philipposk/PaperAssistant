@@ -42,9 +42,10 @@ function notesSection(notes: Note[]): string {
   return sorted
     .map((n) => {
       const body = n.markdown.trim();
+      const heading = (n.title.trim() || "Untitled");
       // If note already begins with an H1/H2, don't double-up the title.
       if (/^#{1,2}\s+/.test(body)) return body + "\n";
-      return `## ${n.title}\n\n${body}\n`;
+      return `## ${heading}\n\n${body}\n`;
     })
     .join("\n");
 }

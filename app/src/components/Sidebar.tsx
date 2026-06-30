@@ -206,16 +206,6 @@ export function Sidebar() {
               label="Export"
             />
             <NavItem
-              to={`/projects/${projectId}/export`}
-              icon={FileArchive}
-              label="Export"
-            />
-            <NavItem
-              to={`/projects/${projectId}/ask`}
-              icon={Sparkles}
-              label="Ask"
-            />
-            <NavItem
               to={`/projects/${projectId}/timeline`}
               icon={Clock}
               label="Timeline"

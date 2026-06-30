@@ -100,11 +100,9 @@ export async function revokeInvite(inviteId: string): Promise<void> {
 
 export async function fetchInviteByToken(token: string): Promise<Invite | null> {
   if (!active() || !supabase) return null;
-  const { data, error } = await supabase
-    .from("project_invites")
-    .select("*")
-    .eq("token", token)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("get_invite_by_token", {
+    p_token: token,
+  });
   if (error) {
     console.warn("[sharing] fetchInviteByToken failed", error.message);
     return null;

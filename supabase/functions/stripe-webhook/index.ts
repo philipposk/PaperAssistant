@@ -17,7 +17,10 @@ const APP = "paperassistant";
 
 async function upsert(row: Record<string, unknown>) {
   const { error } = await admin.from("subscriptions").upsert(row, { onConflict: "user_id,app" });
-  if (error) console.error("subscriptions upsert error:", error.message);
+  if (error) {
+    console.error("subscriptions upsert error:", error.message);
+    throw new Error(error.message);
+  }
 }
 
 function periodEnd(sub: Stripe.Subscription): string | null {

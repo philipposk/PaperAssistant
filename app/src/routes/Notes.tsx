@@ -4,6 +4,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import MDEditor from "@uiw/react-md-editor";
 import { Plus, Trash2 } from "lucide-react";
 import { db, now, uid, type Note } from "../lib/db";
+import { markdownMathPreviewOptions } from "../lib/markdownMath";
+import { EMPTY_NOTE_MARKDOWN, noteDisplayTitle } from "../lib/noteDefaults";
 import { pushNoteDelete, pushNoteUpsert } from "../lib/sync";
 
 export function Notes() {
@@ -25,8 +27,8 @@ export function Notes() {
     const note: Note = {
       id: nid,
       project_id: id,
-      title: "Untitled",
-      markdown: "# Untitled\n\nStart typing…",
+      title: "",
+      markdown: EMPTY_NOTE_MARKDOWN,
       created_at: t,
       updated_at: t,
     };
@@ -79,7 +81,7 @@ export function Notes() {
               onClick={() => setSelected(n.id)}
             >
               <div className="flex-1 min-w-0">
-                <div className="text-sm truncate">{n.title}</div>
+                <div className="text-sm truncate">{noteDisplayTitle(n.title)}</div>
                 <div className="mono text-[10px] text-[var(--color-ink-3)]">
                   {new Date(n.updated_at).toLocaleDateString()}
                 </div>
@@ -110,7 +112,8 @@ export function Notes() {
             <input
               value={active.title}
               onChange={(e) => void update({ title: e.target.value })}
-              className="serif text-2xl px-8 py-5 bg-transparent border-b border-[var(--color-line)] focus:outline-none"
+              placeholder="Untitled"
+              className="serif text-2xl px-8 py-5 bg-transparent border-b border-[var(--color-line)] focus:outline-none placeholder:text-[var(--color-ink-4)]"
             />
             <div className="flex-1 overflow-hidden" data-color-mode="light">
               <MDEditor
@@ -118,6 +121,10 @@ export function Notes() {
                 onChange={(v) => void update({ markdown: v ?? "" })}
                 height="100%"
                 preview="live"
+                previewOptions={markdownMathPreviewOptions}
+                textareaProps={{
+                  placeholder: "Start typing…",
+                }}
               />
             </div>
           </>

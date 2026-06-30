@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { create } from "zustand";
+import { db } from "./db";
 import { isCloudConfigured, supabase } from "./supabase";
+
+const THEME_KEY = "paperassistant.theme";
 
 interface AuthState {
   session: Session | null;
@@ -75,7 +78,17 @@ export async function signInWithGitHub() {
   if (error) throw error;
 }
 
+/** Wipe local project data and auth-adjacent storage on shared machines. */
+export async function clearLocalWorkspace(): Promise<void> {
+  await db.delete();
+  if (typeof localStorage === "undefined") return;
+  const theme = localStorage.getItem(THEME_KEY);
+  localStorage.clear();
+  if (theme) localStorage.setItem(THEME_KEY, theme);
+}
+
 export async function signOut() {
-  if (!supabase) return;
-  await supabase.auth.signOut();
+  await clearLocalWorkspace();
+  if (supabase) await supabase.auth.signOut();
+  window.location.assign("/");
 }
