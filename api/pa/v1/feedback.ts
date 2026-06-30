@@ -6,28 +6,30 @@ export const config = { runtime: "nodejs" };
 
 const tickets: unknown[] = [];
 
-export default async function handler(req: Request): Promise<Response> {
-  const origin = req.headers.get("Origin");
-  if (req.method === "OPTIONS") return preflight(origin);
+export default {
+  async fetch(req: Request): Promise<Response> {
+    const origin = req.headers.get("Origin");
+    if (req.method === "OPTIONS") return preflight(origin);
 
-  if (req.method === "POST") {
-    const limited = enforceRateLimit("anon", "feedback");
-    if (limited) return limited;
-    let body: unknown;
-    try {
-      body = await req.json();
-    } catch {
-      return jsonResponse(400, { error: "Invalid JSON" }, origin);
+    if (req.method === "POST") {
+      const limited = enforceRateLimit("anon", "feedback");
+      if (limited) return limited;
+      let body: unknown;
+      try {
+        body = await req.json();
+      } catch {
+        return jsonResponse(400, { error: "Invalid JSON" }, origin);
+      }
+      const t = normalizeTicket({ app: "PaperAssistant", ...(body as object) });
+      if ("error" in t) return jsonResponse(400, t, origin);
+      tickets.push(t);
+      return jsonResponse(200, { ok: true }, origin);
     }
-    const t = normalizeTicket({ app: "PaperAssistant", ...(body as object) });
-    if ("error" in t) return jsonResponse(400, t, origin);
-    tickets.push(t);
-    return jsonResponse(200, { ok: true }, origin);
-  }
 
-  if (req.method === "GET") {
-    return jsonResponse(200, { tickets }, origin);
-  }
+    if (req.method === "GET") {
+      return jsonResponse(200, { tickets }, origin);
+    }
 
-  return jsonResponse(405, { error: "GET or POST only" }, origin);
-}
+    return jsonResponse(405, { error: "GET or POST only" }, origin);
+  },
+};
