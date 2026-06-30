@@ -1,9 +1,8 @@
 import { useCallback, useState, type ReactNode } from "react";
 import { GripVertical } from "lucide-react";
-import { type FileRecord } from "../lib/db";
 
-export function useDragReorder(
-  items: FileRecord[],
+export function useDragReorder<T extends { id: string }>(
+  items: T[],
   onReorder: (orderedIds: string[]) => void,
 ) {
   const [dragId, setDragId] = useState<string | null>(null);

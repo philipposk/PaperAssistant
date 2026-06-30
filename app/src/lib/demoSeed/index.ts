@@ -145,6 +145,7 @@ async function seedProject(
     ...n,
     id: uid(),
     project_id: meta.id,
+    sort_order: i,
     created_at: t + i * 3600000,
     updated_at: t + i * 3600000 + 60000,
   }));
@@ -457,15 +458,69 @@ export async function clearAllDemoProjects(): Promise<void> {
 async function deleteProjectCascade(projectId: string): Promise<void> {
   await db.transaction(
     "rw",
-    [db.projects, db.files, db.notes, db.references, db.highlights, db.sync_queue],
+    [db.projects, db.files, db.notes, db.references, db.highlights, db.sync_queue, db.activity_log],
     async () => {
       await db.files.where("project_id").equals(projectId).delete();
       await db.notes.where("project_id").equals(projectId).delete();
       await db.references.where("project_id").equals(projectId).delete();
       await db.highlights.where("project_id").equals(projectId).delete();
+      await db.activity_log.where("project_id").equals(projectId).delete();
       await db.projects.delete(projectId);
     },
   );
+}
+
+function normalizeDemoName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/^the\s+/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Remove duplicate demo projects (e.g. manual copies or old seeds with new IDs). */
+export async function dedupeDemoProjects(): Promise<void> {
+  const allProjects = await db.projects.toArray();
+
+  for (const meta of DEMO_CATALOG) {
+    const canonicalNorm = normalizeDemoName(meta.name);
+    const matches = allProjects.filter(
+      (p) =>
+        p.id === meta.id ||
+        normalizeDemoName(p.name) === canonicalNorm ||
+        normalizeDemoName(p.name).includes("biscuit dunk") && meta.id === "demo-biscuit-dunking",
+    );
+
+    if (matches.length <= 1) continue;
+
+    const keep =
+      matches.find((p) => p.id === meta.id) ??
+      matches.find((p) => p.is_demo) ??
+      matches[0];
+
+    for (const dup of matches) {
+      if (dup.id === keep.id) continue;
+      await deleteProjectCascade(dup.id);
+    }
+  }
+
+  // Non-demo projects that share a demo name while the canonical demo exists
+  for (const meta of DEMO_CATALOG) {
+    const canonical = await db.projects.get(meta.id);
+    if (!canonical) continue;
+    const canonicalNorm = normalizeDemoName(meta.name);
+    const dupes = await db.projects
+      .filter(
+        (p) =>
+          p.id !== meta.id &&
+          !p.is_demo &&
+          normalizeDemoName(p.name) === canonicalNorm,
+      )
+      .toArray();
+    for (const dup of dupes) {
+      await deleteProjectCascade(dup.id);
+    }
+  }
 }
 
 export async function reloadDemoProject(id: DemoProjectId): Promise<void> {

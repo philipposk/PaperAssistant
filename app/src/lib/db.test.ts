@@ -5,6 +5,7 @@ afterEach(async () => {
   await db.projects.clear();
   await db.files.clear();
   await db.notes.clear();
+  await db.activity_log.clear();
 });
 
 describe("uid", () => {

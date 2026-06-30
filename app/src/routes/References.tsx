@@ -1,10 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { ClipboardCopy, FileText, Loader2, Plus, Trash2, Upload } from "lucide-react";
+import { ClipboardCopy, FileText, Loader2, Plus, Trash2, Upload, X } from "lucide-react";
 import { db, now, uid, type Reference } from "../lib/db";
 import { referenceUrl } from "../lib/citations";
 import { pushReferenceDelete, pushReferenceUpsert } from "../lib/sync";
+import {
+  clearProjectCustomCsl,
+  getProjectCitationStyle,
+  getProjectCustomCsl,
+  setProjectCitationStyle,
+  setProjectCustomCsl,
+} from "../lib/projectSettings";
 
 const STYLES = [
   { id: "apa", label: "APA" },
@@ -13,6 +20,7 @@ const STYLES = [
   { id: "vancouver", label: "Vancouver" },
   { id: "harvard-cite-them-right", label: "Harvard" },
   { id: "ieee", label: "IEEE" },
+  { id: "custom", label: "Custom (.csl)" },
 ];
 
 export function References() {
@@ -28,16 +36,40 @@ export function References() {
   );
 
   const [style, setStyle] = useState("apa");
-  const savedStyle = useLiveQuery(() => db.settings.get("citation_style"), []);
+  const savedStyle = useLiveQuery(() => getProjectCitationStyle(id), [id]);
+  const customCsl = useLiveQuery(() => getProjectCustomCsl(id), [id]);
+  const cslInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
-    if (savedStyle?.value && typeof savedStyle.value === "string") {
-      setStyle(savedStyle.value);
-    }
-  }, [savedStyle?.value]);
+    if (savedStyle) setStyle(savedStyle);
+  }, [savedStyle]);
 
   async function changeStyle(next: string) {
     setStyle(next);
-    await db.settings.put({ key: "citation_style", value: next });
+    await setProjectCitationStyle(id, next);
+    if (next === "custom" && !customCsl) {
+      cslInputRef.current?.click();
+    }
+  }
+
+  async function uploadCsl(file: File) {
+    const text = await file.text();
+    if (!text.includes("<style")) {
+      setErr("File does not look like a CSL stylesheet.");
+      return;
+    }
+    await setProjectCustomCsl(id, text);
+    await setProjectCitationStyle(id, "custom");
+    setStyle("custom");
+    setErr(null);
+  }
+
+  async function removeCustomCsl() {
+    await clearProjectCustomCsl(id);
+    if (style === "custom") {
+      await setProjectCitationStyle(id, "apa");
+      setStyle("apa");
+    }
   }
   const [doiInput, setDoiInput] = useState("");
   const [bibtexInput, setBibtexInput] = useState("");
@@ -52,12 +84,14 @@ export function References() {
       return formatBibliography(
         refs.map((r) => r.csl_json),
         style,
+        id,
+        customCsl,
       );
     } catch (e) {
       console.warn("[citations] format failed", e);
       return null;
     }
-  }, [refs, style]);
+  }, [refs, style, id, customCsl]);
 
   async function addDoi() {
     if (!doiInput.trim()) return;
@@ -163,6 +197,28 @@ export function References() {
               </option>
             ))}
           </select>
+          <input
+            ref={cslInputRef}
+            type="file"
+            accept=".csl,text/xml"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) void uploadCsl(f);
+              e.target.value = "";
+            }}
+          />
+          {customCsl && (
+            <button
+              type="button"
+              onClick={() => void removeCustomCsl()}
+              className="px-2 py-1.5 rounded-md border border-[var(--color-line)] text-xs hover:bg-[var(--color-surface-2)] flex items-center gap-1"
+              title="Remove custom CSL"
+            >
+              <X size={12} />
+              Custom CSL
+            </button>
+          )}
           <button
             type="button"
             onClick={exportBib}
@@ -174,6 +230,18 @@ export function References() {
           </button>
         </div>
       </div>
+      <p className="text-xs text-[var(--color-ink-3)] mb-4">
+        Upload a <code className="mono">.csl</code> file for custom bibliography formatting. Browse styles at{" "}
+        <a
+          href="https://www.zotero.org/styles"
+          target="_blank"
+          rel="noreferrer"
+          className="text-[var(--color-accent)] hover:underline"
+        >
+          Zotero Style Repository
+        </a>
+        .
+      </p>
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 mb-5">
         <div className="mono uppercase text-[10px] tracking-wider text-[var(--color-ink-3)] mb-3">

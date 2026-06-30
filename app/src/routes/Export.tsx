@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Download, FileArchive, Loader2 } from "lucide-react";
+import { Download, Eye, FileArchive, Loader2 } from "lucide-react";
 import { db } from "../lib/db";
 import type { ExportManifest } from "../lib/manuscriptExport";
 
@@ -73,10 +73,21 @@ export function Export() {
 
   return (
     <div className="px-8 py-8 max-w-3xl mx-auto">
-      <h1 className="serif text-3xl mb-1">Export manuscript</h1>
-      <p className="text-sm text-[var(--color-ink-3)] mb-6">
-        Bundle this project as a Quarto-ready folder. Open <code className="mono text-xs">index.qmd</code> in Quarto / RStudio / VS Code with the Quarto extension to render PDF, HTML, DOCX, or LaTeX.
-      </p>
+      <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
+        <div>
+          <h1 className="serif text-3xl mb-1">Export manuscript</h1>
+          <p className="text-sm text-[var(--color-ink-3)]">
+            Bundle this project as a Quarto-ready folder. Sections follow manuscript order (drag-reorder on Manuscript).
+          </p>
+        </div>
+        <Link
+          to={`/projects/${id}/preview`}
+          className="px-3 py-2 rounded-md border border-[var(--color-line)] text-sm hover:bg-[var(--color-surface-2)] flex items-center gap-2"
+        >
+          <Eye size={14} />
+          Preview paper
+        </Link>
+      </div>
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 mb-5">
         <div className="serif text-lg mb-3">
@@ -89,7 +100,7 @@ export function Export() {
               index.qmd
             </span>
             <span className="font-medium">{noteCount}</span> note
-            {noteCount === 1 ? "" : "s"} merged in created-at order, with Quarto YAML.
+            {noteCount === 1 ? "" : "s"} merged in manuscript order, with Quarto YAML.
           </li>
           <li>
             <span className="text-[var(--color-ink-3)] inline-block w-32">

@@ -4,13 +4,16 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { ToastProvider } from "./Toast";
 import { useSync } from "../lib/sync";
-import { ensureDemoProjects } from "../lib/demoSeed";
+import { ensureDemoProjects, dedupeDemoProjects } from "../lib/demoSeed";
 
 export function AppShell() {
   useSync();
 
   useEffect(() => {
-    void ensureDemoProjects();
+    void (async () => {
+      await ensureDemoProjects();
+      await dedupeDemoProjects();
+    })();
   }, []);
 
   return (

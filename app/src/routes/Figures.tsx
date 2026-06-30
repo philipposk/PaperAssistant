@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
+import { ImageUp } from "lucide-react";
 import { db, fileIncludedInExport, type FileRecord } from "../lib/db";
 import { fileDisplayName } from "../lib/demoSeed/helpers";
 import {
@@ -13,6 +14,7 @@ import {
 import { pushFileUpsert } from "../lib/sync";
 import { useToast } from "../components/Toast";
 import { DraggableShell, DragHandle, useDragReorder } from "../components/DragReorder";
+import { replaceFileBlob } from "../lib/fileReplace";
 
 function useBlobUrl(blob: Blob | undefined): string | undefined {
   const [url, setUrl] = useState<string>();
@@ -30,15 +32,18 @@ function FigureCard({
   width,
   onExportChange,
   onCaptionChange,
+  onReplace,
 }: {
   file: FileRecord;
   width: number;
   onExportChange: (id: string, include: boolean) => void;
   onCaptionChange: (id: string, caption: string) => void;
+  onReplace: (id: string, blob: Blob, name: string, mime: string) => void;
 }) {
   const url = useBlobUrl(file.blob);
   const [editing, setEditing] = useState(false);
   const [captionDraft, setCaptionDraft] = useState(file.caption ?? "");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <figure
@@ -112,6 +117,25 @@ function FigureCard({
           />
           Include in export
         </label>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) onReplace(file.id, f, f.name, f.type || "image/png");
+            e.target.value = "";
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="text-[11px] text-[var(--color-accent)] hover:underline flex items-center gap-1"
+        >
+          <ImageUp size={12} />
+          Replace image
+        </button>
       </figcaption>
     </figure>
   );
@@ -148,6 +172,16 @@ export function Figures() {
     await updateFileMeta(fileId, { include_in_export: include });
     const fresh = await db.files.get(fileId);
     if (fresh) void pushFileUpsert(fresh);
+  }
+
+  async function handleReplace(
+    fileId: string,
+    blob: Blob,
+    name: string,
+    mime: string,
+  ) {
+    await replaceFileBlob(fileId, blob, name, mime, id);
+    show("Figure image replaced.");
   }
 
   return (
@@ -192,6 +226,7 @@ export function Figures() {
                 width={width}
                 onExportChange={(fid, include) => void setExport(fid, include)}
                 onCaptionChange={(fid, caption) => void updateFileMeta(fid, { caption })}
+                onReplace={(fid, blob, name, mime) => void handleReplace(fid, blob, name, mime)}
               />
             </DraggableShell>
           ))}

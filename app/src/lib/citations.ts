@@ -8,8 +8,11 @@ import "@citation-js/plugin-bibtex";
 import "@citation-js/plugin-csl";
 
 import type { Reference } from "./db";
+import { customCslTemplateId } from "./projectSettings";
 
 type CslJson = Record<string, unknown>;
+
+const registeredCustomStyles = new Set<string>();
 
 let configured = false;
 function configure() {
@@ -24,6 +27,36 @@ function configure() {
     // ignore — best-effort
   }
   configured = true;
+}
+
+export function registerCustomCslStyle(projectId: string, cslXml: string): string {
+  configure();
+  const templateId = customCslTemplateId(projectId);
+  try {
+    const cslConfig = plugins.config.get("@csl") as {
+      templates?: { add: (id: string, xml: string) => void };
+    };
+    if (cslConfig?.templates && !registeredCustomStyles.has(templateId)) {
+      cslConfig.templates.add(templateId, cslXml);
+      registeredCustomStyles.add(templateId);
+    } else if (cslConfig?.templates) {
+      cslConfig.templates.add(templateId, cslXml);
+    }
+  } catch {
+    // best-effort
+  }
+  return templateId;
+}
+
+export function resolveBibliographyTemplate(
+  style: string,
+  projectId?: string,
+  customCsl?: string | null,
+): string {
+  if (style === "custom" && projectId && customCsl) {
+    return registerCustomCslStyle(projectId, customCsl);
+  }
+  return style;
 }
 
 export function suggestCitationKey(csl: CslJson): string {
@@ -58,23 +91,35 @@ export async function parseBibtex(bibtex: string): Promise<CslJson[]> {
   return cite.data as CslJson[];
 }
 
-export function formatBibliographyEntry(csl: CslJson, style = "apa"): string {
+export function formatBibliographyEntry(
+  csl: CslJson,
+  style = "apa",
+  projectId?: string,
+  customCsl?: string | null,
+): string {
   configure();
+  const template = resolveBibliographyTemplate(style, projectId, customCsl);
   const cite = new Cite(csl);
   return cite.format("bibliography", {
     format: "text",
-    template: style,
+    template,
     lang: "en-US",
   }) as string;
 }
 
-export function formatBibliography(items: CslJson[], style = "apa"): string {
+export function formatBibliography(
+  items: CslJson[],
+  style = "apa",
+  projectId?: string,
+  customCsl?: string | null,
+): string {
   configure();
   if (items.length === 0) return "";
+  const template = resolveBibliographyTemplate(style, projectId, customCsl);
   const cite = new Cite(items);
   return cite.format("bibliography", {
     format: "text",
-    template: style,
+    template,
     lang: "en-US",
   }) as string;
 }

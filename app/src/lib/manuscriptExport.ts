@@ -3,7 +3,7 @@
 // a JSZip Blob for download.
 
 import JSZip from "jszip";
-import { db, fileIncludedInExport, fileSortCompare, type Note, type Project, type Reference, type FileRecord } from "./db";
+import { db, fileIncludedInExport, fileSortCompare, sortNotes, type Note, type Project, type Reference, type FileRecord } from "./db";
 import { exportBibtex } from "./citations";
 import { fileDisplayName } from "./demoSeed/helpers";
 
@@ -39,7 +39,7 @@ function frontMatter(project: Project): string {
 
 function notesSection(notes: Note[]): string {
   if (!notes.length) return "";
-  const sorted = [...notes].sort((a, b) => a.created_at - b.created_at);
+  const sorted = sortNotes(notes);
   return sorted
     .map((n) => {
       const body = n.markdown.trim();

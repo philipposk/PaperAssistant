@@ -96,6 +96,12 @@ export function ProjectView() {
           <span className="text-[var(--color-ink-3)]"> — draft sections merged on export</span>
         </li>
         <li>
+          <Link to={`/projects/${id}/preview`} className="text-[var(--color-accent)] hover:underline">
+            Paper preview
+          </Link>
+          <span className="text-[var(--color-ink-3)]"> — full manuscript as one page</span>
+        </li>
+        <li>
           <Link to={`/projects/${id}/references`} className="text-[var(--color-accent)] hover:underline">
             References
           </Link>

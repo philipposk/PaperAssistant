@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import Papa from "papaparse";
+import { Download } from "lucide-react";
 import { db, fileIncludedInExport, type FileRecord } from "../lib/db";
 import { fileDisplayName } from "../lib/demoSeed/helpers";
+import { downloadFileBlob } from "../lib/fileReplace";
 import {
   captureOrder,
   reorderFiles,
@@ -89,6 +91,14 @@ function TableCard({
           />
           Include in export
         </label>
+        <button
+          type="button"
+          onClick={() => downloadFileBlob(file)}
+          className="text-xs text-[var(--color-accent)] hover:underline flex items-center gap-1 shrink-0"
+        >
+          <Download size={12} />
+          CSV
+        </button>
       </div>
       {error && <div className="p-4 text-sm text-[var(--color-warm)]">{error}</div>}
       {rows && (

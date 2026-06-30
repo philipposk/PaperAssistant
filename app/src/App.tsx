@@ -57,6 +57,12 @@ const Graph = lazy(() =>
 const Export = lazy(() =>
   import("./routes/Export").then((m) => ({ default: m.Export })),
 );
+const PaperPreview = lazy(() =>
+  import("./routes/PaperPreview").then((m) => ({ default: m.PaperPreview })),
+);
+const Combine = lazy(() =>
+  import("./routes/Combine").then((m) => ({ default: m.Combine })),
+);
 const Ask = lazy(() =>
   import("./routes/Ask").then((m) => ({ default: m.Ask })),
 );
@@ -89,6 +95,7 @@ const router = createBrowserRouter([
       { path: "projects/:id/figures", element: <Lazy><Figures /></Lazy> },
       { path: "projects/:id/tables", element: <Lazy><Tables /></Lazy> },
       { path: "projects/:id/notes", element: <Lazy><Notes /></Lazy> },
+      { path: "projects/:id/preview", element: <Lazy><PaperPreview /></Lazy> },
       { path: "projects/:id/timeline", element: <Lazy><Timeline /></Lazy> },
       { path: "projects/:id/references", element: <Lazy><References /></Lazy> },
       { path: "projects/:id/files/:fileId/view", element: <Lazy><PdfViewer /></Lazy> },
@@ -99,6 +106,7 @@ const router = createBrowserRouter([
       { path: "projects/:id/ask", element: <Lazy><Ask /></Lazy> },
       { path: "settings", element: <Lazy><Settings /></Lazy> },
       { path: "examples", element: <Lazy><Examples /></Lazy> },
+      { path: "combine", element: <Lazy><Combine /></Lazy> },
       { path: "auth", element: <Lazy><Auth /></Lazy> },
       { path: "auth/callback", element: <Lazy><AuthCallback /></Lazy> },
       { path: "search", element: <Lazy><SearchRoute /></Lazy> },

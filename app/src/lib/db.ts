@@ -36,9 +36,22 @@ export interface Note {
   project_id: string;
   title: string;
   markdown: string;
+  /** Display order in Manuscript and export. */
+  sort_order?: number;
   created_at: number;
   updated_at: number;
   remote_id?: string;
+}
+
+export interface ActivityLogEntry {
+  id: string;
+  project_id: string;
+  entity: "note" | "file";
+  entity_id: string;
+  action: "create" | "edit" | "replace";
+  summary: string;
+  snapshot?: string;
+  created_at: number;
 }
 
 export interface Reference {
@@ -91,6 +104,7 @@ class PaperDB extends Dexie {
   notes!: Table<Note, string>;
   references!: Table<Reference, string>;
   highlights!: Table<Highlight, string>;
+  activity_log!: Table<ActivityLogEntry, string>;
   settings!: Table<Setting, string>;
   sync_queue!: Table<SyncOp, number>;
 
@@ -156,6 +170,30 @@ class PaperDB extends Dexie {
         }
       }
     });
+    this.version(6).stores({
+      projects: "id, name, updated_at, is_demo",
+      files: "id, project_id, name, mime, updated_at, sort_order",
+      notes: "id, project_id, title, updated_at, sort_order",
+      references: "id, project_id, citation_key, doi, updated_at",
+      highlights: "id, file_id, project_id, page, updated_at",
+      activity_log: "id, project_id, entity, entity_id, created_at",
+      settings: "key",
+      sync_queue: "++id, entity, entity_id, created_at",
+    }).upgrade(async (tx) => {
+      const notes = await tx.table("notes").toArray() as Note[];
+      const byProject = new Map<string, Note[]>();
+      for (const n of notes) {
+        const arr = byProject.get(n.project_id) ?? [];
+        arr.push(n);
+        byProject.set(n.project_id, arr);
+      }
+      for (const group of byProject.values()) {
+        group.sort((a, b) => a.created_at - b.created_at);
+        for (let i = 0; i < group.length; i++) {
+          await tx.table("notes").update(group[i].id, { sort_order: i });
+        }
+      }
+    });
   }
 }
 
@@ -172,6 +210,17 @@ export function fileSortCompare(a: FileRecord, b: FileRecord): number {
 
 export function sortFiles(files: FileRecord[]): FileRecord[] {
   return [...files].sort(fileSortCompare);
+}
+
+export function noteSortCompare(a: Note, b: Note): number {
+  const ao = a.sort_order ?? 0;
+  const bo = b.sort_order ?? 0;
+  if (ao !== bo) return ao - bo;
+  return a.created_at - b.created_at;
+}
+
+export function sortNotes(notes: Note[]): Note[] {
+  return [...notes].sort(noteSortCompare);
 }
 
 export const db = new PaperDB();

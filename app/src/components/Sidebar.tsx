@@ -17,6 +17,8 @@ import {
   Network,
   FileArchive,
   Sparkles,
+  Eye,
+  Merge,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { db } from "../lib/db";
@@ -181,6 +183,11 @@ export function Sidebar() {
               badge={noteCount ?? 0}
             />
             <NavItem
+              to={`/projects/${projectId}/preview`}
+              icon={Eye}
+              label="Paper preview"
+            />
+            <NavItem
               to={`/projects/${projectId}/references`}
               icon={Quote}
               label="References"
@@ -215,6 +222,7 @@ export function Sidebar() {
         )}
 
         <SectionLabel>Tools</SectionLabel>
+        <NavItem to="/combine" icon={Merge} label="Combine papers" />
         <NavItem to="/settings" icon={Wrench} label="Settings" />
         <NavItem to="/examples" icon={Flag} label="Examples" />
       </nav>
