@@ -3,8 +3,9 @@
 // a JSZip Blob for download.
 
 import JSZip from "jszip";
-import { db, fileIncludedInExport, type Note, type Project, type Reference, type FileRecord } from "./db";
+import { db, fileIncludedInExport, fileSortCompare, type Note, type Project, type Reference, type FileRecord } from "./db";
 import { exportBibtex } from "./citations";
+import { fileDisplayName } from "./demoSeed/helpers";
 
 function slugify(name: string): string {
   return name
@@ -52,10 +53,11 @@ function notesSection(notes: Note[]): string {
 
 function figuresSection(figures: FileRecord[]): string {
   if (!figures.length) return "";
+  const sorted = [...figures].sort(fileSortCompare);
   const lines = ["", "# Figures", ""];
-  for (const f of figures) {
+  for (const f of sorted) {
     const safe = f.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const caption = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ");
+    const caption = fileDisplayName(f);
     lines.push(`![${caption}](figures/${safe})\n`);
   }
   return lines.join("\n");
@@ -63,10 +65,12 @@ function figuresSection(figures: FileRecord[]): string {
 
 function csvSection(tables: FileRecord[]): string {
   if (!tables.length) return "";
+  const sorted = [...tables].sort(fileSortCompare);
   const lines = ["", "# Data tables", ""];
-  for (const f of tables) {
+  for (const f of sorted) {
     const safe = f.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    lines.push(`- [\`${f.name}\`](tables/${safe})`);
+    const caption = fileDisplayName(f);
+    lines.push(`- **${caption}** — [\`${f.name}\`](tables/${safe})`);
   }
   return lines.join("\n");
 }
@@ -95,14 +99,16 @@ export async function buildManuscriptZip(projectId: string): Promise<{
     db.files.where("project_id").equals(projectId).toArray(),
   ]);
 
-  const figures = files.filter(
-    (f) => f.mime.startsWith("image/") && fileIncludedInExport(f),
-  );
-  const tables = files.filter(
-    (f) =>
-      (f.mime === "text/csv" || f.name.toLowerCase().endsWith(".csv")) &&
-      fileIncludedInExport(f),
-  );
+  const figures = files
+    .filter((f) => f.mime.startsWith("image/") && fileIncludedInExport(f))
+    .sort(fileSortCompare);
+  const tables = files
+    .filter(
+      (f) =>
+        (f.mime === "text/csv" || f.name.toLowerCase().endsWith(".csv")) &&
+        fileIncludedInExport(f),
+    )
+    .sort(fileSortCompare);
   const others = files.filter(
     (f) => !figures.includes(f) && !tables.includes(f),
   );

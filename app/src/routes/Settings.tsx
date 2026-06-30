@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTheme } from "../lib/theme";
 import { signOut, useAuth } from "../lib/auth";
+import { APP_VERSION } from "../lib/version";
 import { GitHubSection } from "../components/GitHubSection";
 import { AiSection } from "../components/AiSection";
 import { BillingSection } from "../components/BillingSection";
@@ -91,7 +92,7 @@ export function Settings() {
       <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5">
         <div className="serif text-lg mb-1">About</div>
         <p className="text-sm text-[var(--color-ink-3)]">
-          PaperAssistant v0.1 · React + Vite + Dexie + Supabase
+          PaperAssistant v{APP_VERSION} · React + Vite + Dexie + Supabase
         </p>
       </section>
     </div>

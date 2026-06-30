@@ -5,6 +5,8 @@ export interface Project {
   name: string;
   description?: string;
   color?: string;
+  /** Read-only example project shipped with the app. */
+  is_demo?: boolean;
   created_at: number;
   updated_at: number;
   remote_id?: string;
@@ -20,6 +22,10 @@ export interface FileRecord {
   tags: string[];
   /** When false, figure/table is omitted from manuscript export. Defaults to true. */
   include_in_export?: boolean;
+  /** Display order in Figures/Tables galleries and manuscript export. */
+  sort_order?: number;
+  /** Figure/table caption shown in export and gallery. */
+  caption?: string;
   created_at: number;
   updated_at: number;
   remote_id?: string;
@@ -127,11 +133,45 @@ class PaperDB extends Dexie {
         if (file.include_in_export === undefined) file.include_in_export = true;
       });
     });
+    this.version(5).stores({
+      projects: "id, name, updated_at, is_demo",
+      files: "id, project_id, name, mime, updated_at, sort_order",
+      notes: "id, project_id, title, updated_at",
+      references: "id, project_id, citation_key, doi, updated_at",
+      highlights: "id, file_id, project_id, page, updated_at",
+      settings: "key",
+      sync_queue: "++id, entity, entity_id, created_at",
+    }).upgrade(async (tx) => {
+      const files = await tx.table("files").toArray() as FileRecord[];
+      const byProject = new Map<string, FileRecord[]>();
+      for (const f of files) {
+        const arr = byProject.get(f.project_id) ?? [];
+        arr.push(f);
+        byProject.set(f.project_id, arr);
+      }
+      for (const group of byProject.values()) {
+        group.sort((a, b) => a.created_at - b.created_at);
+        for (let i = 0; i < group.length; i++) {
+          await tx.table("files").update(group[i].id, { sort_order: i });
+        }
+      }
+    });
   }
 }
 
 export function fileIncludedInExport(f: FileRecord): boolean {
   return f.include_in_export !== false;
+}
+
+export function fileSortCompare(a: FileRecord, b: FileRecord): number {
+  const ao = a.sort_order ?? 0;
+  const bo = b.sort_order ?? 0;
+  if (ao !== bo) return ao - bo;
+  return a.created_at - b.created_at;
+}
+
+export function sortFiles(files: FileRecord[]): FileRecord[] {
+  return [...files].sort(fileSortCompare);
 }
 
 export const db = new PaperDB();

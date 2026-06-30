@@ -122,3 +122,15 @@ export function renderInlineCitations(
 
   return out;
 }
+
+/** Best URL for opening a reference online (DOI preferred). */
+export function referenceUrl(ref: Reference): string | null {
+  const doi = ref.doi ?? (typeof ref.csl_json.DOI === "string" ? ref.csl_json.DOI : null);
+  if (doi) {
+    const bare = doi.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "");
+    return `https://doi.org/${bare}`;
+  }
+  if (ref.url) return ref.url;
+  if (typeof ref.csl_json.URL === "string") return ref.csl_json.URL;
+  return null;
+}

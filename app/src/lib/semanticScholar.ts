@@ -1,7 +1,10 @@
-// Semantic Scholar Graph API — free, no key, ~1 req/sec for anonymous use.
+// Semantic Scholar Graph API — proxied in browser to avoid CORS failures.
 // https://api.semanticscholar.org/graph/v1/
 
-const BASE = "https://api.semanticscholar.org/graph/v1";
+function apiBase(): string {
+  // Same-origin proxy: Vite in dev, Vercel edge function in production.
+  return "/api/semantic-scholar";
+}
 
 const SEARCH_FIELDS = [
   "title",
@@ -52,6 +55,39 @@ export interface SsSearchResponse {
   data: SsPaper[];
 }
 
+async function ssFetch(path: string, init?: RequestInit): Promise<Response> {
+  const base = apiBase();
+  const url = `${base}${path.startsWith("/") ? path : `/${path}`}`;
+  try {
+    return await fetch(url, {
+      ...init,
+      headers: {
+        Accept: "application/json",
+        ...(init?.headers ?? {}),
+      },
+    });
+  } catch (e) {
+    throw new Error(
+      "Couldn't reach Semantic Scholar. Their free API is occasionally rate-limited or down — wait a minute and retry. " +
+        (e instanceof Error ? `(${e.message})` : ""),
+    );
+  }
+}
+
+function ssError(res: Response, context: string): Error {
+  if (res.status === 429) {
+    return new Error(
+      "Rate limited by Semantic Scholar. The free tier shares a global limit (~1 req/sec). Wait a few seconds and retry.",
+    );
+  }
+  if (res.status >= 500) {
+    return new Error(
+      `Semantic Scholar is temporarily unavailable (HTTP ${res.status}). Try again in a minute.`,
+    );
+  }
+  return new Error(`Semantic Scholar ${context} failed: ${res.status} ${res.statusText}`);
+}
+
 export async function searchPapers(
   query: string,
   options: { limit?: number; offset?: number } = {},
@@ -62,49 +98,18 @@ export async function searchPapers(
     offset: String(options.offset ?? 0),
     fields: SEARCH_FIELDS,
   });
-  let res: Response;
-  try {
-    res = await fetch(`${BASE}/paper/search?${params}`, {
-      headers: { Accept: "application/json" },
-    });
-  } catch (e) {
-    // Network-layer error (CORS failure, DNS, offline). The Semantic
-    // Scholar API doesn't always include CORS headers on 5xx responses,
-    // so a transient outage surfaces as "Failed to fetch" rather than a
-    // proper status — translate it.
-    throw new Error(
-      "Couldn't reach Semantic Scholar. Their free API is occasionally rate-limited or down — wait a minute and retry. " +
-        (e instanceof Error ? `(${e.message})` : ""),
-    );
-  }
-  if (res.status === 429) {
-    throw new Error(
-      "Rate limited by Semantic Scholar. The free tier shares a global limit (~1 req/sec). Wait a few seconds and retry.",
-    );
-  }
-  if (res.status >= 500) {
-    throw new Error(
-      `Semantic Scholar is temporarily unavailable (HTTP ${res.status}). Try again in a minute.`,
-    );
-  }
-  if (!res.ok) {
-    throw new Error(`Semantic Scholar search failed: ${res.status} ${res.statusText}`);
-  }
+  const res = await ssFetch(`/paper/search?${params}`);
+  if (!res.ok) throw ssError(res, "search");
   return (await res.json()) as SsSearchResponse;
 }
 
 export async function getPaper(paperId: string): Promise<SsPaper> {
   const params = new URLSearchParams({ fields: SEARCH_FIELDS });
-  const res = await fetch(`${BASE}/paper/${paperId}?${params}`, {
-    headers: { Accept: "application/json" },
-  });
-  if (!res.ok) {
-    throw new Error(`Semantic Scholar lookup failed: ${res.status}`);
-  }
+  const res = await ssFetch(`/paper/${paperId}?${params}`);
+  if (!res.ok) throw ssError(res, "lookup");
   return (await res.json()) as SsPaper;
 }
 
-// Outgoing references (papers this one cites).
 const REF_FIELDS = "title,authors,year,externalIds";
 
 export interface CitationEdgePaper {
@@ -123,12 +128,10 @@ export async function getPaperReferences(
     fields: REF_FIELDS,
     limit: String(limit),
   });
-  const res = await fetch(`${BASE}/paper/${paperId}/references?${params}`, {
-    headers: { Accept: "application/json" },
-  });
+  const res = await ssFetch(`/paper/${paperId}/references?${params}`);
   if (!res.ok) {
     if (res.status === 429 || res.status >= 500) return [];
-    throw new Error(`SS references failed: ${res.status}`);
+    throw ssError(res, "references");
   }
   const data = (await res.json()) as { data: { citedPaper: CitationEdgePaper }[] };
   return (data.data ?? [])
@@ -136,7 +139,6 @@ export async function getPaperReferences(
     .filter((p): p is CitationEdgePaper => Boolean(p?.paperId));
 }
 
-// Incoming citations (papers that cite this one).
 export async function getPaperCitations(
   paperId: string,
   limit = 50,
@@ -145,12 +147,10 @@ export async function getPaperCitations(
     fields: REF_FIELDS,
     limit: String(limit),
   });
-  const res = await fetch(`${BASE}/paper/${paperId}/citations?${params}`, {
-    headers: { Accept: "application/json" },
-  });
+  const res = await ssFetch(`/paper/${paperId}/citations?${params}`);
   if (!res.ok) {
     if (res.status === 429 || res.status >= 500) return [];
-    throw new Error(`SS citations failed: ${res.status}`);
+    throw ssError(res, "citations");
   }
   const data = (await res.json()) as { data: { citingPaper: CitationEdgePaper }[] };
   return (data.data ?? [])
@@ -158,29 +158,25 @@ export async function getPaperCitations(
     .filter((p): p is CitationEdgePaper => Boolean(p?.paperId));
 }
 
-// Resolve a list of identifiers (DOI strings) to canonical SS paperIds + meta.
-// Accepts a string like "DOI:10.1038/foo" or a raw DOI; SS supports both.
 export async function batchGetPapers(
   ids: string[],
   fields = REF_FIELDS,
 ): Promise<SsPaper[]> {
   if (ids.length === 0) return [];
   const params = new URLSearchParams({ fields });
-  const res = await fetch(`${BASE}/paper/batch?${params}`, {
+  const res = await ssFetch(`/paper/batch?${params}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ids }),
   });
   if (!res.ok) {
     if (res.status === 429 || res.status >= 500) return [];
-    throw new Error(`SS batch failed: ${res.status}`);
+    throw ssError(res, "batch");
   }
   const data = (await res.json()) as (SsPaper | null)[];
   return data.filter((p): p is SsPaper => Boolean(p));
 }
 
-// Convert a Semantic Scholar paper to a CSL-JSON record so it can drop into
-// our existing Reference schema.
 export function paperToCsl(paper: SsPaper): Record<string, unknown> {
   const doi = paper.externalIds?.DOI;
   const arxiv = paper.externalIds?.ArXiv;

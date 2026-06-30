@@ -6,21 +6,11 @@ import {
   StickyNote,
   Table as TableIcon,
   Wrench,
+  Quote,
+  FileArchive,
 } from "lucide-react";
 import { db, type FileRecord, type Note } from "../lib/db";
 import { useCurrentProject } from "../lib/currentProject";
-
-function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
-  return (
-    <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5">
-      <div className="mono uppercase text-[10px] tracking-wider text-[var(--color-ink-3)]">
-        {label}
-      </div>
-      <div className="serif text-4xl mt-2 mb-1">{value}</div>
-      {sub && <div className="text-xs text-[var(--color-ink-3)]">{sub}</div>}
-    </div>
-  );
-}
 
 function QuickAccess({
   to,
@@ -155,8 +145,8 @@ export function Dashboard() {
 
   return (
     <div className="px-8 py-8 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2 relative rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-8 overflow-hidden">
+      <div className="mb-8">
+        <div className="relative rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-8 overflow-hidden">
           <div
             className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full pointer-events-none"
             style={{
@@ -172,7 +162,7 @@ export function Dashboard() {
             <h1 className="serif text-4xl mt-3 mb-4 leading-tight">
               {currentProject.description || currentProject.name}
             </h1>
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-6 flex-wrap">
               <Link
                 to={`/projects/${currentProject.id}/files`}
                 className="px-4 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium hover:bg-[var(--color-accent-2)]"
@@ -183,16 +173,10 @@ export function Dashboard() {
                 to={`/projects/${currentProject.id}/notes`}
                 className="px-4 py-2 rounded-md border border-[var(--color-line)] text-sm hover:bg-[var(--color-surface-2)]"
               >
-                Open notes
+                Open manuscript
               </Link>
             </div>
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <Stat label="Files" value={fileCount ?? 0} />
-          <Stat label="Figures" value={figCount ?? 0} />
-          <Stat label="Tables" value={tableCount ?? 0} />
-          <Stat label="Projects" value={projectCount ?? 0} />
         </div>
       </div>
 
@@ -213,7 +197,7 @@ export function Dashboard() {
                     <div className="flex-1 min-w-0">
                       <div className="text-sm truncate">{name}</div>
                       <div className="mono text-[10px] uppercase text-[var(--color-ink-3)]">
-                        {entry.kind === "note" ? "Note" : mime || "file"}
+                        {entry.kind === "note" ? "Manuscript" : mime || "file"}
                       </div>
                     </div>
                     <div className="text-xs text-[var(--color-ink-3)] shrink-0">
@@ -236,17 +220,32 @@ export function Dashboard() {
             <QuickAccess
               to={`/projects/${currentProject.id}/files`}
               icon={FileText}
-              label="Files"
+              label={`Files (${fileCount ?? 0})`}
             />
             <QuickAccess
               to={`/projects/${currentProject.id}/figures`}
               icon={ImageIcon}
-              label="Figures"
+              label={`Figures (${figCount ?? 0})`}
             />
             <QuickAccess
               to={`/projects/${currentProject.id}/tables`}
               icon={TableIcon}
-              label="Tables"
+              label={`Tables (${tableCount ?? 0})`}
+            />
+            <QuickAccess
+              to={`/projects/${currentProject.id}/notes`}
+              icon={StickyNote}
+              label="Manuscript"
+            />
+            <QuickAccess
+              to={`/projects/${currentProject.id}/references`}
+              icon={Quote}
+              label="References"
+            />
+            <QuickAccess
+              to={`/projects/${currentProject.id}/export`}
+              icon={FileArchive}
+              label="Export"
             />
             <QuickAccess to="/settings" icon={Wrench} label="Settings" />
           </div>

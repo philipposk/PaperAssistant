@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { db } from "../lib/db";
+import { APP_VERSION } from "../lib/version";
 import { useTheme } from "../lib/theme";
 import { useCurrentProject } from "../lib/currentProject";
 import { ProjectPicker } from "./ProjectPicker";
@@ -255,7 +256,7 @@ function SyncBadge() {
         style={{ background: entry.color }}
       />
       <span className="flex-1">{entry.label}</span>
-      <span className="mono">v0.1</span>
+      <span className="mono">v{APP_VERSION}</span>
     </div>
   );
 }

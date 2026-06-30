@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { FileText, Image as ImageIcon, StickyNote, Table as TableIcon } from "lucide-react";
 import { db } from "../lib/db";
 import { useCurrentProject } from "../lib/currentProject";
 import { PushToGitHubButton } from "../components/PushToGitHubButton";
@@ -31,15 +30,14 @@ export function ProjectView() {
     );
   }
 
-  const figures = files?.filter((f) => f.mime.startsWith("image/")) ?? [];
-  const tables =
-    files?.filter((f) => f.mime === "text/csv" || f.name.endsWith(".csv")) ?? [];
-
   return (
     <div className="px-12 py-12 max-w-4xl mx-auto">
       <div className="text-center mb-8 relative">
         <div className="mono uppercase text-[10px] tracking-wider text-[var(--color-warm)]">
           Active project · {project.name}
+          {project.is_demo && (
+            <span className="ml-2 text-[var(--color-ink-3)]">· example</span>
+          )}
         </div>
         <h1 className="serif text-3xl mt-3 mb-4 leading-tight">
           {project.description || project.name}
@@ -70,50 +68,46 @@ export function ProjectView() {
 
       <h2 className="serif text-xl mb-4">
         <span className="text-[var(--color-warm)] mono mr-2">§ 1</span>
-        Contents of this workspace
+        Workspace areas
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-        <Link
-          to={`/projects/${id}/files`}
-          className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 hover:border-[var(--color-accent)]"
-        >
-          <FileText size={18} className="text-[var(--color-ink-3)] mb-2" strokeWidth={1.4} />
-          <div className="serif text-lg">Files</div>
-          <div className="text-sm text-[var(--color-ink-3)]">
-            Upload + browse · {files?.length ?? 0} items
-          </div>
-        </Link>
-        <Link
-          to={`/projects/${id}/figures`}
-          className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 hover:border-[var(--color-accent)]"
-        >
-          <ImageIcon size={18} className="text-[var(--color-ink-3)] mb-2" strokeWidth={1.4} />
-          <div className="serif text-lg">Figures</div>
-          <div className="text-sm text-[var(--color-ink-3)]">
-            Image gallery · {figures.length} items
-          </div>
-        </Link>
-        <Link
-          to={`/projects/${id}/tables`}
-          className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 hover:border-[var(--color-accent)]"
-        >
-          <TableIcon size={18} className="text-[var(--color-ink-3)] mb-2" strokeWidth={1.4} />
-          <div className="serif text-lg">Tables</div>
-          <div className="text-sm text-[var(--color-ink-3)]">
-            CSV viewer · {tables.length} items
-          </div>
-        </Link>
-        <Link
-          to={`/projects/${id}/notes`}
-          className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] p-5 hover:border-[var(--color-accent)]"
-        >
-          <StickyNote size={18} className="text-[var(--color-ink-3)] mb-2" strokeWidth={1.4} />
-          <div className="serif text-lg">Notes</div>
-          <div className="text-sm text-[var(--color-ink-3)]">
-            Markdown drafts
-          </div>
-        </Link>
-      </div>
+      <ul className="space-y-2 mb-10 text-sm">
+        <li>
+          <Link to={`/projects/${id}/files`} className="text-[var(--color-accent)] hover:underline">
+            Files
+          </Link>
+          <span className="text-[var(--color-ink-3)]"> — uploads, PDFs, code, data</span>
+        </li>
+        <li>
+          <Link to={`/projects/${id}/figures`} className="text-[var(--color-accent)] hover:underline">
+            Figures
+          </Link>
+          <span className="text-[var(--color-ink-3)]"> — image gallery and export order</span>
+        </li>
+        <li>
+          <Link to={`/projects/${id}/tables`} className="text-[var(--color-accent)] hover:underline">
+            Tables
+          </Link>
+          <span className="text-[var(--color-ink-3)]"> — CSV data tables</span>
+        </li>
+        <li>
+          <Link to={`/projects/${id}/notes`} className="text-[var(--color-accent)] hover:underline">
+            Manuscript
+          </Link>
+          <span className="text-[var(--color-ink-3)]"> — draft sections merged on export</span>
+        </li>
+        <li>
+          <Link to={`/projects/${id}/references`} className="text-[var(--color-accent)] hover:underline">
+            References
+          </Link>
+          <span className="text-[var(--color-ink-3)]"> — citations and bibliography styles</span>
+        </li>
+        <li>
+          <Link to={`/projects/${id}/graph`} className="text-[var(--color-accent)] hover:underline">
+            Citation graph
+          </Link>
+          <span className="text-[var(--color-ink-3)]"> — Semantic Scholar network</span>
+        </li>
+      </ul>
     </div>
   );
 }

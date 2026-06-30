@@ -75,6 +75,8 @@ npm run dev                  # http://localhost:5173
 
 On localhost the session is stored in `localStorage` (cookie-domain `.6x7.gr` doesn't apply). On `paperassistant.6x7.gr` it switches to a cookie that every sibling app on `*.6x7.gr` reads as the same session.
 
+**Semantic Scholar search** is proxied at `/api/semantic-scholar` (Vercel edge function in `api/semantic-scholar/`). It deploys automatically with every Vercel push — no Supabase CLI step. Optional duplicate: `supabase functions deploy semantic-scholar --project-ref fmrnqepyyjucnfbrqawl` if you prefer routing via Supabase instead.
+
 ## Local preview of a production build
 
 ```bash

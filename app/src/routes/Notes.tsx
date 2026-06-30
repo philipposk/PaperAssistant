@@ -67,7 +67,7 @@ export function Notes() {
     <div className="flex h-full">
       <aside className="w-72 shrink-0 border-r border-[var(--color-line)] bg-[var(--color-surface)] flex flex-col">
         <div className="px-4 py-3 flex items-center justify-between border-b border-[var(--color-line)]">
-          <div className="serif text-lg">Notes</div>
+          <div className="serif text-lg">Manuscript</div>
           <button
             type="button"
             onClick={create}

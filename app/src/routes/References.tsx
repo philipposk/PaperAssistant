@@ -1,8 +1,9 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import { ClipboardCopy, FileText, Loader2, Plus, Trash2, Upload } from "lucide-react";
 import { db, now, uid, type Reference } from "../lib/db";
+import { referenceUrl } from "../lib/citations";
 import { pushReferenceDelete, pushReferenceUpsert } from "../lib/sync";
 
 const STYLES = [
@@ -27,6 +28,17 @@ export function References() {
   );
 
   const [style, setStyle] = useState("apa");
+  const savedStyle = useLiveQuery(() => db.settings.get("citation_style"), []);
+  useEffect(() => {
+    if (savedStyle?.value && typeof savedStyle.value === "string") {
+      setStyle(savedStyle.value);
+    }
+  }, [savedStyle?.value]);
+
+  async function changeStyle(next: string) {
+    setStyle(next);
+    await db.settings.put({ key: "citation_style", value: next });
+  }
   const [doiInput, setDoiInput] = useState("");
   const [bibtexInput, setBibtexInput] = useState("");
   const [showBibtex, setShowBibtex] = useState(false);
@@ -142,7 +154,7 @@ export function References() {
           </label>
           <select
             value={style}
-            onChange={(e) => setStyle(e.target.value)}
+            onChange={(e) => void changeStyle(e.target.value)}
             className="px-2 py-1.5 rounded-md border border-[var(--color-line)] bg-[var(--color-bg)] text-sm focus:outline-none focus:border-[var(--color-accent)]"
           >
             {STYLES.map((s) => (
@@ -254,12 +266,26 @@ function ReferenceList({
 
   return (
     <section className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] divide-y divide-[var(--color-line)]">
-      {refs.map((r, i) => (
+      {refs.map((r, i) => {
+        const line = lines[i] || (r.csl_json.title as string) || r.citation_key;
+        const url = referenceUrl(r);
+        return (
         <article key={r.id} className="px-5 py-4 group">
           <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0" ref={i === 0 ? blockRef : null}>
               <div className="serif text-base leading-snug">
-                {lines[i] || (r.csl_json.title as string) || r.citation_key}
+                {url ? (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-[var(--color-accent)] hover:underline"
+                  >
+                    {line}
+                  </a>
+                ) : (
+                  line
+                )}
               </div>
               <div className="mono text-[11px] text-[var(--color-ink-3)] mt-1 flex items-center gap-2 flex-wrap">
                 <span className="text-[var(--color-warm)]">@{r.citation_key}</span>
@@ -304,7 +330,8 @@ function ReferenceList({
             </button>
           </div>
         </article>
-      ))}
+        );
+      })}
     </section>
   );
 }
