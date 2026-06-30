@@ -3,7 +3,7 @@
 // a JSZip Blob for download.
 
 import JSZip from "jszip";
-import { db, type Note, type Project, type Reference, type FileRecord } from "./db";
+import { db, fileIncludedInExport, type Note, type Project, type Reference, type FileRecord } from "./db";
 import { exportBibtex } from "./citations";
 
 function slugify(name: string): string {
@@ -95,9 +95,13 @@ export async function buildManuscriptZip(projectId: string): Promise<{
     db.files.where("project_id").equals(projectId).toArray(),
   ]);
 
-  const figures = files.filter((f) => f.mime.startsWith("image/"));
+  const figures = files.filter(
+    (f) => f.mime.startsWith("image/") && fileIncludedInExport(f),
+  );
   const tables = files.filter(
-    (f) => f.mime === "text/csv" || f.name.toLowerCase().endsWith(".csv"),
+    (f) =>
+      (f.mime === "text/csv" || f.name.toLowerCase().endsWith(".csv")) &&
+      fileIncludedInExport(f),
   );
   const others = files.filter(
     (f) => !figures.includes(f) && !tables.includes(f),

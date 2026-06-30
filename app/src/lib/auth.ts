@@ -88,7 +88,7 @@ export async function clearLocalWorkspace(): Promise<void> {
 }
 
 export async function signOut() {
-  await clearLocalWorkspace();
   if (supabase) await supabase.auth.signOut();
+  await clearLocalWorkspace();
   window.location.assign("/");
 }

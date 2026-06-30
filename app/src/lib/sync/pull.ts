@@ -84,6 +84,7 @@ export async function pullAll(): Promise<{
           size: row.size_bytes,
           blob,
           tags: row.tags ?? [],
+          include_in_export: local?.include_in_export ?? true,
           created_at: toMs(row.created_at),
           updated_at: remoteMs,
           remote_id: row.id,

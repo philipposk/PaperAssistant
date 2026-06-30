@@ -75,6 +75,7 @@ export async function importZipAsProject(file: File): Promise<ImportResult> {
         size: typedBlob.size,
         blob: typedBlob,
         tags: path.includes("/") ? [path.split("/").slice(0, -1).join("/")] : [],
+        include_in_export: true,
         created_at: now(),
         updated_at: now(),
       };

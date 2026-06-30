@@ -176,7 +176,7 @@ export function Sidebar() {
             <NavItem
               to={`/projects/${projectId}/notes`}
               icon={StickyNote}
-              label="Notes"
+              label="Manuscript"
               badge={noteCount ?? 0}
             />
             <NavItem

@@ -11,8 +11,10 @@ The migrations have already been applied via Supabase MCP. The SQL is mirrored i
 1. `0001_paperassistant_schema.sql` — schema + 7 tables + triggers
 2. `0002_paperassistant_rls.sql` — member-aware RLS policies
 3. `0003_paperassistant_storage.sql` — `paperassistant-files` bucket + per-user policies
+4. … through `0007_paperassistant_ai_usage.sql`
+5. `0008_paperassistant_invite_rls_fix.sql` — drops permissive invite SELECT policy; adds `get_invite_by_token` RPC
 
-To re-apply (e.g. after blowing away and recreating the 6x7 project), paste each into Supabase Dashboard → SQL Editor in order, or run via the Supabase CLI / MCP.
+To re-apply (e.g. after blowing away and recreating the 6x7 project), paste each into Supabase Dashboard → SQL Editor in order, or run `supabase link` then `supabase db push` from this repo (requires CLI linked to project ref `fmrnqepyyjucnfbrqawl`).
 
 The pre-rebuild migrations that targeted the legacy `public` schema in PaperAssistant's own Supabase project are kept under `legacy-public-schema/` for reference.
 

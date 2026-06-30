@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db, type FileRecord } from "../lib/db";
+import { db, fileIncludedInExport, now, type FileRecord } from "../lib/db";
+import { pushFileUpsert } from "../lib/sync";
 
 function useBlobUrl(blob: Blob | undefined): string | undefined {
   const [url, setUrl] = useState<string>();
@@ -14,7 +15,15 @@ function useBlobUrl(blob: Blob | undefined): string | undefined {
   return url;
 }
 
-function FigureCard({ file, width }: { file: FileRecord; width: number }) {
+function FigureCard({
+  file,
+  width,
+  onExportChange,
+}: {
+  file: FileRecord;
+  width: number;
+  onExportChange: (id: string, include: boolean) => void;
+}) {
   const url = useBlobUrl(file.blob);
   return (
     <figure
@@ -36,6 +45,15 @@ function FigureCard({ file, width }: { file: FileRecord; width: number }) {
         <div className="mono text-[10px] text-[var(--color-ink-3)]">
           {(file.size / 1024).toFixed(1)} KB
         </div>
+        <label className="flex items-center gap-1.5 mt-2 cursor-pointer text-[11px]">
+          <input
+            type="checkbox"
+            checked={fileIncludedInExport(file)}
+            onChange={(e) => onExportChange(file.id, e.target.checked)}
+            className="shrink-0"
+          />
+          Include in export
+        </label>
       </figcaption>
     </figure>
   );
@@ -52,6 +70,12 @@ export function Figures() {
     () => (files ?? []).filter((f) => f.mime.startsWith("image/")),
     [files],
   );
+
+  async function setExport(fileId: string, include: boolean) {
+    await db.files.update(fileId, { include_in_export: include, updated_at: now() });
+    const fresh = await db.files.get(fileId);
+    if (fresh) void pushFileUpsert(fresh);
+  }
 
   return (
     <div className="px-8 py-8 max-w-7xl mx-auto">
@@ -81,7 +105,12 @@ export function Figures() {
       ) : (
         <div className="flex flex-wrap gap-5">
           {figures.map((f) => (
-            <FigureCard key={f.id} file={f} width={width} />
+            <FigureCard
+              key={f.id}
+              file={f}
+              width={width}
+              onExportChange={(id, include) => void setExport(id, include)}
+            />
           ))}
         </div>
       )}

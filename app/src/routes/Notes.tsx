@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import MDEditor from "@uiw/react-md-editor";
+import type { MarkdownPreviewProps } from "@uiw/react-markdown-preview/nohighlight";
 import { Plus, Trash2 } from "lucide-react";
 import { db, now, uid, type Note } from "../lib/db";
-import { markdownMathPreviewOptions } from "../lib/markdownMath";
+import { getMarkdownMathPreviewOptions } from "../lib/markdownMath";
 import { EMPTY_NOTE_MARKDOWN, noteDisplayTitle } from "../lib/noteDefaults";
 import { pushNoteDelete, pushNoteUpsert } from "../lib/sync";
 
@@ -15,11 +16,18 @@ export function Notes() {
     [id],
   );
   const [selected, setSelected] = useState<string | null>(null);
+  const [mathPreview, setMathPreview] = useState<
+    Omit<MarkdownPreviewProps, "source"> | undefined
+  >();
   const active = useLiveQuery<Note | undefined>(
     () => (selected ? db.notes.get(selected) : Promise.resolve(undefined)),
     [selected],
   );
   const pushTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    void getMarkdownMathPreviewOptions().then(setMathPreview);
+  }, []);
 
   async function create() {
     const nid = uid();
@@ -121,7 +129,7 @@ export function Notes() {
                 onChange={(v) => void update({ markdown: v ?? "" })}
                 height="100%"
                 preview="live"
-                previewOptions={markdownMathPreviewOptions}
+                previewOptions={mathPreview}
                 textareaProps={{
                   placeholder: "Start typing…",
                 }}

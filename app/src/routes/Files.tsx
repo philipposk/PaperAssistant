@@ -39,6 +39,7 @@ export function Files() {
         size: f.size,
         blob: f,
         tags: [],
+        include_in_export: true,
         created_at: now(),
         updated_at: now(),
       });

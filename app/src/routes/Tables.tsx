@@ -2,9 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import Papa from "papaparse";
-import { db, type FileRecord } from "../lib/db";
+import { db, fileIncludedInExport, now, type FileRecord } from "../lib/db";
+import { pushFileUpsert } from "../lib/sync";
 
-function TableCard({ file }: { file: FileRecord }) {
+function TableCard({
+  file,
+  onExportChange,
+}: {
+  file: FileRecord;
+  onExportChange: (id: string, include: boolean) => void;
+}) {
   const [rows, setRows] = useState<string[][] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,11 +33,22 @@ function TableCard({ file }: { file: FileRecord }) {
 
   return (
     <div className="rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-surface)] overflow-hidden">
-      <div className="px-5 py-3 border-b border-[var(--color-line)] flex items-center justify-between">
-        <div className="serif text-lg">{file.name}</div>
-        <div className="mono text-[10px] text-[var(--color-ink-3)] uppercase">
-          {(file.size / 1024).toFixed(1)} KB · {rows ? rows.length - 1 : "…"}{" "}
-          rows
+      <div className="px-5 py-3 border-b border-[var(--color-line)] flex items-center justify-between gap-4">
+        <div className="serif text-lg min-w-0 truncate">{file.name}</div>
+        <div className="flex items-center gap-4 shrink-0">
+          <label className="flex items-center gap-1.5 text-xs cursor-pointer text-[var(--color-ink-2)]">
+            <input
+              type="checkbox"
+              checked={fileIncludedInExport(file)}
+              onChange={(e) => onExportChange(file.id, e.target.checked)}
+              className="shrink-0"
+            />
+            Include in export
+          </label>
+          <div className="mono text-[10px] text-[var(--color-ink-3)] uppercase">
+            {(file.size / 1024).toFixed(1)} KB · {rows ? rows.length - 1 : "…"}{" "}
+            rows
+          </div>
         </div>
       </div>
       {error && (
@@ -88,6 +106,12 @@ export function Tables() {
     [files],
   );
 
+  async function setExport(fileId: string, include: boolean) {
+    await db.files.update(fileId, { include_in_export: include, updated_at: now() });
+    const fresh = await db.files.get(fileId);
+    if (fresh) void pushFileUpsert(fresh);
+  }
+
   return (
     <div className="px-8 py-8 max-w-6xl mx-auto">
       <h1 className="serif text-3xl mb-6">Tables</h1>
@@ -98,7 +122,11 @@ export function Tables() {
       ) : (
         <div className="space-y-6">
           {tables.map((f) => (
-            <TableCard key={f.id} file={f} />
+            <TableCard
+              key={f.id}
+              file={f}
+              onExportChange={(id, include) => void setExport(id, include)}
+            />
           ))}
         </div>
       )}

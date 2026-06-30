@@ -18,6 +18,8 @@ export interface FileRecord {
   size: number;
   blob: Blob;
   tags: string[];
+  /** When false, figure/table is omitted from manuscript export. Defaults to true. */
+  include_in_export?: boolean;
   created_at: number;
   updated_at: number;
   remote_id?: string;
@@ -112,7 +114,24 @@ class PaperDB extends Dexie {
       settings: "key",
       sync_queue: "++id, entity, entity_id, created_at",
     });
+    this.version(4).stores({
+      projects: "id, name, updated_at",
+      files: "id, project_id, name, mime, updated_at",
+      notes: "id, project_id, title, updated_at",
+      references: "id, project_id, citation_key, doi, updated_at",
+      highlights: "id, file_id, project_id, page, updated_at",
+      settings: "key",
+      sync_queue: "++id, entity, entity_id, created_at",
+    }).upgrade(async (tx) => {
+      await tx.table("files").toCollection().modify((file) => {
+        if (file.include_in_export === undefined) file.include_in_export = true;
+      });
+    });
   }
+}
+
+export function fileIncludedInExport(f: FileRecord): boolean {
+  return f.include_in_export !== false;
 }
 
 export const db = new PaperDB();
