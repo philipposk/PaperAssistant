@@ -33,6 +33,13 @@ export function PageAssistantWidget() {
       voice: true,
       settingsPageUrl: "/settings#assistant",
       settingsStorageKey: PA_VOICE_SETTINGS_KEY,
+      // Keep the chrome this app already shipped with. The SDK bump to 0.5.0 is here for
+      // the microphone fixes, not for a new interface: left at their defaults these two
+      // would add a chat-history sidebar and an extended settings modal that PaperAssistant
+      // users have never seen.
+      disableChatHistory: true,
+      useExtendedSettings: false,
+      // English-only app: no `lang` and no `strings`, so the SDK's en-US defaults apply.
       autoScan: true,
       capabilities: paperAssistantCapabilities(),
       suggestions: [
