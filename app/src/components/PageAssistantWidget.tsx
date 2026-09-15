@@ -7,14 +7,19 @@ import {
   PAPERASSISTANT_PA_KNOWLEDGE,
 } from "../lib/page-assistant/capabilities";
 import { setPageAssistantNavigate } from "../lib/page-assistant/navigate";
+import { createChatHistoryAdapter } from "../lib/page-assistant/chatHistory";
 import { useCurrentProjectStore } from "../lib/currentProject";
 
 const PA_VOICE_SETTINGS_KEY = "paperassistant_pa_voice";
+
+// User-session client only (RLS scopes rows to auth.uid()); undefined without cloud config.
+const chatHistoryAdapter = createChatHistoryAdapter();
 
 /** Floating page-assistant widget (site-wide; coexists with /ask PDF Q&A). */
 export function PageAssistantWidget() {
   const navigate = useNavigate();
   const { session, isSignedIn } = useAuth();
+  const userId = session?.user?.id ?? null;
 
   useEffect(() => {
     setPageAssistantNavigate(navigate);
@@ -33,6 +38,16 @@ export function PageAssistantWidget() {
       voice: true,
       settingsPageUrl: "/settings#assistant",
       settingsStorageKey: PA_VOICE_SETTINGS_KEY,
+      // Chat history. Default for signed-in users is "account": chats are saved to their
+      // PaperAssistant account (paperassistant.assistant_chats, readable and deletable only by
+      // the owner via RLS) so they follow them across devices, and are deleted after 12 months
+      // without activity. Signed-out visitors (or no cloud config) fall back to "device":
+      // this browser only, kept per person. Each user can switch to device or off, and delete
+      // one or all chats, in the assistant's Settings > Data; their pick wins over this default.
+      chatHistoryMode: "account",
+      chatHistoryAdapter,
+      chatHistoryFallbackMode: "device",
+      onChatHistoryError: (error) => console.warn("[assistant] chat history:", error),
       autoScan: true,
       capabilities: paperAssistantCapabilities(),
       suggestions: [
@@ -51,6 +66,12 @@ export function PageAssistantWidget() {
       }),
     });
   }, [session?.access_token, isSignedIn, session]);
+
+  // init() only runs once per page, so tell the widget when the signed-in user changes:
+  // it switches between the user's account chats and the signed-out fallback.
+  useEffect(() => {
+    void PageAssistant.refreshChatHistory();
+  }, [userId]);
 
   return null;
 }
