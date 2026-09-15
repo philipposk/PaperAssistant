@@ -2,8 +2,19 @@ import {
   supabaseChatHistoryAdapter,
   type ChatHistoryAdapter,
   type SupabaseClientLike,
+  type WidgetStrings,
 } from "@page-assistant/widget";
 import { supabase } from "../supabase";
+
+/**
+ * Signing out wipes this browser's storage on purpose, device-saved chats included
+ * (clearLocalWorkspace in ../auth, for shared computers). The widget's default device hint
+ * says chats "stay in this browser", which would promise more than that, so say when they go.
+ */
+export const CHAT_HISTORY_STRINGS: Partial<WidgetStrings> = {
+  historyModeDeviceHint:
+    "Your chats are kept in this browser only and are cleared on sign-out. They aren't saved to your account.",
+};
 
 /** Stored in `paperassistant.assistant_chats.app`; the table already lives in this app's schema. */
 export const CHAT_HISTORY_APP_KEY = "paperassistant";

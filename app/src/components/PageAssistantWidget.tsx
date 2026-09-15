@@ -7,7 +7,7 @@ import {
   PAPERASSISTANT_PA_KNOWLEDGE,
 } from "../lib/page-assistant/capabilities";
 import { setPageAssistantNavigate } from "../lib/page-assistant/navigate";
-import { createChatHistoryAdapter } from "../lib/page-assistant/chatHistory";
+import { CHAT_HISTORY_STRINGS, createChatHistoryAdapter } from "../lib/page-assistant/chatHistory";
 import { useCurrentProjectStore } from "../lib/currentProject";
 
 const PA_VOICE_SETTINGS_KEY = "paperassistant_pa_voice";
@@ -48,6 +48,8 @@ export function PageAssistantWidget() {
       chatHistoryAdapter,
       chatHistoryFallbackMode: "device",
       onChatHistoryError: (error) => console.warn("[assistant] chat history:", error),
+      // Sign-out clears device-saved chats; the "this device" hint says so.
+      strings: CHAT_HISTORY_STRINGS,
       autoScan: true,
       capabilities: paperAssistantCapabilities(),
       suggestions: [
