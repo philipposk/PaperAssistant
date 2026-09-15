@@ -6,7 +6,7 @@ Status: pre-release working build. Local-only out of the box; cloud sync + shari
 
 ## Unreleased — assistant chat history
 
-- **page-assistant** submodule moved to `4a2b1c4` (0.5.1 + unreleased account chat history).
+- **page-assistant** submodule moved to `d0d8856` (0.5.1 + unreleased account chat history).
 - **Chat history** in the assistant: signed-in users' chats are saved to their account by default (`paperassistant.assistant_chats`, owner-only RLS) and sync across devices; signed-out visitors keep chats in this browser, per person. Users can switch to device-only or off, and delete one or all chats, in the assistant's Settings → Data.
 - **Retention**: saved chats are deleted after 12 months without activity (daily pg_cron sweep, migration `0009`).
 - Signing out keeps the assistant's history-mode choice (not the chats) so a user who turned history off stays off.
