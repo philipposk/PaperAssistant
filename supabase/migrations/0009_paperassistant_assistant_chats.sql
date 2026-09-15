@@ -30,7 +30,9 @@ create table if not exists paperassistant.assistant_chats (
   model       text,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now(),
-  primary key (user_id, id)
+  -- Matches the SDK adapter's upsert key (onConflict "user_id,app,id"): a chat id is unique
+  -- only within one user's chats in one app.
+  primary key (user_id, app, id)
 );
 
 -- The list: one user's chats, newest first.
