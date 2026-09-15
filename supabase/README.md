@@ -13,6 +13,7 @@ The migrations have already been applied via Supabase MCP. The SQL is mirrored i
 3. `0003_paperassistant_storage.sql` — `paperassistant-files` bucket + per-user policies
 4. … through `0007_paperassistant_ai_usage.sql`
 5. `0008_paperassistant_invite_rls_fix.sql` — drops permissive invite SELECT policy; adds `get_invite_by_token` RPC
+6. `0009_paperassistant_assistant_chats.sql` — saved page-assistant chats (owner-only RLS) + 12-month inactivity sweep. **Not applied yet.** The sweep is scheduled by pg_cron only if the extension is already enabled when this runs; otherwise enable pg_cron and run the `cron.schedule(...)` call at the end of the file once.
 
 To re-apply (e.g. after blowing away and recreating the 6x7 project), paste each into Supabase Dashboard → SQL Editor in order, or run `supabase link` then `supabase db push` from this repo (requires CLI linked to project ref `fmrnqepyyjucnfbrqawl`).
 
