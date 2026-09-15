@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { create } from "zustand";
+import { CHAT_HISTORY_MODE_STORAGE_KEY } from "@page-assistant/widget";
 import { db } from "./db";
 import { isCloudConfigured, supabase } from "./supabase";
 
@@ -83,8 +84,13 @@ export async function clearLocalWorkspace(): Promise<void> {
   await db.delete();
   if (typeof localStorage === "undefined") return;
   const theme = localStorage.getItem(THEME_KEY);
+  // The assistant's per-user history-mode choice (e.g. "off"). Dropping it would silently
+  // put a user back on "account" at their next sign-in. It holds no chat content; the
+  // device-saved chats themselves are still wiped here.
+  const historyMode = localStorage.getItem(CHAT_HISTORY_MODE_STORAGE_KEY);
   localStorage.clear();
   if (theme) localStorage.setItem(THEME_KEY, theme);
+  if (historyMode) localStorage.setItem(CHAT_HISTORY_MODE_STORAGE_KEY, historyMode);
 }
 
 export async function signOut() {
