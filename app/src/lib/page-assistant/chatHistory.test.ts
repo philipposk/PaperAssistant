@@ -68,6 +68,21 @@ describe("assistant chat history adapter", () => {
     expect(upsert.args[0]).toMatchObject({ id: "c1", user_id: "u1", app: CHAT_HISTORY_APP_KEY });
   });
 
+  // Must equal the primary key in supabase/migrations/0009_paperassistant_assistant_chats.sql:
+  // Postgres rejects an upsert whose conflict columns are not a unique key, so every save would fail.
+  it("upserts on the table's primary key (user_id, app, id)", async () => {
+    const { client, queries } = fakeClient("u1");
+    await createChatHistoryAdapter(client)!.save({
+      id: "c1",
+      title: "t",
+      messages: [],
+      createdAt: "2026-01-01T00:00:00Z",
+      updatedAt: "2026-01-01T00:00:00Z",
+    });
+    const upsert = queries.flat().find((c) => c.op === "upsert")!;
+    expect(upsert.args[1]).toEqual({ onConflict: "user_id,app,id" });
+  });
+
   it("refuses to read when nobody is signed in", async () => {
     await expect(createChatHistoryAdapter(fakeClient(null).client)!.list()).rejects.toThrow();
   });
