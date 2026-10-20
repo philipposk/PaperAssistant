@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { CHAT_HISTORY_MODE_STORAGE_KEY } from "@page-assistant/widget";
 import { db } from "./db";
 import { isCloudConfigured, supabase } from "./supabase";
+import { trackAppAccessClient } from "./app-access-client";
 
 const THEME_KEY = "paperassistant.theme";
 
@@ -34,6 +35,7 @@ export function initAuth() {
   });
   supabase.auth.onAuthStateChange((_event: string, session: Session | null) => {
     useAuthStore.getState().setSession(session);
+    void trackAppAccessClient(supabase, session?.user, "paperassistant");
   });
 }
 
