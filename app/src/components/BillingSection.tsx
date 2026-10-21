@@ -5,6 +5,10 @@ import { TIER_LIMITS } from "../lib/aiPlans";
 
 type Plan = "free" | "plus";
 
+// Plus stays visible but can't be bought until Stripe is set up. Set VITE_BILLING_ENABLED=true
+// (build-time) once the stripe-checkout function has its keys and price id.
+const BILLING_LIVE = import.meta.env.VITE_BILLING_ENABLED === "true";
+
 // Read the Stripe-return marker once, on first render, so a redirect back from
 // Checkout shows the right note even before the subscriptions row has caught up.
 function initialReturn(): "success" | "cancel" | null {
@@ -120,7 +124,9 @@ export function BillingSection() {
         <div className="serif text-lg">Billing</div>
       </div>
       <p className="text-sm text-[var(--color-ink-3)] mb-3">
-        Upgrade to Plus for more AI questions per day on the free shared tier.
+        {BILLING_LIVE
+          ? "Upgrade to Plus for more AI questions per day on the free shared tier."
+          : "Plus, with more AI questions per day, is coming soon."}
       </p>
 
       {stripeReturn === "success" && (
@@ -160,15 +166,26 @@ export function BillingSection() {
           <p className="text-sm text-[var(--color-ink-3)] mb-3">
             Plan: <strong>Free</strong> — {TIER_LIMITS.free} AI questions/day
           </p>
-          <button
-            type="button"
-            onClick={() => void callFunction("stripe-checkout")}
-            disabled={busy}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium hover:bg-[var(--color-accent-2)] disabled:opacity-60"
-          >
-            {busy && <Loader2 size={14} className="animate-spin" />}
-            Upgrade to Plus — €5/mo ({TIER_LIMITS.plus}/day)
-          </button>
+          {BILLING_LIVE ? (
+            <button
+              type="button"
+              onClick={() => void callFunction("stripe-checkout")}
+              disabled={busy}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium hover:bg-[var(--color-accent-2)] disabled:opacity-60"
+            >
+              {busy && <Loader2 size={14} className="animate-spin" />}
+              Upgrade to Plus — €5/mo ({TIER_LIMITS.plus}/day)
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[var(--color-accent)] text-[#f6f2ea] text-sm font-medium opacity-60 cursor-not-allowed"
+            >
+              Plus — coming soon
+            </button>
+          )}
         </>
       )}
 
