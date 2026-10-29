@@ -1,0 +1,4 @@
+alter policy "pa-files: owner delete" on storage.objects using (((bucket_id = 'paperassistant-files'::text) AND (((select auth.uid()))::text = (storage.foldername(name))[1])));
+alter policy "pa-files: owner insert" on storage.objects with check (((bucket_id = 'paperassistant-files'::text) AND (((select auth.uid()))::text = (storage.foldername(name))[1])));
+alter policy "pa-files: owner select" on storage.objects using (((bucket_id = 'paperassistant-files'::text) AND (((select auth.uid()))::text = (storage.foldername(name))[1])));
+alter policy "pa-files: owner update" on storage.objects using (((bucket_id = 'paperassistant-files'::text) AND (((select auth.uid()))::text = (storage.foldername(name))[1]))) with check (((bucket_id = 'paperassistant-files'::text) AND (((select auth.uid()))::text = (storage.foldername(name))[1])));
