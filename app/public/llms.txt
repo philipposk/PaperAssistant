@@ -1,0 +1,15 @@
+# PaperAssistant
+
+> PaperAssistant keeps the pieces of a research paper in one place: create a project, add your figures, tables and documents, write notes beside them, and browse everything in a clean layout.
+
+## What it does
+- Separate projects for each paper
+- Upload your own figures, tables and documents
+- Keep notes next to your materials
+- Read everything in a clean, focused layout
+- Keeps your projects in your browser storage on this device
+- Sign in to sync a copy to the cloud across devices
+
+## Links
+- [PaperAssistant](https://paperassistant.6x7.gr/)
+- [6x7](https://6x7.gr/), [all 6x7 apps](https://portfolio.6x7.gr/)
