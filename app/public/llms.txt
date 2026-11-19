@@ -7,7 +7,7 @@
 - Upload your own figures, tables and documents
 - Keep notes next to your materials
 - Read everything in a clean, focused layout
-- Works offline in your browser
+- Keeps your projects in your browser storage on this device
 - Sign in to sync a copy to the cloud across devices
 
 ## Links
